@@ -359,7 +359,7 @@ async function sbSet(key,value){
   }catch(e){console.warn("sbSet error",key,e.message);}
 }
 var saveT=null;
-function saveItems(next){items=next;lsSet("inv_items",items);clearTimeout(saveT);saveT=setTimeout(function(){sbSet("inv_items",items);},1500);renderItems();renderStats();}
+function saveItems(next){items=next;lsSet("inv_items",items);clearTimeout(saveT);saveT=setTimeout(function(){var qtys={};items.forEach(function(it){qtys[it.id]=it.qty;});sbSet("inv_qtys",qtys);},1500);renderItems();renderStats();}
 // PIN
 function doLogin(){var app=document.getElementById("app");app.style.display="flex";
     document.getElementById("add-btn").style.display="block";
@@ -372,10 +372,10 @@ async function loadData(){
   try{
     var cached=lsGet("inv_items",[]);
     if(cached.length){items=cached;renderItems();renderStats();}
-    var inv=await sbGet("inv_items",[]);
+    var qtys=await sbGet("inv_qtys",null);
     var st=await sbGet("takeoff_status",{});
     var manual=await sbGet("takeoff_manual_projects",{});
-    if(inv&&inv.length){items=inv;lsSet("inv_items",inv);}else if(!cached.length){items=PRESET_ITEMS.map(function(p){return Object.assign({},p);});saveItems(items);}
+    if(qtys&&typeof qtys==="object"&&Object.keys(qtys).length){var base=PRESET_ITEMS.map(function(p){return Object.assign({},p);});base.forEach(function(it){if(qtys[it.id]!==undefined)it.qty=qtys[it.id];});items=base;lsSet("inv_items",items);}else if(!cached.length){items=PRESET_ITEMS.map(function(p){return Object.assign({},p);});saveItems(items);}
     var pl=[];
     if(st)Object.keys(st).forEach(function(k){var s=st[k];if(s&&(s.status==="Awarded"||s.status==="In Progress"))pl.push({id:k,name:k.split("—")[0].trim()});});
     if(manual)Object.keys(manual).forEach(function(k){pl.push({id:k,name:manual[k].name||k.split("::")[1]||k});});
