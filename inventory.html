@@ -539,13 +539,31 @@ function renderFullList(){
       rows+='<tr style="background:'+(i%2===0?"transparent":"var(--surface)")+';">'
         +'<td style="padding:8px 12px;color:var(--text);">'+esc(it.name)+'</td>'
         +'<td style="padding:8px 12px;color:var(--muted);font-size:12px;">'+esc(it.category)+'</td>'
-        +'<td style="padding:8px 12px;text-align:center;font-family:monospace;font-weight:700;font-size:14px;color:'+qc+';">'+it.qty+'</td>'
+        +'<td style="padding:6px 12px;text-align:center;">'
+        +'<div style="display:inline-flex;align-items:center;gap:4px;">'
+        +'<button onclick="flAdj(''+it.id+'',event,-1)" style="width:22px;height:22px;border-radius:4px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>'
+        +'<span id="flq-'+it.id+'" style="font-family:monospace;font-weight:700;font-size:14px;color:'+qc+';min-width:26px;text-align:center;">'+it.qty+'</span>'
+        +'<button onclick="flAdj(''+it.id+'',event,1)" style="width:22px;height:22px;border-radius:4px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>'
+        +'</div></td>'
         +'<td style="padding:8px 12px;text-align:center;color:var(--muted);font-size:12px;">'+esc(it.unit||"each")+'</td>'
         +'<td style="padding:8px 12px;text-align:center;"><span style="font-size:10px;font-weight:800;color:'+qc+';background:'+qc+'18;border:1px solid '+qc+'44;border-radius:4px;padding:2px 8px;">'+status+'</span></td>'
-      +'</tr>';
+        +'</tr>';
     });
   });
   document.getElementById("fl-body").innerHTML=rows;
+}
+function flAdj(id,e,delta){
+  e.stopPropagation();
+  var it=items.find(function(x){return x.id===id;});
+  if(!it)return;
+  it.qty=Math.max(0,it.qty+delta);
+  var el=document.getElementById("flq-"+id);
+  if(el){
+    var qc=it.qty>0?"var(--green)":"var(--red)";
+    el.textContent=it.qty;
+    el.style.color=qc;
+  }
+  saveItems(items);
 }
 function exportFullList(){
   var lines="Item,Category,Quantity,Unit\n";
