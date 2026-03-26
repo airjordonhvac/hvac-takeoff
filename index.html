@@ -212,6 +212,78 @@ const UP = {
 
 // -- Project data -----------------------------------------------------------
 const PROJECTS = {
+"Taco Bell — 741 N Main St, Jacksboro TX 76458": {
+  projectInfo:{detectedProjectName:"Taco Bell — Jacksboro",detectedAddress:"741 N. Main St., Jacksboro, TX 76458",detectedDrawingNumber:"M1 / M2 / M3 / M3.1 / M3.2",scale:'5/16"=1\'',buildingType:"Fast Food Restaurant (QSR)",totalSF:3150},
+  airBalance:[
+    {zone:"Dining (RTU-1)",areaSF:2100,supplyCFM:2100,returnCFM:1700,exhaustCFM:0,netCFM:400},
+    {zone:"Kitchen (RTU-2)",areaSF:1050,supplyCFM:6175,returnCFM:4900,exhaustCFM:0,netCFM:1275},
+    {zone:"Hood Exhaust (EF-1)",areaSF:0,supplyCFM:0,returnCFM:0,exhaustCFM:1050,netCFM:-1050},
+    {zone:"Restroom Exhaust (EF-2)",areaSF:0,supplyCFM:0,returnCFM:0,exhaustCFM:508,netCFM:-508},
+  ],
+  equipment:[
+    {tag:"RTU-1",description:"Packaged Rooftop Unit w/ Gas Heat",manufacturer:"Trane",model:"Voyager YHC Series",capacity:"5.0 Ton",cfm:2100,qty:1,unit:"EA",notes:"208/3/60 - 100 MBH gas heat - 2-stage - Economizer - Wt 1336 lbs"},
+    {tag:"RTU-2",description:"Packaged Rooftop Unit w/ Gas Heat",manufacturer:"Trane",model:"Voyager YHC Series",capacity:"12.5 Ton",cfm:6175,qty:1,unit:"EA",notes:"460/3/60 - Gas heat - 2-stage - Economizer - High OA kitchen makeup - Wt 2560 lbs"},
+    {tag:"EF-1",description:"Exhaust Fan — Kitchen Hood",manufacturer:"Stratovent",model:"SD650FFA",capacity:"1050 CFM",cfm:1050,qty:1,unit:"EA",notes:"1500 max CFM - 0.9 ESP - 1/4 HP - Direct drive - UL listed"},
+    {tag:"EF-2",description:"Exhaust Fan — Restroom",manufacturer:"Stratovent",model:"SD450FFA",capacity:"500 CFM",cfm:500,qty:1,unit:"EA",notes:"0.375 ESP - 1/4 HP - Direct drive - Backdraft damper"},
+    {tag:"HOOD-1",description:"Kitchen Exhaust Hood — Low Profile",manufacturer:"Stratovent",model:"SVB02",capacity:"1050 CFM",cfm:1050,qty:1,unit:"EA",notes:"6-3 L x 36W x 14H - 10x10 riser - SS - 300 lbs"},
+    {tag:"AC-1",description:"Air Curtain — Drive Thru",manufacturer:"Berner",model:"DTL03-2008A",capacity:"200 CFM",cfm:200,qty:2,unit:"EA",notes:"24.5in wide - 120/1/60 - 1/12 HP"},
+    {tag:"AC-3",description:"Air Curtain — Utility Door",manufacturer:"Berner",model:"Per Schedule",capacity:"1188 CFM",cfm:1188,qty:1,unit:"EA",notes:"46.62in wide - 120/1/60 - 1/5 HP"},
+    {tag:"AC-4",description:"Air Curtain — Kiosks",manufacturer:"Berner",model:"Per Schedule",capacity:"1033 CFM",cfm:1033,qty:1,unit:"EA",notes:"34.62in wide - 120/1/60 - 1/5 HP"},
+    {tag:"RC-1",description:"Roof Curb — RTU-1",manufacturer:"Trane",model:"Per RTU Package",capacity:"—",cfm:0,qty:1,unit:"EA",notes:"Provided with Trane RTU package"},
+    {tag:"RC-2",description:"Roof Curb — RTU-2",manufacturer:"Trane",model:"Per RTU Package",capacity:"—",cfm:0,qty:1,unit:"EA",notes:"Provided with Trane RTU package"},
+  ],
+  ductwork:[
+    {description:"Supply Main Trunk — RTU-1",size:"20x18",qty:35,unit:"LF",gauge:"26ga",system:"Supply",notes:"Dining zone main run west"},
+    {description:"Supply Sub-Trunk — RTU-1",size:"14x10",qty:20,unit:"LF",gauge:"26ga",system:"Supply",notes:"Dining zone reduced trunk"},
+    {description:"Supply Branch — RTU-1",size:"12x8",qty:40,unit:"LF",gauge:"Snap-lock",system:"Supply",notes:"5 snap-lock branches to S-1 diffusers"},
+    {description:"Flex Connection — RTU-1",size:"8x8",qty:25,unit:"LF",gauge:"Flex R-6",system:"Supply",notes:"5 at 5 LF to dining diffusers"},
+    {description:"Supply Main Trunk — RTU-2",size:"26x18",qty:30,unit:"LF",gauge:"26ga",system:"Supply",notes:"Kitchen zone main run east"},
+    {description:"Supply Sub-Trunk — RTU-2",size:"20x18",qty:25,unit:"LF",gauge:"26ga",system:"Supply",notes:"Kitchen/drive-thru sub-trunk"},
+    {description:"Supply Branch Rect — RTU-2",size:"14x8",qty:30,unit:"LF",gauge:"26ga",system:"Supply",notes:"3 rect branches to kitchen diffusers"},
+    {description:"Supply Branch Round — RTU-2",size:"12x8",qty:48,unit:"LF",gauge:"Snap-lock",system:"Supply",notes:"6 snap-lock branches"},
+    {description:"Flex Connection — RTU-2",size:"8x8",qty:40,unit:"LF",gauge:"Flex R-6",system:"Supply",notes:"8 at 5 LF to kitchen/DT diffusers"},
+    {description:"Return Main — RTU-2",size:"30x20",qty:25,unit:"LF",gauge:"26ga",system:"Return",notes:"Kitchen return to RTU-2"},
+    {description:"Return Main — RTU-1",size:"20x18",qty:30,unit:"LF",gauge:"26ga",system:"Return",notes:"Dining return to RTU-1"},
+    {description:"Return Branch Round",size:"16x10",qty:20,unit:"LF",gauge:"Snap-lock",system:"Return",notes:"Return branches to R-1 grilles"},
+    {description:"Hood Exhaust Duct — EF-1",size:"10x10",qty:20,unit:"LF",gauge:"18ga",system:"Exhaust",notes:"18ga welded per code - Hood to roof EF-1"},
+    {description:"Restroom Exhaust — EF-2",size:"12x8",qty:15,unit:"LF",gauge:"26ga",system:"Exhaust",notes:"Restroom to roof EF-2"},
+  ],
+  piping:[
+    {description:"Condensate Drain — RTU-1",size:"3/4in PVC",qty:30,unit:"LF",material:"PVC Sch 40",insulation:"None",notes:"Through roof curb to drain"},
+    {description:"Condensate Drain — RTU-2",size:"3/4in PVC",qty:30,unit:"LF",material:"PVC Sch 40",insulation:"None",notes:"Through roof curb to drain"},
+    {description:"Condensate P-Trap",size:"—",qty:2,unit:"EA",material:"PVC",insulation:"None",notes:"One per RTU"},
+    {description:"Gas Piping — RTU-1",size:"1in Blk Steel",qty:20,unit:"LF",material:"Black Steel Sch 40",insulation:"None",notes:"Gas through roof curb - Shut-off + dirt leg"},
+    {description:"Gas Piping — RTU-2",size:"1-1/4in Blk Steel",qty:20,unit:"LF",material:"Black Steel Sch 40",insulation:"None",notes:"Gas through roof curb - Shut-off + dirt leg"},
+  ],
+  diffusers:[
+    {description:"Supply Diffuser S-1 (4-way Lay-in)",size:"10x10",qty:13,unit:"EA",type:"4-way",cfm:"100-900",notes:"Metal-Aire/Titus 5500-0/TDC-AAN - OBD"},
+    {description:"Supply Diffuser S-2 (4-way Surface)",size:"14x14",qty:2,unit:"EA",type:"4-way",cfm:"75-250",notes:"Metal-Aire/Titus 5000-0/TDC-AA - OBD"},
+    {description:"Return Grille R-1 (Hinged)",size:"24x24",qty:3,unit:"EA",type:"Return",cfm:"900-1220",notes:"Metal-Aire/Titus RHE-6/SFF - Hinged face"},
+    {description:"Exhaust Grille E-1",size:"12x12",qty:2,unit:"EA",type:"Exhaust",cfm:"100",notes:"Metal-Aire/Titus CCS5-1PB-1SF - Restroom"},
+    {description:"Volume Damper — Supply Branches",size:"—",qty:15,unit:"EA",type:"VD",cfm:"—",notes:"OBD at all supply branches"},
+    {description:"Backdraft Damper — EF-1",size:"10x10",qty:1,unit:"EA",type:"VD",cfm:"—",notes:"Gravity backdraft on hood exhaust"},
+    {description:"Backdraft Damper — EF-2",size:"8x8",qty:1,unit:"EA",type:"VD",cfm:"—",notes:"Gravity backdraft on restroom exhaust"},
+    {description:"Fire Damper w/ Access Door",size:"10x10",qty:1,unit:"EA",type:"VD",cfm:"—",notes:"Hood exhaust fire protection per M3.1"},
+  ],
+  controls:[
+    {description:"Programmable Thermostat (Trane pkg)",qty:2,unit:"EA",manufacturer:"Trane",notes:"Provided w/ RTU package - Wall mount 48in AFF"},
+    {description:"Remote Temperature Sensor",qty:2,unit:"EA",manufacturer:"Trane",notes:"Mount 60in AFF - NOT on tile wall in dining"},
+    {description:"Humidity Sensor (Remote — Return Duct)",qty:2,unit:"EA",manufacturer:"Trane",notes:"In return air ductwork - For hot gas reheat"},
+    {description:"Smoke Detector Reset Key Switch",qty:2,unit:"EA",manufacturer:"System Sensor",notes:"Model RFS151 - Next to T-stats at 48in AFF"},
+  ],
+  scopeSummary:"New Taco Bell QSR — two Trane Voyager RTUs (5T dining / 12.5T kitchen w/ high OA), Stratovent kitchen hood (SVB02) w/ EF-1 (1050 CFM), restroom EF-2 (500 CFM), four Berner air curtains, full ductwork. Air balance: 8,275 CFM SA / 6,600 RA / 1,558 EA / +117 net positive. Ansul, walk-in refrigeration, WH venting by others.",
+  warnings:[
+    "Duct lengths estimated from 5/16in scale plans — FIELD VERIFY before fab",
+    "RTU model numbers to confirm with Trane rep at order",
+    "Ansul fire suppression BY OTHERS (owner/GC)",
+    "Walk-in cooler/freezer, ice maker, frozen beverage condensing units are REFRIGERATION scope — NOT in bid",
+    "TAB per Taco Bell preferred vendor — verify if mech sub scope or by owner",
+    "Coordinate RTU locations and duct drops with structural truss layout BEFORE fab",
+    "Kitchen hood exhaust duct MUST be 18ga welded per code",
+    "Min 10ft separation between OA intakes and exhaust terminations per M2",
+  ],
+},
+
 
 "J Brothers — 5532 Midway Rd #10, Haltom City TX": {
   projectInfo:{detectedProjectName:"J Brothers Ice Cream Manufacturing",detectedAddress:"5532 Midway Road #10, Haltom City TX",detectedDrawingNumber:"M1-01",scale:"1/4 in = 1 ft",buildingType:"Food Manufacturing",totalSF:4000},
