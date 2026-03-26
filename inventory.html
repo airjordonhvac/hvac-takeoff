@@ -334,6 +334,7 @@ const SB_URL="https://zottjoyiczglrkaodjfr.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvdHRqb3lpY3pnbHJrYW9kamZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNDk3NTAsImV4cCI6MjA4OTgyNTc1MH0.5LycZbEK23JVyHPvSG3JHqLwumoFLDCkZzLQ4ERLqTE";
 const SBH={"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY};
 let role='employee',items=[],projects=[],editId=null,coMode=null,coId=null;
+var showInStockOnly=false;
 
 
 function lsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}}
@@ -392,7 +393,6 @@ function renderItems(){
     var f=items.filter(function(it){
     if(cat&&it.category!==cat)return false;
     if(q&&!it.name.toLowerCase().includes(q)&&!(it.description||"").toLowerCase().includes(q))return false;
-    if(showInStockOnly&&it.qty<=0)return false;
     return true;
   });
   var g=document.getElementById("items-grid");
