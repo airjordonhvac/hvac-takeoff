@@ -4221,25 +4221,6 @@ function importData(file,onDone){
   reader.readAsText(file);
 }
 
-  function press(d){
-    if(buf.length>=4)return;
-    const next=buf+d;
-    setBuf(next);
-    setErr("");
-    if(next.length===4){
-      setTimeout(()=>{
-        if(next===APP_PIN){
-          sessionStorage.setItem("aj_pin_ok","1");
-          setUnlocked(true);
-        } else {
-          setErr("Incorrect PIN — try again");
-          setShake(true);
-          setTimeout(()=>{setShake(false);setBuf("");},500);
-        }
-      },120);
-    }
-  }
-  function del(){setBuf(b=>b.slice(0,-1));setErr("");}
 
   if(unlocked)return children;
 
