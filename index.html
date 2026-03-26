@@ -3194,7 +3194,8 @@ function nextVisitDate(lastDate, months){
 }
 
 function ServiceView({pmAgreements,savePmAgreements,serviceTickets,saveServiceTickets}){
-  const [tab,setTab]=useState("schedule"); // "schedule" | "agreements" | "tickets"
+  const [tab,setTab]=useState("schedule");
+const [showImport,setShowImport]=React.useState(false);const [importText,setImportText]=React.useState(""); // "schedule" | "agreements" | "tickets"
   const [showPMForm,setShowPMForm]=useState(false);
   const [showTicketForm,setShowTicketForm]=useState(false);
   const [editPM,setEditPM]=useState(null);
@@ -4337,7 +4338,18 @@ function PinGate({children}){
   const btnStyle={background:"#13161f",border:"1px solid #252b40",borderRadius:12,color:"#e2e8f0",
     fontFamily:"'Barlow Condensed',sans-serif",fontSize:26,fontWeight:700,
     cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",
-    width:74,height:74,transition:"all 0.1s",WebkitTapHighlightColor:"transparent"};
+    width:74,height:74,transition:"all 0.1s",WebkitTapHighlightColor:"transparent",
+"Taco Bell — 9117 S Sam Rayburn Hwy W, Howe TX 75459": {
+  projectInfo:{detectedProjectName:"Taco Bell — Howe (Endeavor 2.0)",detectedAddress:"9117 S Sam Rayburn Hwy W, Howe TX 75459",detectedDrawingNumber:"M1–M5",scale:'1/4" = 1\'\'-0"',buildingType:"End-Cap Restaurant (END_MRD 40)",totalSF:2500},
+  airBalance:[{zone:"Dining / Lobby",areaSF:1200,supplyCFM:2000,returnCFM:1800,exhaustCFM:0,netCFM:200},{zone:"Kitchen / Prep",areaSF:1000,supplyCFM:3000,returnCFM:500,exhaustCFM:2500,netCFM:0},{zone:"Restrooms",areaSF:100,supplyCFM:0,returnCFM:0,exhaustCFM:150,netCFM:-150},{zone:"Storage / Office",areaSF:200,supplyCFM:200,returnCFM:200,exhaustCFM:0,netCFM:0}],
+  equipment:[{tag:"RTU-1",description:"Packaged Rooftop Unit w/ Gas Heat 5.0 Ton",qty:1,unit:"EA",unitCost:9000,totalCost:9000,category:"equipment"},{tag:"RTU-2",description:"Packaged Rooftop Unit w/ Gas Heat 7.5 Ton",qty:1,unit:"EA",unitCost:15000,totalCost:15000,category:"equipment"},{tag:"EF-1",description:"Kitchen Hood Exhaust Fan — Greenheck",qty:1,unit:"EA",unitCost:200,totalCost:200,category:"exhaust_fans"},{tag:"EF-2",description:"Restroom Exhaust Fan — Greenheck",qty:1,unit:"EA",unitCost:150,totalCost:150,category:"exhaust_fans"},{tag:"AC-1",description:"Drive-Thru Air Curtain — Mars",qty:1,unit:"EA",unitCost:1800,totalCost:1800,category:"air_curtains"},{tag:"AC-2",description:"Front Door Air Curtain — Mars",qty:1,unit:"EA",unitCost:1800,totalCost:1800,category:"air_curtains"},{tag:"RC-1",description:"Refrigerant Circuit — RTU-1",qty:1,unit:"EA",unitCost:0,totalCost:0,category:"refrigerant"},{tag:"RC-2",description:"Refrigerant Circuit — RTU-2",qty:1,unit:"EA",unitCost:0,totalCost:0,category:"refrigerant"}],
+  ductwork:[{tag:"SA-M1",description:"Supply Main 24x12 G26",qty:1,lengthLF:25,unit:"LF",unitCost:18,totalCost:450,category:"ductwork"},{tag:"SA-M2",description:"Supply Main 20x10 G26",qty:1,lengthLF:20,unit:"LF",unitCost:15,totalCost:300,category:"ductwork"},{tag:"SA-S1",description:"Supply Sub-Main 16x10 G26",qty:1,lengthLF:15,unit:"LF",unitCost:12,totalCost:180,category:"ductwork"},{tag:"SA-S2",description:"Supply Sub-Main 14x8 G26",qty:1,lengthLF:12,unit:"LF",unitCost:10,totalCost:120,category:"ductwork"},{tag:"SA-B1",description:"Supply Branch 10x8 snap-lock",qty:4,lengthLF:8,unit:"LF",unitCost:7,totalCost:224,category:"ductwork"},{tag:"SA-B2",description:"Supply Branch 8in flex",qty:8,lengthLF:6,unit:"LF",unitCost:4,totalCost:192,category:"ductwork"},{tag:"SA-B3",description:"Supply Branch 6in flex",qty:6,lengthLF:5,unit:"LF",unitCost:3,totalCost:90,category:"ductwork"},{tag:"RA-M1",description:"Return Main 24x14 G26",qty:1,lengthLF:20,unit:"LF",unitCost:18,totalCost:360,category:"ductwork"},{tag:"RA-B1",description:"Return Branch 16x10 G26",qty:2,lengthLF:10,unit:"LF",unitCost:12,totalCost:240,category:"ductwork"},{tag:"EX-H1",description:"Hood Exhaust 24x18 18ga welded",qty:1,lengthLF:15,unit:"LF",unitCost:35,totalCost:525,category:"ductwork"},{tag:"EX-R1",description:"Restroom Exhaust 8in spiral",qty:1,lengthLF:20,unit:"LF",unitCost:6,totalCost:120,category:"ductwork"},{tag:"OA-1",description:"Outside Air Duct 16x12 G26",qty:1,lengthLF:8,unit:"LF",unitCost:14,totalCost:112,category:"ductwork"},{tag:"OA-2",description:"Outside Air Duct 20x14 G26",qty:1,lengthLF:10,unit:"LF",unitCost:16,totalCost:160,category:"ductwork"}],
+  piping:[{tag:"CD-1",description:"Condensate Drain 3/4in PVC",qty:2,lengthLF:20,unit:"LF",unitCost:3,totalCost:120,category:"piping"},{tag:"PT-1",description:"P-Trap Assembly",qty:2,unit:"EA",unitCost:15,totalCost:30,category:"piping"}],
+  diffusers:[{tag:"SD-1",description:"24x24 4-Way Supply Diffuser",qty:8,unit:"EA",unitCost:45,totalCost:360,category:"diffusers"},{tag:"SD-2",description:"12x12 4-Way Supply Diffuser",qty:6,unit:"EA",unitCost:30,totalCost:180,category:"diffusers"},{tag:"RG-1",description:"20x20 Return Grille",qty:2,unit:"EA",unitCost:35,totalCost:70,category:"diffusers"},{tag:"RG-2",description:"16x16 Return Grille",qty:2,unit:"EA",unitCost:28,totalCost:56,category:"diffusers"},{tag:"HE-1",description:"Hood Exhaust Connection",qty:1,unit:"EA",unitCost:0,totalCost:0,category:"diffusers"},{tag:"RE-1",description:"Restroom Exhaust Grille",qty:1,unit:"EA",unitCost:15,totalCost:15,category:"diffusers"},{tag:"VD-1",description:"Volume Damper",qty:10,unit:"EA",unitCost:22,totalCost:220,category:"diffusers"}],
+  controls:[{tag:"TSTAT-1",description:"Programmable Thermostat",qty:2,unit:"EA",unitCost:250,totalCost:500,category:"controls"},{tag:"SD-DET",description:"In-Duct Smoke Detector",qty:2,unit:"EA",unitCost:350,totalCost:700,category:"controls"}],
+  warnings:["Hood exhaust 18ga welded","RTU curbs by GC","Stratovent hood by national account","ANSUL not HVAC scope","Walk-in not HVAC scope","Field verify duct lengths"]
+}
+};
 
   return <div style={{position:"fixed",inset:0,background:"#08090f",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'Barlow Condensed',sans-serif",gap:0,zIndex:9999}}>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet"/>
@@ -4653,7 +4665,7 @@ function App(){
           </select>
         </div>
         <div style={{marginLeft:"auto",display:"flex",gap:8,alignItems:"center"}}>
-          <button onClick={()=>exportCSV(tk,dr,est,overrides)} style={{background:"#2ecc8722",border:"1px solid #2ecc8755",borderRadius:8,padding:"8px 16px",color:"#2ecc87",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>â¬ Export CSV</button>
+          <button onClick={()=>exportCSV(tk,dr,est,overrides)} style={{background:"#2ecc8722",border:"1px solid #2ecc8755",borderRadius:8,padding:"8px 16px",color:"#2ecc87",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>â¬ Export CSV</button><button onClick={()=>setShowImport(true)} style={{background:"#3d8ef822",border:"1px solid #3d8ef855",borderRadius:8,padding:"8px 16px",color:"#3d8ef8",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginLeft:6}}>+ Import Project</button>
         </div>
       </div>
       <div style={{background:"#3d8ef812",border:"1px solid #3d8ef833",borderRadius:10,padding:"12px 16px",marginBottom:16,fontSize:13,color:"#dde3f0",lineHeight:1.7}}>
@@ -5439,6 +5451,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
 
     {/* ââ Margin tab ââ */}
     {!activePO&&popsTab==="margin"&&<MarginTab allProjectsForDisplay={allProjectsForDisplay} allStatus={allStatus} poList={poList} projName={projName} projSpent={projSpent} popsDbSave={popsDbSave}/>}
+{showImport&&<div onClick={()=>setShowImport(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center"}}><div onClick={e=>e.stopPropagation()} style={{background:"#1a1a2e",borderRadius:12,padding:24,width:600,maxHeight:"80vh",overflow:"auto",border:"1px solid #333"}}><h3 style={{color:"#fff",margin:"0 0 12px"}}>Import Project (JSON)</h3><p style={{color:"#888",fontSize:12,margin:"0 0 8px"}}>Paste JSON matching the PROJECTS format.</p><textarea value={importText} onChange={e=>setImportText(e.target.value)} style={{width:"100%",height:200,background:"#0d0d1a",color:"#0f0",border:"1px solid #333",borderRadius:8,padding:12,fontFamily:"monospace",fontSize:11,resize:"vertical"}}/><div style={{display:"flex",gap:8,marginTop:12}}><button onClick={()=>{try{const parsed=JSON.parse(importText);const keys=Object.keys(parsed);if(!keys.length)throw new Error("No keys");keys.forEach(k=>{PROJECTS[k]=parsed[k]});setShowImport(false);setImportText("");alert("Imported "+keys.length+" project(s). Select from dropdown.")}catch(err){alert("Invalid JSON: "+err.message)}}} style={{background:"#00c853",border:"none",borderRadius:8,padding:"10px 24px",color:"#000",fontWeight:700,cursor:"pointer",fontSize:13}}>Import</button><button onClick={()=>setShowImport(false)} style={{background:"#333",border:"none",borderRadius:8,padding:"10px 24px",color:"#fff",cursor:"pointer",fontSize:13}}>Cancel</button></div></div></div>}
   </div>;
 }
 
