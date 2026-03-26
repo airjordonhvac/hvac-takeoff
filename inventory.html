@@ -359,7 +359,13 @@ async function sbSet(key,value){
     }
   }catch(e){console.warn("sbSet error",key,e.message);}
 }
-var saveT=null;
+var saveT=null;var showInStockOnly=false;
+function toggleInStock(){
+  showInStockOnly=!showInStockOnly;
+  var btn=document.getElementById("instock-btn");
+  if(btn){btn.style.background=showInStockOnly?"var(--green-dim)":"var(--card2)";btn.style.color=showInStockOnly?"var(--green)":"var(--muted)";btn.style.border=showInStockOnly?"1px solid rgba(16,185,129,0.4)":"1px solid var(--border)";}
+  renderItems();
+}
 function saveItems(next){items=next;lsSet("inv_items",items);clearTimeout(saveT);saveT=setTimeout(function(){var qtys={};items.forEach(function(it){qtys[it.id]=it.qty;});sbSet("inv_qtys",qtys);},1500);renderItems();renderStats();}
 // PIN
 function doLogin(){var app=document.getElementById("app");app.style.display="flex";
