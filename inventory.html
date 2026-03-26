@@ -457,44 +457,8 @@ document.querySelectorAll(".modal-bg").forEach(function(bg){bg.addEventListener(
 
 
 document.addEventListener("DOMContentLoaded", function(){ doLogin(); });
-</script>
-
-<!-- FULL LIST MODAL -->
-<div id="full-list-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);z-index:800;flex-direction:column;">
-  <div style="background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-    <div style="font-family:var(--font-d);font-size:20px;font-weight:800;color:#fff;letter-spacing:0.04em;">📋 Complete Inventory List</div>
-    <div id="fl-count" style="font-size:11px;color:var(--muted);"></div>
-    <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-      <input type="text" id="fl-search" placeholder="Search…" oninput="renderFullList()" style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;width:200px;">
-      <select id="fl-cat" onchange="renderFullList()" style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;cursor:pointer;">
-        <option value="">All Categories</option>
-        <option>B Vent &amp; Gas</option><option>Boots</option><option>Condensate &amp; Drain</option>
-        <option>Controls &amp; Wire</option><option>Dampers</option><option>Diffusers &amp; Grilles</option>
-        <option>Elbows &amp; Fittings</option><option>Electrical</option><option>Equipment</option><option>Flex Duct</option>
-        <option>Hangers &amp; Hardware</option><option>Insulation</option><option>Misc</option>
-        <option>Plenums</option><option>Refrigeration Piping</option><option>Snap Collars</option>
-        <option>Spiral Duct</option><option>Tape &amp; Sealants</option>
-      </select>
-      <select id="fl-filter" onchange="renderFullList()" style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;cursor:pointer;">
-        <option value="all">All Items</option>
-        <option value="instock">In Stock Only</option>
-        <option value="zero">Zero Stock</option>
-      </select>
-      <button onclick="exportFullList()" style="padding:6px 14px;background:var(--green-dim);border:1px solid rgba(16,185,129,0.3);border-radius:7px;color:var(--green);font-family:var(--font-b);font-size:11px;font-weight:700;cursor:pointer;">⬇ Export CSV</button>
-      <button onclick="closeFullList()" style="padding:6px 14px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:7px;color:#ef4444;font-family:var(--font-b);font-size:12px;font-weight:700;cursor:pointer;">✕ Close</button>
-    </div>
-  </div>
-  <div style="flex:1;overflow-y:auto;padding:16px 20px;">
-    <table style="width:100%;border-collapse:collapse;font-size:13px;" id="fl-table">
-      <thead id="fl-head"></thead>
-      <tbody id="fl-body"></tbody>
-    </table>
-  </div>
-</div>
 
 
-
-<script>
 function showInStockList(){
   document.getElementById("fl-search").value="";
   document.getElementById("fl-cat").value="";
@@ -580,6 +544,44 @@ function exportFullList(){
   a.click();
 }
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeFullList();});
+
 </script>
+
+<!-- FULL LIST MODAL -->
+<div id="full-list-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);z-index:800;flex-direction:column;">
+  <div style="background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="font-family:var(--font-d);font-size:20px;font-weight:800;color:#fff;letter-spacing:0.04em;">📋 Complete Inventory List</div>
+    <div id="fl-count" style="font-size:11px;color:var(--muted);"></div>
+    <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+      <input type="text" id="fl-search" placeholder="Search…" oninput="renderFullList()" style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 12px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;width:200px;">
+      <select id="fl-cat" onchange="renderFullList()" style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;cursor:pointer;">
+        <option value="">All Categories</option>
+        <option>B Vent &amp; Gas</option><option>Boots</option><option>Condensate &amp; Drain</option>
+        <option>Controls &amp; Wire</option><option>Dampers</option><option>Diffusers &amp; Grilles</option>
+        <option>Elbows &amp; Fittings</option><option>Electrical</option><option>Equipment</option><option>Flex Duct</option>
+        <option>Hangers &amp; Hardware</option><option>Insulation</option><option>Misc</option>
+        <option>Plenums</option><option>Refrigeration Piping</option><option>Snap Collars</option>
+        <option>Spiral Duct</option><option>Tape &amp; Sealants</option>
+      </select>
+      <select id="fl-filter" onchange="renderFullList()" style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:var(--font-b);font-size:12px;outline:none;cursor:pointer;">
+        <option value="all">All Items</option>
+        <option value="instock">In Stock Only</option>
+        <option value="zero">Zero Stock</option>
+      </select>
+      <button onclick="exportFullList()" style="padding:6px 14px;background:var(--green-dim);border:1px solid rgba(16,185,129,0.3);border-radius:7px;color:var(--green);font-family:var(--font-b);font-size:11px;font-weight:700;cursor:pointer;">⬇ Export CSV</button>
+      <button onclick="closeFullList()" style="padding:6px 14px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:7px;color:#ef4444;font-family:var(--font-b);font-size:12px;font-weight:700;cursor:pointer;">✕ Close</button>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:16px 20px;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;" id="fl-table">
+      <thead id="fl-head"></thead>
+      <tbody id="fl-body"></tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
 </body>
 </html>
