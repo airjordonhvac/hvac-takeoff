@@ -4390,6 +4390,7 @@ function App(){
   });
   const [allOverrides,setAllOverrides]=useState(()=>{
     const saved=lsGet("takeoff_overrides",null);
+  const [archivedProjects,setArchivedProjects]=useState({});
     if(saved) return saved;
     const o={};Object.keys(PROJECTS).forEach(k=>{o[k]={...getDefaultOverrides(k)};});return o;
   });
@@ -4485,7 +4486,7 @@ function App(){
     dbSave("takeoff_manual_projects",next);
   };
 
-  const projectKeys=[...baseProjectKeys,...Object.keys(allManualProjects)];
+  const projectKeys=[...baseProjectKeys,...Object.keys(allManualProjects)].filter(k=>!archivedProjects[k]);
   const [view,setView]=useState("projects");
   const [selected,setSelected]=useState(projectKeys[0]);
   const [tab,setTab]=useState("estimate");
@@ -4586,7 +4587,7 @@ function App(){
 
     {view==="financials"&&<FinancialsView
       allStatus={allStatus}
-      projectKeys={[...Object.keys(PROJECTS),...Object.keys(allManualProjects)]}
+      projectKeys={[...Object.keys(PROJECTS),...Object.keys(allManualProjects)].filter(k=>!archivedProjects[k])}
       popsPos={popsPos}
       financialsOverhead={financialsOverhead}
       saveFinancialsOverhead={saveFinancialsOverhead}
@@ -4647,7 +4648,7 @@ function App(){
           </select>
         </div>
         <div style={{marginLeft:"auto",display:"flex",gap:8,alignItems:"center"}}>
-          <button onClick={()=>exportCSV(tk,dr,est,overrides)} style={{background:"#2ecc8722",border:"1px solid #2ecc8755",borderRadius:8,padding:"8px 16px",color:"#2ecc87",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>⬇ Export CSV</button><button onClick={()=>setShowImport(true)} style={{background:"#3d8ef822",border:"1px solid #3d8ef855",borderRadius:8,padding:"8px 16px",color:"#3d8ef8",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginLeft:6}}>+ Import Project</button>
+          <button onClick={()=>exportCSV(tk,dr,est,overrides)} style={{background:"#2ecc8722",border:"1px solid #2ecc8755",borderRadius:8,padding:"8px 16px",color:"#2ecc87",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>⬇ Export CSV</button><button onClick={()=>setShowImport(true)} style={{background:"#3d8ef822",border:"1px solid #3d8ef855",borderRadius:8,padding:"8px 16px",color:"#3d8ef8",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginLeft:6}}>+ Import Project</button><button onClick={()=>{if(!selected)return;if(!confirm("Archive \""+selected+"\"? It will be hidden from the dropdown."))return;const next=[...Object.keys(PROJECTS),...Object.keys(allManualProjects)].filter(k=>k!==selected&&!archivedProjects[k]);setArchivedProjects(p=>({...p,[selected]:true}));if(next.length)setSelected(next[0]);}} style={{background:"#f39c1222",border:"1px solid #f39c1255",borderRadius:8,padding:"8px 14px",color:"#f39c12",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginLeft:6}}>Archive</button><button onClick={()=>{if(!selected)return;if(!confirm("DELETE \""+selected+"\"?\n\nThis cannot be undone."))return;delete PROJECTS[selected];const ap={...archivedProjects};delete ap[selected];setArchivedProjects(ap);const next=Object.keys(PROJECTS).filter(k=>!ap[k]);if(next.length)setSelected(next[0]);else setSelected("");}} style={{background:"#e74c3c22",border:"1px solid #e74c3c55",borderRadius:8,padding:"8px 14px",color:"#e74c3c",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginLeft:6}}>Delete</button>{Object.keys(archivedProjects).length>0&&<button onClick={()=>setArchivedProjects({})} style={{background:"#9b59b622",border:"1px solid #9b59b655",borderRadius:8,padding:"8px 14px",color:"#9b59b6",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginLeft:6}}>Restore Archived ({Object.keys(archivedProjects).length})</button>}
         </div>
       </div>
       <div style={{background:"#3d8ef812",border:"1px solid #3d8ef833",borderRadius:10,padding:"12px 16px",marginBottom:16,fontSize:13,color:"#dde3f0",lineHeight:1.7}}>
