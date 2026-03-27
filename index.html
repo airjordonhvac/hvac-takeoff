@@ -4416,6 +4416,8 @@ function App(){
 
   // Import/export UI state
   const [showImport,setShowImport]=useState(false);
+  const [importText,setImportText]=useState("");
+  const [importName,setImportName]=useState("");
   const [importMsg,setImportMsg]=useState("");
   const importRef=useRef(null);
 
