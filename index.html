@@ -4487,6 +4487,7 @@ function App(){
 
   const [archivedProjects,setArchivedProjects]=useState({});
   const projectKeys=[...baseProjectKeys,...Object.keys(allManualProjects)].filter(k=>!archivedProjects[k]);
+  const takeoffKeys=projectKeys.filter(k=>{const s=(allStatus[k]||{}).status||"Bidding";return s==="Bidding"||s==="On Hold";});
   const [view,setView]=useState("projects");
   const [selected,setSelected]=useState(projectKeys[0]);
   const [tab,setTab]=useState("estimate");
@@ -4626,7 +4627,7 @@ function App(){
         <label style={{fontSize:10,fontWeight:700,color:"#6b7694",letterSpacing:"0.8px",textTransform:"uppercase"}}>Project</label>
         <select value={selected} onChange={e=>{setSelected(e.target.value);setTab("estimate");}}
           style={{marginTop:6,width:"100%",background:"#161b27",border:"1px solid #252d45",borderRadius:8,padding:"10px 12px",color:"#dde3f0",fontSize:13,fontFamily:"inherit",outline:"none"}}>
-          {projectKeys.filter(k=>PROJECTS[k]).map(k=><option key={k} value={k}>{k}</option>)}
+          {takeoffKeys.filter(k=>PROJECTS[k]).map(k=><option key={k} value={k}>{k}</option>)}
         </select>
       </div>}
       {!tk&&<div style={{padding:"32px",textAlign:"center",color:"#6b7694",fontSize:13}}>This project was added manually and has no takeoff data. Use the Projects view to manage billing and details.</div>}
