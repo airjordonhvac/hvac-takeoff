@@ -4390,7 +4390,6 @@ function App(){
   });
   const [allOverrides,setAllOverrides]=useState(()=>{
     const saved=lsGet("takeoff_overrides",null);
-  const [archivedProjects,setArchivedProjects]=useState({});
     if(saved) return saved;
     const o={};Object.keys(PROJECTS).forEach(k=>{o[k]={...getDefaultOverrides(k)};});return o;
   });
@@ -4486,6 +4485,7 @@ function App(){
     dbSave("takeoff_manual_projects",next);
   };
 
+  const [archivedProjects,setArchivedProjects]=useState({});
   const projectKeys=[...baseProjectKeys,...Object.keys(allManualProjects)].filter(k=>!archivedProjects[k]);
   const [view,setView]=useState("projects");
   const [selected,setSelected]=useState(projectKeys[0]);
