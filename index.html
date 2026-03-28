@@ -4004,10 +4004,9 @@ function FinancialsView({allStatus,projectKeys,popsPos,financialsOverhead,saveFi
   const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
   const fmtD=function(v){
-    var n=Math.abs(v),s=v<0?"-":"";
-    if(n>=1000000)return s+"$"+(n/1000000).toFixed(2)+"M";
-    if(n>=1000)return s+"$"+Math.round(n/1000)+"k";
-    return s+"$"+Math.round(n);
+    if(v==null)return"$0.00";
+    var s=v<0?"-":"";
+    return s+"$"+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
   };
   const gmC=function(p){
     if(p===null)return "#6b7694";
@@ -5318,7 +5317,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
     {/* ── Header pills + actions ── */}
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:10}}>
       <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-        {[{l:"TOTAL POs",v:poList.length,c:"#3d8ef8"},{l:"COMMITTED",v:"$"+Math.round(totalCommitted/1000)+"k",c:"#2ecc87"},{l:"APPROVED",v:"$"+Math.round(approvedTotal/1000)+"k",c:"#2ecc87"},{l:"PENDING",v:pendingCount,c:pendingCount>0?"#f5a623":"#6b7694"}].map(p=>
+        {[{l:"TOTAL POs",v:poList.length,c:"#3d8ef8"},{l:"COMMITTED",v:"$"+totalCommitted.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}),c:"#2ecc87"},{l:"APPROVED",v:"$"+approvedTotal.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}),c:"#2ecc87"},{l:"PENDING",v:pendingCount,c:pendingCount>0?"#f5a623":"#6b7694"}].map(p=>
           <Pill key={p.l} label={p.l} value={p.v} color={p.c}/>
         )}
         <div style={{display:"flex",alignItems:"center",gap:5,padding:"10px 14px",background:"#252d4533",border:"1px solid #252d45",borderRadius:10,minWidth:86}}>
@@ -5372,7 +5371,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
             <div style={{fontSize:10,color:"#6b7694"}}>{p.category} · {projName(p.projectId)}</div>
           </div>
           {statusBadge(p.status)}
-          <span style={{fontFamily:"monospace",fontSize:13,fontWeight:700,color:"#2ecc87",flexShrink:0}}>${Math.round(p.total/1000)}k</span>
+          <span style={{fontFamily:"monospace",fontSize:13,fontWeight:700,color:"#2ecc87",flexShrink:0}}>${p.total.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
         </div>)}
       </div></>}
     </div>}
@@ -5398,8 +5397,8 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
             </div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
               <div>
-                <div style={{fontFamily:"monospace",fontSize:13,fontWeight:700,color:"#fb923c"}}>{`$${Math.round(spent/1000)}k`} costs</div>
-                {rev>0&&<div style={{fontFamily:"monospace",fontSize:11,color:"#3d8ef8",marginTop:1}}>{`$${Math.round(rev/1000)}k`} revenue</div>}
+                <div style={{fontFamily:"monospace",fontSize:13,fontWeight:700,color:"#fb923c"}}>{`$${spent.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}`} costs</div>
+                {rev>0&&<div style={{fontFamily:"monospace",fontSize:11,color:"#3d8ef8",marginTop:1}}>{`$${rev.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}`} revenue</div>}
               </div>
               {rev>0&&<div style={{textAlign:"right"}}>
                 <div style={{fontSize:9,color:"#6b7694",fontWeight:700,letterSpacing:"0.3px",textTransform:"uppercase"}}>GM</div>
