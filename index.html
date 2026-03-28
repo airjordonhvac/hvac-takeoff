@@ -2278,9 +2278,9 @@ function exportCSV(tk,dr,est,overrides){
 // -- UI components ----------------------------------------------------------
 // Smart dollar formatter: $Xk under $1M, $X.XXM at or above $1M
 const fmtDollar=(v)=>{
-  const n=Math.abs(v);
-  if(n>=1000000) return `$${(v/1000000).toFixed(v%1000000===0?0:2).replace(/\.?0+$/,"")}M`;
-  return `$${Math.round(v/1000)}k`;
+  if(v==null)return'$0.00';
+  const s=v<0?'-':'';
+  return s+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 };
 
 function Pill({label,value,color}){
@@ -4758,7 +4758,7 @@ function QuickAddModal({onClose,onSave,projOptions,catOptions,inputStyle,labelSt
 function MarginTab({allProjectsForDisplay,allStatus,poList,projName,projSpent,popsDbSave}){
   const gmColor=pct=>pct===null?"#6b7694":pct>=25?"#2ecc87":pct>=15?"#f5a623":pct>=5?"#fb923c":"#ff5c5c";
   const fmtPct=pct=>pct===null?"—":`${pct.toFixed(1)}%`;
-  const fmtK=v=>v>=1000000?`$${(v/1000000).toFixed(2)}M`:v>=1000?`$${Math.round(v/1000)}k`:`$${Math.round(v)}`;
+  const fmtK=v=>{if(v==null)return'$0.00';const s=v<0?'-':'';const a=Math.abs(v);return s+'$'+a.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})};
   const [poOverrides,setPoOverrides]=useState(()=>lsGet("pops_margin_overrides",{})||{});
 
   function toggleOverride(id){
@@ -5445,4 +5445,4 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<PinGate><App /></PinGate>);
 </script>
 </body>
-</html>
+  </html>
