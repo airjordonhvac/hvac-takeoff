@@ -5030,7 +5030,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
   const fmt=n=>"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
   // projName needs to search allProjectsForDisplay so completed project names still show on existing POs
   const projName=id=>{const p=allProjectsForDisplay.find(x=>x.id===id);return p?p.name:"—";};
-  const projSpent=id=>poList.filter(p=>p.projectId===id).reduce((s,p)=>s+p.total,0);
+  const projSpent=id=>poList.filter(p=>p.projectId===id&&p.status!=="rejected").reduce((s,p)=>s+p.total,0);
   const nowStr=()=>new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
 
   function statusBadge(s){
@@ -5231,7 +5231,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
   const labelStyle={fontSize:10,color:"#6b7694",fontWeight:700,letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:4,display:"block"};
   const catOptions=["Services","Hardware","Software","Facilities","Materials","Other"];
 
-  const totalCommitted=poList.reduce((s,p)=>s+p.total,0);
+  const totalCommitted=poList.filter(p=>p.status!=="rejected").reduce((s,p)=>s+p.total,0);
   const pendingCount=poList.filter(p=>p.status==="pending").length;
   const approvedTotal=poList.filter(p=>p.status==="approved").reduce((s,p)=>s+p.total,0);
 
