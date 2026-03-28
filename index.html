@@ -5095,7 +5095,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
       if(!match)throw new Error("No JSON in response");
       const po=JSON.parse(match[0]);
       const total=po.lineItems.reduce((s,li)=>s+li.qty*li.unitPrice,0)+(po.tax||0);
-      const newCtr=poCounter+1;
+      const maxExisting=poList.reduce((mx,p)=>{const n=parseInt(p.num);return isNaN(n)?mx:Math.max(mx,n)},poCounter);const newCtr=maxExisting+1;
       const record={
         id:String(Date.now()),num:String(newCtr),vendor:po.vendor,category:po.category,
         department:po.department,lineItems:po.lineItems,tax:po.tax||0,notes:po.notes||"",
@@ -5114,7 +5114,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
   // ── Save manual PO ──
   function saveManualPO(vendor,amount,desc,cat,projId,notes,delivery){
     if(!vendor||!amount)return;
-    const newCtr=poCounter+1;
+    const maxExisting=poList.reduce((mx,p)=>{const n=parseInt(p.num);return isNaN(n)?mx:Math.max(mx,n)},poCounter);const newCtr=maxExisting+1;
     const record={
       id:String(Date.now()),num:String(newCtr),vendor,category:cat,department:"Operations",
       lineItems:[{description:desc||vendor+" purchase",qty:1,unitPrice:parseFloat(amount)||0}],
