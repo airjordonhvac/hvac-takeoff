@@ -3588,6 +3588,16 @@ function ProjectDashboard({projectKeys,allStatus,getStatus,setStatus,STATUS_OPTI
 
   const getBidTotal=(key)=>{
     if(isManual(key)){
+      const mp=allManualProjects&&allManualProjects[key];
+      if(mp&&(mp.equipment||mp.ductwork)){
+        try{
+          const mk=allMk[key]||DEFAULT_MK;
+          const ovr=allOverrides[key]||{};
+          const dr=buildDucts(mp.airBalance||[],mp.projectInfo?.totalSF||0);
+          const est=buildEst(mp,dr,mk,ovr,{},{});
+          return est.total;
+        }catch(e){}
+      }
       return parseFloat(getStatus(key).contractValue)||0;
     }
     try{
