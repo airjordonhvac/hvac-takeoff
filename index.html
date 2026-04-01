@@ -5289,7 +5289,15 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
       placeholder="Paste full quote or email text here..."
       style={{width:"100%",minHeight:160,background:"#0e1525",border:"1px solid #252d45",borderRadius:8,color:"#e2e8f0",padding:12,fontSize:12,fontFamily:"monospace",resize:"vertical",outline:"none",boxSizing:"border-box",lineHeight:1.6}}/>
     <button
-      onClick={()=>window.__parseQuote(impText,setImpParsed,setImpLoading,setImpError)}
+      onClick={()=>{
+  if(!impText.trim()){setImpError("Paste some text first.");return;}
+  setImpLoading(true);setImpError("");setImpParsed(null);
+  const sys="Extract vendor quote data. Return ONLY valid JSON: {\"vendor\":\"\",\"quoteRef\":\"\",\"quoteDate\":\"\",\"lineItems\":[{\"description\":\"\",\"qty\":1,\"unitPrice\":0}],\"subtotal\":0,\"tax\":0,\"total\":0,\"notes\":\"\",\"validUntil\":\"\"}";
+  fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sys,messages:[{role:"user",content:"Parse this vendor quote:\n\n"+impText}]})})
+  .then(r=>r.json())
+  .then(d=>{try{const t=(d.content&&d.content[0]&&d.content[0].text)||"{}";const c=t.replace(/```json|```/g,"").trim();setImpParsed(JSON.parse(c));}catch(e){setImpError("Parse error — check quote format.");}setImpLoading(false);})
+  .catch(e=>{setImpError("Network error: "+e.message);setImpLoading(false);});
+}}
       disabled={impLoading}
       style={{marginTop:10,padding:"9px 20px",background:impLoading?"#252d45":"#5b8dee",color:"#fff",border:"none",borderRadius:7,fontWeight:700,fontSize:13,cursor:impLoading?"not-allowed":"pointer",fontFamily:"inherit"}}>
       {impLoading?"Parsing...":"Parse Quote"}
