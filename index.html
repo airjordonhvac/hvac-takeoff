@@ -5173,7 +5173,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
 
     {/* ── Sub-tabs ── */}
     <div style={{display:"flex",gap:2,borderBottom:"1px solid #252d45",marginBottom:16}}>
-      {[{k:"gen",l:"⚡ Generate"},{k:"projects",l:"📁 Projects"},{k:"all",l:"📋 All POs"},{k:"margin",l:"📊 Margin"},{k:"import",l:"📥 Import Quote"}]{k:"import",l:"📥 Import Quote"}].map(t=>
+      {[{k:"gen",l:"⚡ Generate"},{k:"projects",l:"📁 Projects"},{k:"all",l:"📋 All POs"},{k:"margin",l:"📊 Margin"},{k:"import",l:"📥 Import Quote"}].map(t=>
         <button key={t.k} onClick={()=>{setPopsTab(t.k);setActivePOId(null);setActiveProjId(null);}} style={{padding:"7px 14px",background:"transparent",border:"none",borderBottom:popsTab===t.k?"2px solid #5b8dee":"2px solid transparent",color:popsTab===t.k?"#5b8dee":"#6b7694",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{t.l}</button>
       )}
     </div>
