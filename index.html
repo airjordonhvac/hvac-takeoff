@@ -5353,7 +5353,12 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
       <select value={impProjSel} onChange={e=>setImpProjSel(e.target.value)}
         style={{width:"100%",background:"#141b2d",border:"1px solid #252d45",color:impProjSel?"#e2e8f0":"#6b7694",borderRadius:7,padding:"9px 12px",fontSize:13,fontFamily:"inherit",outline:"none"}}>
         <option value="">Select a project...</option>
-        {allProjectsForDisplay&&allProjectsForDisplay.filter(p=>p&&p.name).map(p=><option key={p.id||p.name} value={p.id||p.name}>{p.name}</option>)}
+        {allProjectsForDisplay&&allProjectsForDisplay.filter(p=>{
+  if(!p||!p.name) return false;
+  const st=allStatus&&(allStatus[p.id||p.name]||allStatus[p.name]||allStatus[p.key]||"");
+  const s=typeof st==="object"?st.status||"":st;
+  return !s||s==="Awarded"||s==="In Progress"||s==="Awarded - In Progress"||s==="In Progress - Awarded";
+}).sort((a,b)=>a.name.localeCompare(b.name)).map(p=><option key={p.id||p.name} value={p.id||p.name}>{p.name}</option>)}
       </select>
     </div>
 
