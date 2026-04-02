@@ -5363,7 +5363,7 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
       if(seen.has(p.name)){return false;} seen.add(p.name);
       const raw=allStatus&&(allStatus[p.key]||allStatus[p.id]||allStatus[p.name]||"");
       const s=typeof raw==="object"?raw.status||"":raw;
-      return !s||ACTIVE.includes(s);
+      return ACTIVE.includes(s);
     })
     .sort((a,b)=>a.name.localeCompare(b.name))
     .map(p=><option key={p.id||p.key||p.name} value={p.id||p.key||p.name}>{p.name}</option>);
