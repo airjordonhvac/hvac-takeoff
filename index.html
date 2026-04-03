@@ -2346,10 +2346,11 @@ const fmtDollar=(v)=>{
   return s+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 };
 
-function Pill({label,value,color}){
+function Pill({label,value,color,sub}){
   return <div style={{background:`${color}18`,border:`1px solid ${color}44`,borderRadius:10,padding:"10px 14px",minWidth:86}}>
     <div style={{fontSize:18,fontWeight:800,color,letterSpacing:"-0.5px"}}>{value}</div>
     <div style={{fontSize:10,color:"#6b7694",fontWeight:700,letterSpacing:"0.5px",marginTop:2}}>{label}</div>
+    {sub&&<div style={{fontSize:9,color:"#4a6880",marginTop:2,lineHeight:1.3}}>{sub}</div>}
   </div>;
 }
 function Tbl({cols,rows,cc}){
@@ -3714,6 +3715,13 @@ function ProjectDashboard({projectKeys,allStatus,getStatus,setStatus,STATUS_OPTI
   const activeOnly=projectKeys.filter(k=>["Awarded","In Progress"].includes(getStatus(k).status));
   const totalActiveContract=activeOnly.reduce((s,k)=>{const cv=parseFloat(getStatus(k).contractValue)||getBidTotal(k);return s+cv;},0);
   const lienProjects=projectKeys.filter(k=>getLienStatus(k).count60>0);
+  // Win rate: awarded $ vs total bid $ (awarded + lost + on hold + bidding)
+  const lostHold=projectKeys.filter(k=>["Lost","On Hold"].includes(getStatus(k).status));
+  const totalAwardedBid=awarded.reduce((s,k)=>s+(parseFloat(getStatus(k).contractValue)||getBidTotal(k)),0);
+  const totalLostBid=lostHold.reduce((s,k)=>s+getBidTotal(k),0);
+  const totalAllBid=totalAwardedBid+totalLostBid+totalBidding;
+  const winRatePct=totalAllBid>0?Math.round((totalAwardedBid/totalAllBid)*100):0;
+  const winRateLabel=winRatePct+'% WIN RATE';
   const totalAtRisk=lienProjects.reduce((s,k)=>s+getLienStatus(k).totalAtRisk,0);
 
   // Export lien data for integration with lien agent
@@ -3938,6 +3946,7 @@ function ProjectDashboard({projectKeys,allStatus,getStatus,setStatus,STATUS_OPTI
           {l:"OUTSTANDING AR",v:fmtDollar(totalPending),c:totalPending>0?"#fb923c":"#6b7694"},
           {l:"ACTIVE CONTRACT VALUE",v:fmtDollar(totalActiveContract),c:"#5b8dee"},
           {l:"ACTIVE BIDS",v:fmtDollar(totalBidding),c:"#3d8ef8"},
+          {l:"WIN RATE ($ VOL)",v:winRatePct+"%",c:winRatePct>=50?"#2ecc87":winRatePct>=30?"#f5a623":"#ff5c5c",sub:fmtDollar(totalAwardedBid)+" of "+fmtDollar(totalAllBid)},
           {l:"AT RISK (LIEN)",v:totalAtRisk>0?fmtDollar(totalAtRisk):"—",c:totalAtRisk>0?"#ff5c5c":"#6b7694"},
         ].map(p=><Pill key={p.l} label={p.l} value={p.v} color={p.c}/>)}
       </div>
