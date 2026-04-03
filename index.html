@@ -3711,6 +3711,8 @@ function ProjectDashboard({projectKeys,allStatus,getStatus,setStatus,STATUS_OPTI
   const totalPaid=awarded.reduce((s,k)=>{const inv=getStatus(k).invoices||[];return s+inv.filter(i=>i.status==="Paid").reduce((a,i)=>a+(parseFloat(i.amount)||0),0);},0);
   const totalPending=totalBilled-totalPaid;
   const totalBidding=bidding.reduce((s,k)=>s+getBidTotal(k),0);
+  const activeOnly=projectKeys.filter(k=>["Awarded","In Progress"].includes(getStatus(k).status));
+  const totalActiveContract=activeOnly.reduce((s,k)=>{const cv=parseFloat(getStatus(k).contractValue)||getBidTotal(k);return s+cv;},0);
   const lienProjects=projectKeys.filter(k=>getLienStatus(k).count60>0);
   const totalAtRisk=lienProjects.reduce((s,k)=>s+getLienStatus(k).totalAtRisk,0);
 
@@ -3934,6 +3936,7 @@ function ProjectDashboard({projectKeys,allStatus,getStatus,setStatus,STATUS_OPTI
           {l:"INVOICED TO DATE",v:fmtDollar(totalBilled),c:"#f5a623"},
           {l:"COLLECTED",v:fmtDollar(totalPaid),c:"#2ecc87"},
           {l:"OUTSTANDING AR",v:fmtDollar(totalPending),c:totalPending>0?"#fb923c":"#6b7694"},
+          {l:"ACTIVE CONTRACT VALUE",v:fmtDollar(totalActiveContract),c:"#5b8dee"},
           {l:"ACTIVE BIDS",v:fmtDollar(totalBidding),c:"#3d8ef8"},
           {l:"AT RISK (LIEN)",v:totalAtRisk>0?fmtDollar(totalAtRisk):"—",c:totalAtRisk>0?"#ff5c5c":"#6b7694"},
         ].map(p=><Pill key={p.l} label={p.l} value={p.v} color={p.c}/>)}
