@@ -4329,7 +4329,7 @@ Object.entries(allManualProjects).forEach(([k,v])=>{if(v.equipment||v.ductwork)P
   };
 
   const [archivedProjects,setArchivedProjects]=useState({});
-  const projectKeys=[...baseProjectKeys,...Object.keys(allManualProjects)].filter(k=>!archivedProjects[k]);
+  const projectKeys=[...new Set([...baseProjectKeys,...Object.keys(allManualProjects)])].filter(k=>!archivedProjects[k]);
   const takeoffKeys=projectKeys.filter(k=>{const s=(allStatus[k]||{}).status||"Bidding";return s==="Bidding"||s==="On Hold";});
   const [view,setView]=useState("projects");
   const [selected,setSelected]=useState(projectKeys[0]);
