@@ -5408,5 +5408,288 @@ function PopsView({takeoffProjects,allManualProjects,allStatus}){
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<PinGate><App /></PinGate>);
 </script>
+
+<style id="aj-est-styles">
+#aj-est-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99999;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px}
+#aj-est-modal{background:#122340;border:2px solid #c9a84c;border-radius:12px;width:100%;max-width:920px;margin:auto;font-family:'IBM Plex Mono',monospace;color:#e8f0f8}
+.aj-est-hdr{background:linear-gradient(135deg,#0a1628,#122340);border-bottom:2px solid #c9a84c;padding:14px 18px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between}
+.aj-est-hdr h2{margin:0;color:#c9a84c;font-size:14px;letter-spacing:2px}
+.aj-est-body{padding:16px}
+.aj-scope-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.aj-pill{padding:5px 14px;border-radius:20px;border:1.5px solid #1e4272;background:transparent;color:#6a8fb0;font-family:inherit;font-size:10px;font-weight:700;letter-spacing:1.2px;cursor:pointer;text-transform:uppercase;transition:all .12s}
+.aj-pill.active{background:#c9a84c;border-color:#c9a84c;color:#0a1628}
+.aj-pill.blue.active{background:#4fb3d9;border-color:#4fb3d9;color:#0a1628}
+.aj-divider{width:1px;height:22px;background:#1e4272;margin:0 4px}
+.aj-grid{display:grid;grid-template-columns:210px 1fr;gap:14px}
+.aj-cat-list{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.aj-cat-btn{padding:7px 10px;border-radius:5px;border:1.5px solid #1e4272;background:#152a45;color:#6a8fb0;font-family:inherit;font-size:9px;text-align:left;cursor:pointer;transition:all .12s}
+.aj-cat-btn.active{border-color:#4fb3d9;background:#4fb3d920;color:#4fb3d9}
+.aj-section-lbl{font-size:8px;color:#6a8fb0;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.aj-warn{font-size:8px;color:#ef4444;background:#ef444410;border:1px solid #ef444433;border-radius:4px;padding:4px 8px;margin-bottom:6px;line-height:1.6}
+.aj-variants{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px;margin-bottom:10px}
+.aj-var-btn{padding:10px 8px;border-radius:7px;border:2px solid #1e4272;background:#0f2035;font-family:inherit;cursor:pointer;text-align:left;transition:all .12s}
+.aj-var-btn.sel{border-color:#4fb3d9;background:#4fb3d918}
+.aj-var-size{font-size:10px;font-weight:700;color:#e8f0f8;margin-bottom:6px}
+.aj-var-btn.sel .aj-var-size{color:#4fb3d9}
+.aj-prices{display:flex;gap:4px}
+.aj-lo,.aj-hi{flex:1;border-radius:4px;padding:2px 5px}
+.aj-lo{background:#34d39918}.aj-hi{background:#f59e0b18}
+.aj-lbl{font-size:7px;letter-spacing:1px;margin-bottom:1px}
+.aj-lo .aj-lbl{color:#34d399}.aj-hi .aj-lbl{color:#f59e0b}
+.aj-amt{font-size:11px;font-weight:700}
+.aj-lo .aj-amt{color:#34d399}.aj-hi .aj-amt{color:#f59e0b}
+.aj-info-box{background:#152a45;border-radius:7px;border:1px solid #1e4272;padding:12px;margin-bottom:10px}
+.aj-inc-exc{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.aj-inc{background:#34d39910;border-radius:4px;padding:6px 8px;border:1px solid #34d39933}
+.aj-exc{background:#ef444410;border-radius:4px;padding:6px 8px;border:1px solid #ef444433}
+.aj-inc-lbl{font-size:7px;color:#34d399;letter-spacing:1.5px;margin-bottom:3px}
+.aj-exc-lbl{font-size:7px;color:#ef4444;letter-spacing:1.5px;margin-bottom:3px}
+.aj-inc p,.aj-exc p{font-size:9px;line-height:1.6;margin:0}
+.aj-inc p{color:#e8f0f8}.aj-exc p{color:#6a8fb0}
+.aj-sel-bar{background:#c9a84c12;border:1.5px solid #c9a84c;border-radius:7px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.aj-sel-bar-add{padding:8px 18px;border-radius:6px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-weight:700;font-size:11px;cursor:pointer;letter-spacing:1px}
+.aj-adder-item{display:flex;gap:7px;align-items:flex-start;padding:4px 6px;border-radius:4px;margin-bottom:3px;cursor:pointer}
+.aj-adder-item input{accent-color:#c9a84c;margin-top:3px;flex-shrink:0}
+.aj-add-all-btn{width:100%;padding:6px;border-radius:4px;font-family:inherit;font-size:9px;cursor:pointer;letter-spacing:1px;border:1px solid #c9a84c;background:#c9a84c22;color:#c9a84c;margin-top:6px}
+.aj-repair-row{display:grid;grid-template-columns:1fr 65px 65px 55px;gap:8px;align-items:center;padding:8px 10px;border-radius:6px;background:#152a45;border:1px solid #1e4272;margin-bottom:5px}
+.aj-repair-add{padding:5px 0;border-radius:4px;border:1px solid #4fb3d9;background:#4fb3d918;color:#4fb3d9;font-family:inherit;font-size:9px;cursor:pointer;width:100%}
+.aj-est-tbl{border:1px solid #1e4272;border-radius:7px;overflow:hidden;margin-top:6px}
+.aj-tbl-hdr{display:grid;grid-template-columns:1fr 95px 95px 28px;background:#0f2035;padding:7px 12px;gap:8px;font-size:7px;color:#6a8fb0;letter-spacing:1.5px;text-transform:uppercase}
+.aj-tbl-hdr div:nth-child(2),.aj-tbl-hdr div:nth-child(3){text-align:right}
+.aj-tbl-row{border-top:1px solid #1e4272;padding:8px 12px;display:grid;grid-template-columns:1fr 95px 95px 28px;gap:8px;align-items:center}
+.aj-tbl-row input[type=text]{background:transparent;border:none;border-bottom:1px solid #1e4272;color:#e8f0f8;font-family:inherit;font-size:10px;padding:1px 0;outline:none;width:100%}
+.aj-lo-inp{background:#34d39912!important;border:1px solid #34d39944!important;border-radius:4px!important;color:#34d399!important;font-family:inherit;font-size:11px;font-weight:700;padding:2px 5px;width:80px;text-align:right;outline:none}
+.aj-hi-inp{background:#f59e0b12!important;border:1px solid #f59e0b44!important;border-radius:4px!important;color:#f59e0b!important;font-family:inherit;font-size:11px;font-weight:700;padding:2px 5px;width:80px;text-align:right;outline:none}
+.aj-del-btn{background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;padding:0;text-align:center}
+.aj-type-badge{font-size:7px;padding:1px 5px;border-radius:3px;letter-spacing:1px;text-transform:uppercase;display:inline-block;margin-top:2px}
+.aj-t-rep{background:#34d39922;color:#34d399}
+.aj-t-repair{background:#4fb3d922;color:#4fb3d9}
+.aj-t-add{background:#c9a84c22;color:#c9a84c}
+.aj-subtotal{border-top:2px solid #1e4272;background:#0f2035;padding:8px 12px;display:grid;grid-template-columns:1fr 95px 95px 28px;gap:8px}
+.aj-subtotal div:nth-child(2),.aj-subtotal div:nth-child(3){text-align:right}
+.aj-grand{background:linear-gradient(90deg,#c9a84c18,#4fb3d912);border-top:2px solid #c9a84c;padding:12px;display:grid;grid-template-columns:1fr 95px 95px 28px;gap:8px;align-items:center}
+.aj-grand div:nth-child(2),.aj-grand div:nth-child(3){text-align:right}
+.aj-markup-box{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0;background:#0f2035;border-radius:7px;padding:12px}
+.aj-slider-grp label{font-size:9px;color:#6a8fb0;letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:4px}
+.aj-slider-grp input[type=range]{width:100%;accent-color:#c9a84c}
+.aj-ticket-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;background:#0f2035;border-radius:7px;padding:14px}
+.aj-tf-lbl{font-size:8px;color:#4fb3d9;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;grid-column:1/-1}
+.aj-field{display:flex;flex-direction:column;gap:3px}
+.aj-field label{font-size:8px;color:#6a8fb0;letter-spacing:1.5px;text-transform:uppercase}
+.aj-field input,.aj-field select,.aj-field textarea{background:#152a45;border:1px solid #1e4272;border-radius:5px;color:#e8f0f8;font-family:inherit;font-size:11px;padding:7px 10px;outline:none;width:100%;box-sizing:border-box}
+.aj-field textarea{resize:vertical;min-height:55px}
+.aj-field.full{grid-column:1/-1}
+.aj-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;color:#6a8fb0}
+.aj-footer{display:flex;gap:10px;justify-content:flex-end;padding:14px 18px;border-top:1px solid #1e4272}
+.aj-save-btn{padding:10px 24px;border-radius:6px;background:#4fb3d9;border:none;color:#0a1628;font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;letter-spacing:1px}
+.aj-cancel-btn{padding:10px 20px;border-radius:6px;background:transparent;border:1.5px solid #1e4272;color:#6a8fb0;font-family:inherit;font-size:12px;cursor:pointer}
+.aj-est-btn{padding:7px 14px;border-radius:5px;border:1.5px solid #c9a84c;background:#c9a84c18;color:#c9a84c;font-family:inherit;font-weight:700;font-size:10px;cursor:pointer;letter-spacing:1px;margin-left:8px}
+.aj-toast{position:fixed;bottom:24px;right:24px;background:#10b981;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;padding:12px 20px;border-radius:8px;z-index:999999;box-shadow:0 4px 20px rgba(0,0,0,.4);animation:aj-fadein .3s ease}
+@keyframes aj-fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+<script id="aj-estimator-engine">
+(function(){
+var E={
+  markup:30,contingency:10,scope:'residential',builderTab:'replace',
+  selCat:null,selIdx:null,repairCat:0,selAdders:{},bidItems:[],
+  SB_URL:'',SB_KEY:'',
+  REPLACEMENT:{
+    residential:{
+      centralAC:{label:'Central A/C (Split)',icon:'❄️',includes:'Condenser + coil + install labor + refrigerant charge.',excludes:'Permit · Disposal · Ductwork',variants:[{s:'1.5T',lo:2800,hi:4200},{s:'2T',lo:3200,hi:5000},{s:'2.5T',lo:3700,hi:5800},{s:'3T',lo:4200,hi:6500},{s:'3.5T',lo:4700,hi:7200},{s:'4T',lo:5200,hi:8000},{s:'5T',lo:6000,hi:9500}]},
+      furnace:{label:'Gas Furnace',icon:'🔥',includes:'Unit + install labor + gas connection.',excludes:'Permit · New flue · Disposal',variants:[{s:'60k BTU',lo:2000,hi:3200},{s:'80k BTU',lo:2400,hi:3900},{s:'100k BTU',lo:2900,hi:4700},{s:'120k BTU',lo:3400,hi:5500}]},
+      fullSystem:{label:'Full System (AC+Furnace)',icon:'🏠',includes:'Both units + install labor + refrigerant. Matched system.',excludes:'Permit · Disposal · Ductwork',variants:[{s:'2T/60k',lo:5800,hi:8800},{s:'2.5T/80k',lo:6600,hi:10500},{s:'3T/80k',lo:7700,hi:12000},{s:'3.5T/100k',lo:8500,hi:13500},{s:'4T/100k',lo:9500,hi:15000},{s:'5T/120k',lo:11000,hi:17500}]},
+      heatPump:{label:'Heat Pump (Ducted)',icon:'🔄',includes:'Outdoor unit + air handler + line set + labor + refrigerant.',excludes:'Permit · Disposal · Electrical upgrade if needed',variants:[{s:'2T',lo:5000,hi:8000},{s:'2.5T',lo:5700,hi:9500},{s:'3T',lo:6500,hi:11000},{s:'3.5T',lo:7200,hi:12000},{s:'4T',lo:8000,hi:13500},{s:'5T',lo:9500,hi:16000}]},
+      miniSplit:{label:'Ductless Mini-Split',icon:'💨',includes:'Outdoor + indoor heads + line set + install labor.',excludes:'Permit · Electrical upgrade · Disposal',variants:[{s:'1-Zone 9-12k BTU',lo:2500,hi:4200},{s:'1-Zone 18-24k BTU',lo:3200,hi:5500},{s:'2-Zone',lo:4500,hi:7500},{s:'3-Zone',lo:5800,hi:10000},{s:'4-Zone',lo:7500,hi:13000},{s:'5-Zone',lo:9500,hi:17000}]},
+      ductwork:{label:'Ductwork Replacement',icon:'🔩',includes:'Sheet metal + flex runouts + insulation + labor.',excludes:'Permit · Duct sealing test · Disposal',variants:[{s:'Under 1,000 SF',lo:1800,hi:3500},{s:'1,000-1,500 SF',lo:2500,hi:4500},{s:'1,500-2,000 SF',lo:3200,hi:6000},{s:'2,000-2,500 SF',lo:4000,hi:7500},{s:'2,500-3,500 SF',lo:5500,hi:10000},{s:'3,500+ SF',lo:8000,hi:15000}]},
+      thermostat:{label:'Thermostat/Controls',icon:'🌡️',includes:'Device + wiring + install labor.',excludes:'System compatibility upgrade if needed',variants:[{s:'Programmable 7-Day',lo:180,hi:400},{s:'Smart (Ecobee/Nest)',lo:300,hi:650},{s:'Communicating',lo:500,hi:1100}]}
+    },
+    commercial:{
+      rtu:{label:'Packaged RTU',icon:'🏢',includes:'Unit + rigging/set labor ONLY. No crane, curb, permit, or TAB.',excludes:'Crane · Curb adapter · Permit · TAB · Disposal · Electrical',variants:[{s:'3-4T',lo:5500,hi:10000},{s:'5T',lo:7000,hi:12500},{s:'7.5T',lo:9000,hi:15500},{s:'10T',lo:12000,hi:20000},{s:'12.5T',lo:15000,hi:25000},{s:'15T',lo:18000,hi:31000},{s:'17.5T',lo:21000,hi:37000},{s:'20T',lo:24000,hi:44000},{s:'25T',lo:30000,hi:56000}]},
+      splitComm:{label:'Commercial Split',icon:'🔀',includes:'Condenser + AHU + line set + install labor + refrigerant.',excludes:'Permit · Electrical upgrade · TAB · Disposal',variants:[{s:'3-5T',lo:6500,hi:14000},{s:'7.5T',lo:9500,hi:18000},{s:'10T',lo:13000,hi:22000},{s:'15T',lo:17000,hi:31000},{s:'20T',lo:22000,hi:42000}]},
+      vrf:{label:'VRF/VRV System',icon:'♾️',includes:'Outdoor VRF + indoor heads + refrigerant piping + labor.',excludes:'Permit · BAS integration · TAB · Electrical · Disposal',variants:[{s:'4-6T Small',lo:14000,hi:26000},{s:'8-10T Medium',lo:22000,hi:40000},{s:'12-16T Large',lo:33000,hi:58000},{s:'20T+ Full Bldg',lo:46000,hi:82000}]},
+      chiller:{label:'Chiller (Air-Cooled)',icon:'🧊',includes:'Chiller unit + rigging + install labor.',excludes:'Permit · Pump/piping · BAS · TAB · Disposal · Electrical',variants:[{s:'20-30T',lo:40000,hi:75000},{s:'40-60T',lo:65000,hi:110000},{s:'80-100T',lo:100000,hi:160000},{s:'100T+',lo:130000,hi:220000}]},
+      ahu:{label:'Air Handling Unit',icon:'🌬️',includes:'AHU unit + install labor.',excludes:'Permit · DX or chilled water coil · TAB · Controls · Disposal',variants:[{s:'2k-4k CFM',lo:6000,hi:13000},{s:'5k-8k CFM',lo:11000,hi:21000},{s:'10k-15k CFM',lo:18000,hi:33000},{s:'20k+ CFM',lo:28000,hi:52000}]},
+      ductComm:{label:'Commercial Ductwork',icon:'🔧',includes:'Sheet metal + insulation + install labor.',excludes:'Permit · Duct sealing test · TAB',variants:[{s:'Under 2,000 SF',lo:4000,hi:10000},{s:'2k-5k SF',lo:8000,hi:22000},{s:'5k-10k SF',lo:15000,hi:40000},{s:'10k-20k SF',lo:28000,hi:65000},{s:'20k-50k SF',lo:50000,hi:120000}]},
+      exhaust:{label:'Exhaust/Ventilation Fan',icon:'💨',includes:'Fan unit + install labor.',excludes:'Permit · SS grease duct (+$50-80/LF) · Fire suppression',variants:[{s:'Restroom Fan',lo:300,hi:750},{s:'Inline Fan Mid-Duty',lo:650,hi:1500},{s:'Roof Exhauster (Grease)',lo:2000,hi:5000},{s:'Kitchen Hood System',lo:6500,hi:20000},{s:'ERV/HRV Unit',lo:2800,hi:7500}]},
+      controls:{label:'Controls/BAS',icon:'🖥️',includes:'Device + programming + install labor.',excludes:'Permit · Network infrastructure · Third-party integration fees',variants:[{s:'Single Thermostat',lo:350,hi:1100},{s:'Multi-Unit Programmable',lo:1000,hi:4000},{s:'BAS Integration (Existing)',lo:4500,hi:16000},{s:'Full BAS New System',lo:13000,hi:45000}]}
+    }
+  },
+  ADDERS:[
+    {id:'crane',label:'Crane Rental',lo:1500,hi:5000,tag:'RTU'},
+    {id:'curb',label:'Curb Adapter (RTU)',lo:800,hi:2500,tag:'RTU'},
+    {id:'structural',label:'Structural/Roof Eng.',lo:2000,hi:5000,tag:'RTU'},
+    {id:'permit',label:'Permits & Inspections',lo:250,hi:2500,tag:'ALL'},
+    {id:'tab',label:'TAB/Commissioning',lo:800,hi:3500,tag:'COMM'},
+    {id:'elec',label:'Electrical Upgrade',lo:1500,hi:6000,tag:'ALL'},
+    {id:'disposal',label:'Equipment Disposal',lo:300,hi:800,tag:'ALL'},
+    {id:'refrig_rec',label:'Refrigerant Recovery',lo:200,hi:600,tag:'ALL'},
+    {id:'flue',label:'Flue/Vent Replacement',lo:400,hi:900,tag:'RES'},
+    {id:'duct_seal',label:'Duct Sealing & Test',lo:500,hi:2000,tag:'OPT'},
+    {id:'smart',label:'Smart Controls Add-On',lo:2000,hi:10000,tag:'OPT'},
+    {id:'pad',label:'Concrete Equipment Pad',lo:200,hi:600,tag:'RES'}
+  ],
+  REPAIRS:{
+    residential:[
+      {cat:'Diagnostics & Service',items:[{label:'Service Call/Diagnostic',lo:100,hi:250},{label:'Emergency/After-Hours',lo:200,hi:500},{label:'Annual Tune-Up (AC)',lo:70,hi:200},{label:'Annual Tune-Up (Furnace)',lo:70,hi:180},{label:'Full System Inspection',lo:150,hi:500}]},
+      {cat:'Electrical & Controls',items:[{label:'Capacitor Replacement',lo:150,hi:400},{label:'Contactor Replacement',lo:150,hi:350},{label:'Control/Circuit Board',lo:200,hi:900},{label:'Thermostat Replacement',lo:200,hi:750},{label:'Transformer',lo:150,hi:350},{label:'Fuses & Breakers',lo:100,hi:250},{label:'Wiring Repair',lo:150,hi:500}]},
+      {cat:'Refrigerant',items:[{label:'Recharge R-410A',lo:200,hi:600},{label:'Recharge R-454B/R-32',lo:250,hi:700},{label:'Leak Detection',lo:150,hi:450},{label:'Leak Repair - Minor',lo:200,hi:600},{label:'Leak Repair - Major',lo:500,hi:1800},{label:'TXV/Metering Device',lo:200,hi:600}]},
+      {cat:'Motors & Fans',items:[{label:'Condenser Fan Motor',lo:250,hi:600},{label:'Blower Motor (PSC)',lo:300,hi:600},{label:'Blower Motor (ECM)',lo:500,hi:1200},{label:'Inducer Motor (Furnace)',lo:400,hi:900},{label:'Fan Blade',lo:150,hi:350}]},
+      {cat:'Coils & Heat Exchanger',items:[{label:'Evap Coil Cleaning',lo:100,hi:400},{label:'Condenser Coil Cleaning',lo:100,hi:350},{label:'Evap Coil Replace (2-3T)',lo:800,hi:1800},{label:'Evap Coil Replace (4-5T)',lo:1100,hi:2400},{label:'Heat Exchanger Inspect/Repair',lo:200,hi:800},{label:'Heat Exchanger Replace',lo:1200,hi:3500}]},
+      {cat:'Compressor',items:[{label:'Compressor Retest/Cap Fix',lo:300,hi:800},{label:'Compressor Replace (2-3T)',lo:1200,hi:2500},{label:'Compressor Replace (4-5T)',lo:1800,hi:3500}]},
+      {cat:'Drainage & Condensate',items:[{label:'Condensate Drain Clear',lo:100,hi:300},{label:'Condensate Pan Replace',lo:200,hi:500},{label:'Condensate Pump',lo:150,hi:400},{label:'PVC Drain Line Repair',lo:150,hi:450}]},
+      {cat:'Duct & Airflow',items:[{label:'Duct Sealing/Mastic',lo:300,hi:1500},{label:'Duct Cleaning (Full)',lo:450,hi:1000},{label:'Duct Repair (Section)',lo:200,hi:700},{label:'Grille/Register Replace',lo:50,hi:200},{label:'Damper Repair/Replace',lo:200,hi:600},{label:'Filter (MERV 8-13)',lo:20,hi:80},{label:'Filter (HEPA/Media)',lo:80,hi:250}]},
+      {cat:'Gas & Combustion',items:[{label:'Ignitor Replace',lo:150,hi:350},{label:'Flame Sensor Clean/Replace',lo:100,hi:300},{label:'Gas Valve Replace',lo:300,hi:800},{label:'Burner Clean & Adjust',lo:100,hi:300},{label:'Pilot Assembly',lo:150,hi:400},{label:'Flue/Vent Repair',lo:200,hi:700}]},
+      {cat:'Maintenance Plans',items:[{label:'Annual Contract (1 System)',lo:150,hi:350},{label:'Annual Contract (2 Systems)',lo:250,hi:500}]}
+    ],
+    commercial:[
+      {cat:'Diagnostics & Service',items:[{label:'Commercial Service Call',lo:150,hi:350},{label:'Emergency Commercial',lo:300,hi:800},{label:'Commercial Inspection',lo:300,hi:800},{label:'RTU PM Per Unit',lo:250,hi:600},{label:'PM Contract Single RTU/yr',lo:500,hi:1200},{label:'PM Contract 2-4 RTUs/yr',lo:1500,hi:3500},{label:'PM Contract 5+ Units/yr',lo:3000,hi:8000}]},
+      {cat:'Electrical & Controls',items:[{label:'Capacitor (Commercial)',lo:200,hi:600},{label:'Contactor (Commercial)',lo:200,hi:500},{label:'Control Board (RTU)',lo:500,hi:2000},{label:'Economizer Repair/Cal',lo:400,hi:1800},{label:'Economizer Replace',lo:1500,hi:4500},{label:'BAS/DDC Sensor',lo:300,hi:1200},{label:'Commercial Thermostat',lo:400,hi:1500},{label:'Transformer (Commercial)',lo:200,hi:600},{label:'Disconnect/Breaker',lo:300,hi:1200},{label:'VFD Replace',lo:800,hi:4000}]},
+      {cat:'Refrigerant',items:[{label:'Recharge R-410A (Comm)',lo:400,hi:1500},{label:'Recharge R-454B (Comm)',lo:500,hi:1800},{label:'Leak Detection (Comm)',lo:300,hi:800},{label:'Leak Repair (Line Set)',lo:400,hi:1200},{label:'TXV/EEV (Commercial)',lo:400,hi:1200}]},
+      {cat:'Motors & Fans',items:[{label:'Condenser Fan Motor (RTU)',lo:400,hi:1000},{label:'Supply Fan/Blower (RTU)',lo:500,hi:1500},{label:'ECM Motor (Commercial)',lo:800,hi:2500},{label:'Inducer Fan (RTU)',lo:500,hi:1200},{label:'Fan Belt',lo:100,hi:350},{label:'Bearings/Lubrication',lo:200,hi:700},{label:'Sheave/Pulley',lo:150,hi:450}]},
+      {cat:'Coils & Heat Exchanger',items:[{label:'Evap Coil Cleaning (RTU)',lo:200,hi:600},{label:'Condenser Coil Cleaning',lo:200,hi:500},{label:'Evap Coil 3-7.5T RTU',lo:1500,hi:4000},{label:'Evap Coil 10-20T RTU',lo:3000,hi:8000},{label:'Condenser Coil Replace',lo:2000,hi:6000},{label:'HX Gas RTU',lo:2000,hi:8000},{label:'Coil Coating',lo:300,hi:1200}]},
+      {cat:'Compressor',items:[{label:'Compressor Retest/Flush',lo:500,hi:1200},{label:'Compressor 3-7.5T',lo:1800,hi:5000},{label:'Compressor 10-15T',lo:4000,hi:10000},{label:'Compressor 20-25T',lo:8000,hi:20000}]},
+      {cat:'Drainage & Condensate',items:[{label:'Condensate Pan Flush (RTU)',lo:100,hi:300},{label:'Condensate Line Repair',lo:200,hi:600},{label:'Condensate Pump (Comm)',lo:200,hi:600},{label:'Drain Pan Replace (RTU)',lo:400,hi:1200}]},
+      {cat:'Duct & Airflow',items:[{label:'Duct Sealing/Test (Comm)',lo:500,hi:3000},{label:'Commercial Duct Clean',lo:800,hi:3500},{label:'Duct Section Repair',lo:300,hi:1200},{label:'Damper Actuator (MOD)',lo:300,hi:900},{label:'VAV Box Repair',lo:400,hi:1200},{label:'Diffuser/Grille Per Unit',lo:100,hi:400},{label:'TAB Testing',lo:500,hi:2500}]},
+      {cat:'Gas & Combustion',items:[{label:'Ignitor (RTU)',lo:200,hi:500},{label:'Flame Sensor (RTU)',lo:150,hi:400},{label:'Gas Valve (Commercial)',lo:400,hi:1200},{label:'Burner Clean (RTU)',lo:200,hi:500},{label:'Flue/Vent Repair (RTU)',lo:300,hi:1200},{label:'Gas Pressure Test',lo:200,hi:800}]},
+      {cat:'Specialty Systems',items:[{label:'VRF Indoor (FCU) Repair',lo:400,hi:1500},{label:'VRF Outdoor Repair',lo:800,hi:4000},{label:'Chiller Tube Cleaning',lo:1500,hi:5000},{label:'Cooling Tower Service',lo:800,hi:3000},{label:'Chiller Controls Cal',lo:500,hi:2000},{label:'ERV/HRV Core Clean/Replace',lo:300,hi:1500},{label:'Kitchen Hood Clean NFPA96',lo:300,hi:900}]}
+    ]
+  },
+  fmtA:function(n){return n>=1000?'$'+(n/1000).toFixed(n%1000===0?0:1)+'k':'$'+n},
+  fmtF:function(n){return '$'+Number(n).toLocaleString()},
+  uid:function(){return Math.random().toString(36).slice(2,9)},
+  totals:function(){
+    var lo=this.bidItems.reduce(function(s,i){return s+parseFloat(i.lo||0)},0);
+    var hi=this.bidItems.reduce(function(s,i){return s+parseFloat(i.hi||0)},0);
+    var m=1+this.markup/100,c=1+this.contingency/100;
+    return{rawLo:lo,rawHi:hi,bidLo:Math.round(lo*m*c),bidHi:Math.round(hi*m*c)};
+  },
+  init:function(){
+    var cfg=JSON.parse(localStorage.getItem('aj_supabase_config')||'{}');
+    this.SB_URL=cfg.url||'';this.SB_KEY=cfg.key||'';
+  },
+  saveToSB:async function(ticket){
+    if(!this.SB_URL)return false;
+    try{
+      var r=await fetch(this.SB_URL+'/rest/v1/takeoff_service_tickets',{
+        method:'POST',
+        headers:{'apikey':this.SB_KEY,'Authorization':'Bearer '+this.SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+        body:JSON.stringify(ticket)
+      });
+      return r.ok;
+    }catch(e){return false;}
+  },
+  open:function(){
+    this.init();
+    this.bidItems=[];this.selCat=null;this.selIdx=null;this.selAdders={};
+    this.scope='residential';this.builderTab='replace';this.repairCat=0;
+    this.markup=30;this.contingency=10;
+    this.render();
+  },
+  close:function(){var el=document.getElementById('aj-est-overlay');if(el)el.remove();},
+  addReplace:function(){
+    var cats=this.REPLACEMENT[this.scope];
+    var cat=cats[this.selCat];
+    var v=cat.variants[this.selIdx];
+    this.bidItems.push({id:this.uid(),label:cat.icon+' '+cat.label+' — '+v.s,lo:v.lo,hi:v.hi,type:'replace'});
+    this.selIdx=null;this.render();
+  },
+  addRepairItem:function(lo,hi,label){
+    this.bidItems.push({id:this.uid(),label:'🔧 '+label,lo:lo,hi:hi,type:'repair'});
+    this.render();
+  },
+  addAdders:function(){
+    var self=this;
+    this.ADDERS.filter(function(a){return self.selAdders[a.id]}).forEach(function(a){
+      self.bidItems.push({id:self.uid(),label:'➕ '+a.label,lo:a.lo,hi:a.hi,type:'adder'});
+    });
+    this.selAdders={};this.render();
+  },
+  delItem:function(idx){this.bidItems.splice(idx,1);this.render();},
+  updItem:function(idx,field,val){if(this.bidItems[idx])this.bidItems[idx][field]=val;this.renderTotals();},
+  saveTicket:async function(){
+    var t=this.totals();
+    var lines=this.bidItems.map(function(i){return i.label+': $'+Number(i.lo).toLocaleString()+' – $'+Number(i.hi).toLocaleString()}).join('\n');
+    var extraNotes=document.getElementById('aj-tf-notes')?document.getElementById('aj-tf-notes').value:'';
+    var fullNotes='=== ESTIMATE QUOTE ===\n'+lines+'\n\nBASE: $'+t.rawLo.toLocaleString()+' – $'+t.rawHi.toLocaleString()+'\nBID ('+this.markup+'% markup + '+this.contingency+'% contingency): $'+t.bidLo.toLocaleString()+' – $'+t.bidHi.toLocaleString()+(extraNotes?'\n\n'+extraNotes:'');
+    var hasReplace=this.bidItems.some(function(i){return i.type==='replace'});
+    var ticket={
+      id:Date.now(),
+      pmId:document.getElementById('aj-tf-pm')?document.getElementById('aj-tf-pm').value:'',
+      customer:document.getElementById('aj-tf-cust')?document.getElementById('aj-tf-cust').value:'',
+      address:document.getElementById('aj-tf-addr')?document.getElementById('aj-tf-addr').value:'',
+      type:hasReplace?'Replacement':'Repair',
+      priority:document.getElementById('aj-tf-pri')?document.getElementById('aj-tf-pri').value:'Normal',
+      status:document.getElementById('aj-tf-sta')?document.getElementById('aj-tf-sta').value:'Open',
+      scheduledDate:document.getElementById('aj-tf-sched')?document.getElementById('aj-tf-sched').value:'',
+      completedDate:'',
+      technician:document.getElementById('aj-tf-tech')?document.getElementById('aj-tf-tech').value:'',
+      equipment:document.getElementById('aj-tf-equip')?document.getElementById('aj-tf-equip').value:(this.bidItems[0]?this.bidItems[0].label:''),
+      laborHours:0,
+      materialCost:t.rawLo,
+      invoiceAmount:t.bidLo,
+      invoiceDate:document.getElementById('aj-tf-invdate')?document.getElementById('aj-tf-invdate').value:'',
+      notes:fullNotes,
+      estimateLow:t.bidLo,estimateHigh:t.bidHi,
+      markup:this.markup,contingency:this.contingency,
+      lineItems:JSON.stringify(this.bidItems),
+      createdAt:new Date().toISOString(),source:'estimator'
+    };
+    var existing=JSON.parse(localStorage.getItem('takeoff_service_tickets')||'[]');
+    existing.push(ticket);
+    localStorage.setItem('takeoff_service_tickets',JSON.stringify(existing));
+    await this.saveToSB(ticket);
+    window.dispatchEvent(new CustomEvent('aj-ticket-saved',{detail:ticket}));
+    this.close();
+    var svcBtn=[].slice.call(document.querySelectorAll('button')).find(function(b){return b.textContent.trim()==='Service Tickets'||b.textContent.includes('Service Tick')});
+    if(svcBtn)svcBtn.click();
+    var toast=document.createElement('div');
+    toast.className='aj-toast';
+    toast.textContent='✅ Service ticket saved!';
+    document.body.appendChild(toast);
+    setTimeout(function(){toast.remove()},3500);
+  },
+  renderTotals:function(){
+    var t=this.totals();
+    var el=document.getElementById('aj-totals-wrap');
+    if(!el)return;
+    el.innerHTML='<div class="aj-subtotal"><div style="font-size:9px;color:#6a8fb0;font-weight:700">BASE COST</div><div style="font-size:11px;font-weight:700;color:#34d399">'+this.fmtF(t.rawLo)+'</div><div style="font-size:11px;font-weight:700;color:#f59e0b">'+this.fmtF(t.rawHi)+'</div><div></div></div><div class="aj-grand"><div><div style="font-size:11px;font-weight:700;color:#c9a84c">TOTAL BID</div><div style="font-size:8px;color:#6a8fb0">'+this.markup+'% markup · '+this.contingency+'% contingency</div></div><div style="font-size:14px;font-weight:700;color:#34d399">'+this.fmtF(t.bidLo)+'</div><div style="font-size:14px;font-weight:700;color:#f59e0b">'+this.fmtF(t.bidHi)+'</div><div></div></div>';
+  },
+  render:function(){
+    var self=this;
+    var cats=this.REPLACEMENT[this.scope];
+    var rGroups=this.REPAIRS[this.scope];
+    var cat=this.selCat?cats[this.selCat]:null;
+    var variants=cat?cat.variants:[];
+    var tagC={RTU:'#a78bfa',ALL:'#67e8f9',COMM:'#fb923c',RES:'#6ee7b7',OPT:'#fcd34d'};
+    var pmOpts=(JSON.parse(localStorage.getItem('takeoff_pm_agreements')||'[]')).map(function(p){return'<option value="'+p.id+'">'+(p.customer||p.name)+'</option>'}).join('');
+    var replCatH=Object.entries(cats).map(function(e){var k=e[0],c=e[1];return'<button class="aj-cat-btn'+(self.selCat===k?' active':'')+'" onclick="window.AJEst.selCat=''+k+'';window.AJEst.selIdx=null;window.AJEst.render()">'+c.icon+' '+c.label+'</button>'}).join('');
+    var repCatH=rGroups.map(function(g,i){return'<button class="aj-cat-btn'+(self.repairCat===i?' active':'')+'" onclick="window.AJEst.repairCat='+i+';window.AJEst.render()">'+g.cat+'</button>'}).join('');
+    var varH=variants.map(function(v,i){return'<button class="aj-var-btn'+(self.selIdx===i?' sel':'')+'" onclick="window.AJEst.selIdx='+i+';window.AJEst.render()"><div class="aj-var-size">'+v.s+'</div><div class="aj-prices"><div class="aj-lo"><div class="aj-lbl">LOW</div><div class="aj-amt">'+self.fmtA(v.lo)+'</div></div><div class="aj-hi"><div class="aj-lbl">HIGH</div><div class="aj-amt">'+self.fmtA(v.hi)+'</div></div></div></button>'}).join('');
+    var repItemH=(rGroups[this.repairCat]?rGroups[this.repairCat].items:[]).map(function(item){return'<div class="aj-repair-row"><div><div style="font-size:10px;color:#e8f0f8;font-weight:600">'+item.label+'</div></div><div style="background:#34d39918;border-radius:4px;padding:2px 6px;text-align:center"><div style="font-size:7px;color:#34d399;letter-spacing:1px">LOW</div><div style="font-size:10px;font-weight:700;color:#34d399">'+self.fmtA(item.lo)+'</div></div><div style="background:#f59e0b18;border-radius:4px;padding:2px 6px;text-align:center"><div style="font-size:7px;color:#f59e0b;letter-spacing:1px">HIGH</div><div style="font-size:10px;font-weight:700;color:#f59e0b">'+self.fmtA(item.hi)+'</div></div><button class="aj-repair-add" onclick="window.AJEst.addRepairItem('+item.lo+','+item.hi+',\''+item.label.replace(/'/g,"\\'")+'\')" >+ Add</button></div>'}).join('');
+    var addH=this.ADDERS.map(function(a){var tc=tagC[a.tag]||'#fcd34d';return'<div class="aj-adder-item"><input type="checkbox"'+(self.selAdders[a.id]?' checked':'')+' onchange="window.AJEst.selAdders[''+a.id+'']=this.checked"><div style="flex:1"><div style="display:flex;align-items:center;gap:5px"><span style="font-size:9px;color:#e8f0f8;font-weight:600">'+a.label+'</span><span style="font-size:7px;padding:1px 5px;border-radius:3px;background:'+tc+'22;color:'+tc+';letter-spacing:1px">'+a.tag+'</span></div><div style="font-size:8px;color:#6a8fb0">'+self.fmtA(a.lo)+'–'+self.fmtA(a.hi)+'</div></div></div>'}).join('');
+    var bidRowH=this.bidItems.map(function(item,idx){var bc=item.type==='repair'?'aj-t-repair':item.type==='adder'?'aj-t-add':'aj-t-rep';return'<div class="aj-tbl-row"><div><input type="text" value="'+item.label.replace(/"/g,'&quot;')+'" oninput="window.AJEst.updItem('+idx+','label',this.value)"><span class="aj-type-badge '+bc+'">'+item.type+'</span></div><div style="text-align:right"><input class="aj-lo-inp" value="'+item.lo+'" oninput="window.AJEst.updItem('+idx+','lo',+this.value||0)"></div><div style="text-align:right"><input class="aj-hi-inp" value="'+item.hi+'" oninput="window.AJEst.updItem('+idx+','hi',+this.value||0)"></div><button class="aj-del-btn" onclick="window.AJEst.delItem('+idx+')">×</button></div>'}).join('');
+    var selBarH=this.selIdx!==null&&cat?'<div class="aj-sel-bar"><div><div style="font-size:9px;color:#c9a84c;letter-spacing:1px;margin-bottom:2px">SELECTED — EQUIP + LABOR ONLY</div><div style="font-size:12px;font-weight:700;color:#e8f0f8">'+cat.label+' — '+variants[this.selIdx].s+'</div><div style="font-size:10px;color:#6a8fb0">$'+variants[this.selIdx].lo.toLocaleString()+' – $'+variants[this.selIdx].hi.toLocaleString()+'</div></div><button class="aj-sel-bar-add" onclick="window.AJEst.addReplace()">+ ADD TO ESTIMATE</button></div>':'';
+    var hasBid=this.bidItems.length>0;
+    var html='<div id="aj-est-overlay" onclick="if(event.target===this)window.AJEst.close()"><div id="aj-est-modal"><div class="aj-est-hdr"><h2>⚡ REPLACEMENT & REPAIR ESTIMATOR</h2><button onclick="window.AJEst.close()" style="background:none;border:none;color:#6a8fb0;font-size:20px;cursor:pointer;padding:0">×</button></div><div class="aj-est-body"><div class="aj-scope-row"><button class="aj-pill'+(this.scope==='residential'?' active':'')+'" onclick="window.AJEst.scope='residential';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.repairCat=0;window.AJEst.render()">🏠 Residential</button><button class="aj-pill'+(this.scope==='commercial'?' active':'')+'" onclick="window.AJEst.scope='commercial';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.repairCat=0;window.AJEst.render()">🏢 Commercial</button><div class="aj-divider"></div><button class="aj-pill blue'+(this.builderTab==='replace'?' active':'')+'" onclick="window.AJEst.builderTab='replace';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.render()">🔄 Replacement</button><button class="aj-pill blue'+(this.builderTab==='repair'?' active':'')+'" onclick="window.AJEst.builderTab='repair';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.render()">🔧 Repair/Service</button></div>'+(this.builderTab==='replace'?'<div class="aj-grid"><div><div class="aj-section-lbl">System Type</div><div class="aj-cat-list">'+replCatH+'</div><div class="aj-section-lbl">Adders</div><div class="aj-warn">⚠ Not included in base prices above</div><div>'+addH+'</div><button class="aj-add-all-btn" onclick="window.AJEst.addAdders()">➕ ADD SELECTED ADDERS</button></div><div>'+(cat?'<div class="aj-info-box"><div style="font-size:12px;font-weight:700;color:#4fb3d9;margin-bottom:6px">'+cat.icon+' '+cat.label+'</div><div class="aj-inc-exc"><div class="aj-inc"><div class="aj-inc-lbl">✓ INCLUDES</div><p>'+cat.includes+'</p></div><div class="aj-exc"><div class="aj-exc-lbl">✗ EXCLUDES (add separately)</div><p>'+cat.excludes+'</p></div></div></div><div class="aj-variants">'+varH+'</div>'+selBarH:'<div class="aj-placeholder"><div style="font-size:30px;margin-bottom:8px">👈</div><div style="font-size:12px">Select a system type</div></div>')+'</div></div>':'<div class="aj-grid"><div><div class="aj-section-lbl">Category</div><div class="aj-cat-list">'+repCatH+'</div></div><div><div class="aj-section-lbl">'+(rGroups[this.repairCat]?rGroups[this.repairCat].cat:'')+' — click to add</div>'+repItemH+'</div></div>')+(hasBid?'<div style="margin-top:14px"><div class="aj-section-lbl">📋 Estimate Line Items</div><div class="aj-markup-box"><div class="aj-slider-grp"><label>Markup / Profit <span id="aj-mk-val">'+this.markup+'%</span></label><input type="range" min="10" max="60" value="'+this.markup+'" oninput="window.AJEst.markup=+this.value;document.getElementById('aj-mk-val').textContent=this.value+'%';window.AJEst.renderTotals()"></div><div class="aj-slider-grp"><label>Contingency <span id="aj-ct-val" style="color:#4fb3d9">'+this.contingency+'%</span></label><input type="range" min="0" max="25" value="'+this.contingency+'" oninput="window.AJEst.contingency=+this.value;document.getElementById('aj-ct-val').textContent=this.value+'%';window.AJEst.renderTotals()" style="accent-color:#4fb3d9"></div></div><div class="aj-est-tbl"><div class="aj-tbl-hdr"><div>Line Item</div><div>Low</div><div>High</div><div></div></div>'+bidRowH+'<div id="aj-totals-wrap"></div></div></div><div class="aj-ticket-fields"><div class="aj-tf-lbl">📋 Service Ticket Details</div><div class="aj-field"><label>Linked PM Agreement</label><select id="aj-tf-pm"><option value="">(none)</option>'+pmOpts+'</select></div><div class="aj-field"><label>Status</label><select id="aj-tf-sta"><option>Open</option><option>In Progress</option><option>Completed</option></select></div><div class="aj-field"><label>Customer</label><input id="aj-tf-cust" placeholder="Customer name"></div><div class="aj-field"><label>Address</label><input id="aj-tf-addr" placeholder="Site address"></div><div class="aj-field"><label>Priority</label><select id="aj-tf-pri"><option>Normal</option><option>High</option><option>Emergency</option></select></div><div class="aj-field"><label>Technician</label><input id="aj-tf-tech" placeholder="Tech name"></div><div class="aj-field"><label>Scheduled Date</label><input type="date" id="aj-tf-sched"></div><div class="aj-field"><label>Invoice Date</label><input type="date" id="aj-tf-invdate"></div><div class="aj-field full"><label>Equipment / Description</label><input id="aj-tf-equip" placeholder="Units serviced, scope description"></div><div class="aj-field full"><label>Notes</label><textarea id="aj-tf-notes" placeholder="Additional work scope, conditions, site notes..."></textarea></div></div>':'')+'</div><div class="aj-footer"><button class="aj-cancel-btn" onclick="window.AJEst.close()">Cancel</button>'+(hasBid?'<button class="aj-save-btn" onclick="window.AJEst.saveTicket()">💾 Save Service Ticket</button>':'')+'</div></div></div>';
+    var ex=document.getElementById('aj-est-overlay');if(ex)ex.remove();
+    document.body.insertAdjacentHTML('beforeend',html);
+    this.renderTotals();
+  }
+};
+window.AJEst=E;
+function injectEstBtn(){
+  var svcBtn=[].slice.call(document.querySelectorAll('button')).find(function(b){return b.textContent.trim()==='+ Service Ticket'});
+  if(svcBtn&&!document.getElementById('aj-est-trigger')){
+    var btn=document.createElement('button');
+    btn.id='aj-est-trigger';btn.className='aj-est-btn';btn.innerHTML='⚡ Est. Quote';
+    btn.onclick=function(){window.AJEst.open()};
+    svcBtn.parentNode.insertBefore(btn,svcBtn);
+  }
+}
+injectEstBtn();
+var obs=new MutationObserver(injectEstBtn);
+obs.observe(document.body,{childList:true,subtree:true});
+})();
+</script>
 </body>
   </html>
