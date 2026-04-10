@@ -1,8 +1,7 @@
 (function () {
-'u
 window.__REP = REP;
 window.__RPR = RPR;
-window.__ADD = ADD;se strict';
+window.__ADD = ADD;'use strict';
 
 // ── CONFIG ────────────────────────────────────────────────────────────
 var SB = (function () {
