@@ -1,11 +1,15 @@
 (function(){
 'use strict';
+
+// ── HELPERS ──────────────────────────────────────────────
 var E={
 markup:30,contingency:10,scope:'residential',builderTab:'replace',
-selCat:null,selIdx:null,repairCat:0,selAdders:{},bidItems:[],SB_URL:'',SB_KEY:'',
+selCat:null,selIdx:null,repairCat:0,selAdders:{},bidItems:[],
+SB_URL:'',SB_KEY:'',
+
 REP:{
 residential:{
-centralAC:{l:'Central AC Split',i:'AC',inc:'Condenser+coil+labor+refrigerant.',exc:'Permit/Disposal/Ductwork',v:[{s:'1.5T',lo:2800,hi:4200},{s:'2T',lo:3200,hi:5000},{s:'2.5T',lo:3700,hi:5800},{s:'3T',lo:4200,hi:6500},{s:'3.5T',lo:4700,hi:7200},{s:'4T',lo:5200,hi:8000},{s:'5T',lo:6000,hi:9500}]},
+centralAC:{l:'Central AC (Split)',i:'AC',inc:'Condenser+coil+labor+refrigerant.',exc:'Permit/Disposal/Ductwork',v:[{s:'1.5T',lo:2800,hi:4200},{s:'2T',lo:3200,hi:5000},{s:'2.5T',lo:3700,hi:5800},{s:'3T',lo:4200,hi:6500},{s:'3.5T',lo:4700,hi:7200},{s:'4T',lo:5200,hi:8000},{s:'5T',lo:6000,hi:9500}]},
 furnace:{l:'Gas Furnace',i:'FU',inc:'Unit+labor+gas connection.',exc:'Permit/New flue/Disposal',v:[{s:'60k BTU',lo:2000,hi:3200},{s:'80k BTU',lo:2400,hi:3900},{s:'100k BTU',lo:2900,hi:4700},{s:'120k BTU',lo:3400,hi:5500}]},
 fullSystem:{l:'Full System AC+Furnace',i:'FS',inc:'Both units+labor+refrigerant.',exc:'Permit/Disposal/Ductwork',v:[{s:'2T/60k',lo:5800,hi:8800},{s:'2.5T/80k',lo:6600,hi:10500},{s:'3T/80k',lo:7700,hi:12000},{s:'3.5T/100k',lo:8500,hi:13500},{s:'4T/100k',lo:9500,hi:15000},{s:'5T/120k',lo:11000,hi:17500}]},
 heatPump:{l:'Heat Pump Ducted',i:'HP',inc:'Outdoor+AHU+line set+labor+refrigerant.',exc:'Permit/Disposal/Electrical',v:[{s:'2T',lo:5000,hi:8000},{s:'2.5T',lo:5700,hi:9500},{s:'3T',lo:6500,hi:11000},{s:'3.5T',lo:7200,hi:12000},{s:'4T',lo:8000,hi:13500},{s:'5T',lo:9500,hi:16000}]},
@@ -27,8 +31,8 @@ controls:{l:'Controls/BAS',i:'BA',inc:'Device+programming+labor.',exc:'Permit/Ne
 ADD:[{id:'crane',l:'Crane Rental',lo:1500,hi:5000,t:'RTU'},{id:'curb',l:'Curb Adapter RTU',lo:800,hi:2500,t:'RTU'},{id:'struct',l:'Structural/Roof Eng',lo:2000,hi:5000,t:'RTU'},{id:'permit',l:'Permits and Inspections',lo:250,hi:2500,t:'ALL'},{id:'tab',l:'TAB/Commissioning',lo:800,hi:3500,t:'COMM'},{id:'elec',l:'Electrical Upgrade',lo:1500,hi:6000,t:'ALL'},{id:'disp',l:'Equipment Disposal',lo:300,hi:800,t:'ALL'},{id:'refr',l:'Refrigerant Recovery',lo:200,hi:600,t:'ALL'},{id:'flue',l:'Flue/Vent Replacement',lo:400,hi:900,t:'RES'},{id:'dseal',l:'Duct Sealing and Test',lo:500,hi:2000,t:'OPT'},{id:'smart',l:'Smart Controls Add-On',lo:2000,hi:10000,t:'OPT'},{id:'pad',l:'Concrete Equipment Pad',lo:200,hi:600,t:'RES'}],
 RPR:{
 residential:[
-{c:'Diagnostics',items:[{l:'Service Call',lo:100,hi:250},{l:'Emergency/After-Hours',lo:200,hi:500},{l:'Tune-Up AC',lo:70,hi:200},{l:'Tune-Up Furnace',lo:70,hi:180},{l:'Full System Inspection',lo:150,hi:500}]},
-{c:'Electrical and Controls',items:[{l:'Capacitor Replace',lo:150,hi:400},{l:'Contactor Replace',lo:150,hi:350},{l:'Control Circuit Board',lo:200,hi:900},{l:'Thermostat Replace',lo:200,hi:750},{l:'Transformer',lo:150,hi:350},{l:'Fuses and Breakers',lo:100,hi:250},{l:'Wiring Repair',lo:150,hi:500}]},
+{c:'Diagnostics',items:[{l:'Service Call',lo:100,hi:250},{l:'Emergency/After-Hours',lo:200,hi:500},{l:'Tune-Up AC',lo:70,hi:200},{l:'Tune-Up Furnace',lo:70,hi:180},{l:'Full Inspection',lo:150,hi:500}]},
+{c:'Electrical and Controls',items:[{l:'Capacitor Replace',lo:150,hi:400},{l:'Contactor Replace',lo:150,hi:350},{l:'Control/Circuit Board',lo:200,hi:900},{l:'Thermostat Replace',lo:200,hi:750},{l:'Transformer',lo:150,hi:350},{l:'Fuses and Breakers',lo:100,hi:250},{l:'Wiring Repair',lo:150,hi:500}]},
 {c:'Refrigerant',items:[{l:'Recharge R-410A',lo:200,hi:600},{l:'Recharge R-454B',lo:250,hi:700},{l:'Leak Detection',lo:150,hi:450},{l:'Leak Repair Minor',lo:200,hi:600},{l:'Leak Repair Major',lo:500,hi:1800},{l:'TXV/Metering Device',lo:200,hi:600}]},
 {c:'Motors and Fans',items:[{l:'Condenser Fan Motor',lo:250,hi:600},{l:'Blower Motor PSC',lo:300,hi:600},{l:'Blower Motor ECM',lo:500,hi:1200},{l:'Inducer Motor',lo:400,hi:900},{l:'Fan Blade',lo:150,hi:350}]},
 {c:'Coils and HX',items:[{l:'Evap Coil Cleaning',lo:100,hi:400},{l:'Condenser Coil Cleaning',lo:100,hi:350},{l:'Evap Coil Replace 2-3T',lo:800,hi:1800},{l:'Evap Coil Replace 4-5T',lo:1100,hi:2400},{l:'HX Inspect/Repair',lo:200,hi:800},{l:'HX Replace',lo:1200,hi:3500}]},
@@ -56,7 +60,7 @@ ff:function(n){return '$'+Number(n).toLocaleString();},
 uid:function(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);},
 tots:function(){var lo=this.bidItems.reduce(function(s,x){return s+parseFloat(x.lo||0);},0);var hi=this.bidItems.reduce(function(s,x){return s+parseFloat(x.hi||0);},0);var m=1+this.markup/100,c=1+this.contingency/100;return{rLo:lo,rHi:hi,bLo:Math.round(lo*m*c),bHi:Math.round(hi*m*c)};},
 init:function(){try{var cfg=JSON.parse(localStorage.getItem('aj_supabase_config')||'{}'  );this.SB_URL=cfg.url||'';this.SB_KEY=cfg.key||'';}catch(e){}},
-sbSave:function(t){if(!this.SB_URL)return;try{fetch(this.SB_URL+'/rest/v1/takeoff_service_tickets',{method:'POST',headers:{'apikey':this.SB_KEY,'Authorization':'Bearer '+this.SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(t)});}catch(e){}},
+sbSave:function(tbl,data){if(!this.SB_URL)return;try{fetch(this.SB_URL+'/rest/v1/'+tbl,{method:'POST',headers:{'apikey':this.SB_KEY,'Authorization':'Bearer '+this.SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(data)});}catch(e){}},
 open:function(){this.init();this.bidItems=[];this.selCat=null;this.selIdx=null;this.selAdders={};this.scope='residential';this.builderTab='replace';this.repairCat=0;this.markup=30;this.contingency=10;this.draw();},
 close:function(){var el=document.getElementById('aj-est-overlay');if(el)el.remove();},
 addRep:function(){var cat=this.REP[this.scope][this.selCat];var v=cat.v[this.selIdx];this.bidItems.push({id:this.uid(),label:cat.i+' '+cat.l+' '+v.s,lo:v.lo,hi:v.hi,type:'replace'});this.selIdx=null;this.draw();},
@@ -64,34 +68,144 @@ addRI:function(lo,hi,lbl){this.bidItems.push({id:this.uid(),label:'R '+lbl,lo:lo
 addAds:function(){var self=this;this.ADD.filter(function(a){return self.selAdders[a.id];}).forEach(function(a){self.bidItems.push({id:self.uid(),label:'+ '+a.l,lo:a.lo,hi:a.hi,type:'adder'});});this.selAdders={};this.draw();},
 del:function(i){this.bidItems.splice(i,1);this.draw();},
 upd:function(i,f,v){if(this.bidItems[i])this.bidItems[i][f]=v;this.drawTots();},
-saveTix:function(){
+saveQuote:function(){
 var S=this,t=this.tots();
-var li=this.bidItems.map(function(x){return x.label+': '+S.ff(x.lo)+'-'+S.ff(x.hi);}).join('\n');
+if(this.bidItems.length===0)return;
+var li=this.bidItems.map(function(x){return x.label+': '+S.ff(x.lo)+' - '+S.ff(x.hi);}).join('\n');
 var xn=document.getElementById('aj-fn')?document.getElementById('aj-fn').value:'';
-var notes='ESTIMATE\n'+li+'\nBASE: '+this.ff(t.rLo)+'-'+this.ff(t.rHi)+'\nBID('+this.markup+'%mk+'+this.contingency+'%ct): '+this.ff(t.bLo)+'-'+this.ff(t.bHi)+(xn?'\n'+xn:'');
-var hasR=this.bidItems.some(function(x){return x.type==='replace';});
+var notes=li+(xn?'\n'+xn:'');
 var g=function(id){var el=document.getElementById(id);return el?el.value:'';};
-var tk={id:Date.now(),pmId:g('aj-fpm'),customer:g('aj-fc'),address:g('aj-fa'),type:hasR?'Replacement':'Repair',priority:g('aj-fp')||'Normal',status:g('aj-fs')||'Open',scheduledDate:g('aj-fsd'),completedDate:'',technician:g('aj-ft'),equipment:g('aj-fe')||(this.bidItems[0]?this.bidItems[0].label:''),laborHours:0,materialCost:t.rLo,invoiceAmount:t.bLo,invoiceDate:g('aj-fid'),notes:notes,estimateLow:t.bLo,estimateHigh:t.bHi,markup:this.markup,contingency:this.contingency,lineItems:JSON.stringify(this.bidItems),createdAt:new Date().toISOString(),source:'estimator'};
-var ex=JSON.parse(localStorage.getItem('takeoff_service_tickets')||'[]');ex.push(tk);localStorage.setItem('takeoff_service_tickets',JSON.stringify(ex));
-this.sbSave(tk);
-window.dispatchEvent(new CustomEvent('aj-ticket-saved',{detail:tk}));
+var quote={
+  id:this.uid(),
+  quoteNumber:'QT-'+(Date.now().toString().slice(-6)),
+  customer:g('aj-fc'),
+  address:g('aj-fa'),
+  scope:this.scope,
+  type:this.bidItems.some(function(x){return x.type==='replace';})?'Replacement':'Repair',
+  priority:g('aj-fp')||'Normal',
+  status:'Open',
+  technician:g('aj-ft'),
+  equipment:g('aj-fe')||(this.bidItems[0]?this.bidItems[0].label:''),
+  notes:notes,
+  bidLow:t.bLo,
+  bidHigh:t.bHi,
+  baseLow:t.rLo,
+  baseHigh:t.rHi,
+  markup:this.markup,
+  contingency:this.contingency,
+  lineItems:JSON.stringify(this.bidItems),
+  createdAt:new Date().toISOString(),
+  awardedAt:null,
+  source:'estimator'
+};
+var ex=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+ex.push(quote);
+localStorage.setItem('takeoff_quotes',JSON.stringify(ex));
+this.sbSave('takeoff_quotes',quote);
 this.close();
+this.renderQuotesList();
+var toast=document.createElement('div');
+toast.className='aj-toast';
+toast.textContent='Quote saved! ('+quote.quoteNumber+')';
+document.body.appendChild(toast);
+setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},3500);
+},
+awardQuote:function(qid){
+var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+var q=quotes.find(function(x){return x.id===qid;});
+if(!q)return;
+// Build a service ticket from the quote
+var ticket={
+  id:Date.now(),
+  pmId:'',
+  customer:q.customer,
+  address:q.address,
+  type:q.type,
+  priority:q.priority||'Normal',
+  status:'Open',
+  scheduledDate:'',
+  completedDate:'',
+  technician:q.technician,
+  equipment:q.equipment,
+  laborHours:0,
+  materialCost:q.baseLow,
+  invoiceAmount:q.bidLow,
+  invoiceDate:'',
+  notes:'AWARDED FROM QUOTE '+q.quoteNumber+'\n\nSCOPE: '+q.notes+'\n\nBID: '+this.ff(q.bidLow)+' - '+this.ff(q.bidHigh),
+  createdAt:new Date().toISOString(),
+  source:'quote-'+q.quoteNumber
+};
+// Write to service tickets (React state picks this up on next render)
+var tix=JSON.parse(localStorage.getItem('takeoff_service_tickets')||'[]');
+tix.push(ticket);
+localStorage.setItem('takeoff_service_tickets',JSON.stringify(tix));
+this.sbSave('takeoff_service_tickets',ticket);
+// Mark quote as awarded
+var updated=quotes.map(function(x){return x.id===qid?Object.assign({},x,{status:'Awarded',awardedAt:new Date().toISOString()}):x;});
+localStorage.setItem('takeoff_quotes',JSON.stringify(updated));
+this.renderQuotesList();
+// Force React to reload service tickets by dispatching event
+window.dispatchEvent(new CustomEvent('aj-ticket-saved',{detail:ticket}));
+// Click Service Tickets tab to refresh
 var sb=[].slice.call(document.querySelectorAll('button')).find(function(b){return b.textContent.includes('Service Ticket')&&!b.textContent.includes('+');});
 if(sb)sb.click();
-var toast=document.createElement('div');toast.className='aj-toast';toast.textContent='Service ticket saved!';document.body.appendChild(toast);setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},3500);
+var toast=document.createElement('div');
+toast.className='aj-toast';
+toast.style.background='#c9a84c';
+toast.textContent='Quote awarded! Service ticket created.';
+document.body.appendChild(toast);
+setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},4000);
+},
+deleteQuote:function(qid){
+if(!confirm('Delete this quote?'))return;
+var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+localStorage.setItem('takeoff_quotes',JSON.stringify(quotes.filter(function(x){return x.id!==qid;})));
+this.renderQuotesList();
+},
+renderQuotesList:function(){
+var el=document.getElementById('aj-quotes-panel');
+if(!el)return;
+var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+if(quotes.length===0){el.innerHTML='<div style="color:#6a8fb0;font-size:12px;padding:16px 0;text-align:center">No quotes yet. Click Est. Quote to build one.</div>';return;}
+var S=this;
+var rows=quotes.slice().reverse().map(function(q){
+  var isAwarded=q.status==='Awarded';
+  var statusColor=isAwarded?'#c9a84c':'#4fb3d9';
+  var dt=new Date(q.createdAt).toLocaleDateString();
+  return '<div style="background:#152a45;border:1px solid #1e4272;border-radius:8px;padding:12px 14px;margin-bottom:8px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'+
+    '<div style="display:flex;align-items:center;gap:10px">'+
+    '<span style="font-size:10px;font-weight:700;color:#c9a84c;letter-spacing:1px">'+q.quoteNumber+'</span>'+
+    '<span style="font-size:11px;font-weight:600;color:#e8f0f8">'+( q.customer||'(no customer)')+'</span>'+
+    '<span style="font-size:9px;color:#6a8fb0">'+q.type+'</span>'+
+    '</div>'+
+    '<div style="display:flex;align-items:center;gap:8px">'+
+    '<span style="font-size:11px;font-weight:700;color:#34d399">'+S.ff(q.bidLow)+'</span>'+
+    '<span style="font-size:10px;color:#6a8fb0">-</span>'+
+    '<span style="font-size:11px;font-weight:700;color:#f59e0b">'+S.ff(q.bidHigh)+'</span>'+
+    '<span style="font-size:8px;padding:2px 8px;border-radius:10px;background:'+statusColor+'22;color:'+statusColor+';font-weight:700;letter-spacing:1px">'+q.status.toUpperCase()+'</span>'+
+    '</div></div>'+
+    '<div style="font-size:9px;color:#6a8fb0;margin-bottom:8px">'+( q.address||'')+'  ·  '+dt+'</div>'+
+    '<div style="font-size:9px;color:#6a8fb0;white-space:pre-wrap;max-height:40px;overflow:hidden;margin-bottom:8px">'+q.notes.slice(0,120)+(q.notes.length>120?'...':'' )+'</div>'+
+    (!isAwarded?
+    '<div style="display:flex;gap:8px"><button onclick="window.AJEst.awardQuote(\''+ q.id +'\')" style="padding:5px 14px;border-radius:5px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer">Award → Service Ticket</button>'+
+    '<button onclick="window.AJEst.deleteQuote(\''+ q.id +'\')" style="padding:5px 12px;border-radius:5px;background:transparent;border:1px solid #ef444455;color:#ef4444;font-family:inherit;font-size:10px;cursor:pointer">Delete</button></div>':
+    '<div style="font-size:9px;color:#c9a84c;font-weight:700">Awarded '+new Date(q.awardedAt).toLocaleDateString()+'</div>');
+  +'</div>';
+}).join('');
+el.innerHTML=rows;
 },
 drawTots:function(){
 var el=document.getElementById('aj-tw');if(!el)return;
 var t=this.tots();
 var a='<div style="font-size:9px;color:#6a8fb0;font-weight:700">BASE COST</div><div style="font-size:11px;font-weight:700;color:#34d399">'+this.ff(t.rLo)+'</div><div style="font-size:11px;font-weight:700;color:#f59e0b">'+this.ff(t.rHi)+'</div><div></div>';
-var b='<div><div style="font-size:11px;font-weight:700;color:#c9a84c">TOTAL BID</div><div style="font-size:8px;color:#6a8fb0">'+this.markup+'% markup + '+this.contingency+'% contingency</div></div><div style="font-size:14px;font-weight:700;color:#34d399">'+this.ff(t.bLo)+'</div><div style="font-size:14px;font-weight:700;color:#f59e0b">'+this.ff(t.bHi)+'</div><div></div>';
+var b='<div><div style="font-size:11px;font-weight:700;color:#c9a84c">TOTAL QUOTE</div><div style="font-size:8px;color:#6a8fb0">'+this.markup+'% markup + '+this.contingency+'% contingency</div></div><div style="font-size:14px;font-weight:700;color:#34d399">'+this.ff(t.bLo)+'</div><div style="font-size:14px;font-weight:700;color:#f59e0b">'+this.ff(t.bHi)+'</div><div></div>';
 el.innerHTML='<div class="aj-sub">'+a+'</div><div class="aj-grd">'+b+'</div>';
 },
 draw:function(){
 var S=this,cats=this.REP[this.scope],rg=this.RPR[this.scope];
 var cat=this.selCat?cats[this.selCat]:null,vv=cat?cat.v:[];
 var tc={RTU:'#a78bfa',ALL:'#67e8f9',COMM:'#fb923c',RES:'#6ee7b7',OPT:'#fcd34d'};
-var pm=(JSON.parse(localStorage.getItem('takeoff_pm_agreements')||'[]')).map(function(p){return'<option value="'+p.id+'">'+( p.customer||p.name)+'</option>';}).join('');
 var rcH=Object.keys(cats).map(function(k){var c=cats[k];var ac=S.selCat===k?' active':'';return'<button class="aj-cat-btn'+ac+'" onclick="window.AJEst.selCat=\''+ k +'\';window.AJEst.selIdx=null;window.AJEst.draw()">'+c.i+' '+c.l+'</button>';}).join('');
 var rpH=rg.map(function(g,i){var ac=S.repairCat===i?' active':'';return'<button class="aj-cat-btn'+ac+'" onclick="window.AJEst.repairCat='+i+';window.AJEst.draw()">'+g.c+'</button>';}).join('');
 var vH=vv.map(function(v,i){var ac=S.selIdx===i?' sel':'';return'<button class="aj-var'+ac+'" onclick="window.AJEst.selIdx='+i+';window.AJEst.draw()"><div class="aj-vsz">'+v.s+'</div><div class="aj-pr"><div class="aj-lo"><div class="aj-ll">LOW</div><div class="aj-la">'+S.fa(v.lo)+'</div></div><div class="aj-hi"><div class="aj-ll">HIGH</div><div class="aj-la">'+S.fa(v.hi)+'</div></div></div></button>';}).join('');
@@ -101,27 +215,60 @@ var bH=this.bidItems.map(function(x,i){var bc=x.type==='repair'?'aj-tp':x.type==
 var sbH=this.selIdx!==null&&cat?'<div class="aj-sbar"><div><div style="font-size:9px;color:#c9a84c">SELECTED - EQUIP + LABOR ONLY</div><div style="font-size:12px;font-weight:700;color:#e8f0f8">'+cat.l+' '+vv[this.selIdx].s+'</div><div style="font-size:10px;color:#6a8fb0">'+this.ff(vv[this.selIdx].lo)+' - '+this.ff(vv[this.selIdx].hi)+'</div></div><button class="aj-sadd" onclick="window.AJEst.addRep()">+ ADD</button></div>':'';  
 var hasBid=this.bidItems.length>0;
 var mkH=hasBid?'<div class="aj-mb"><div class="aj-sg"><label>Markup <span id="aj-mkv">'+this.markup+'%</span></label><input type="range" min="10" max="60" value="'+this.markup+'" oninput="window.AJEst.markup=+this.value;document.getElementById(\'aj-mkv\').textContent=this.value+\'%\';window.AJEst.drawTots()"></div><div class="aj-sg"><label>Contingency <span id="aj-ctv" style="color:#4fb3d9">'+this.contingency+'%</span></label><input type="range" min="0" max="25" value="'+this.contingency+'" oninput="window.AJEst.contingency=+this.value;document.getElementById(\'aj-ctv\').textContent=this.value+\'%\';window.AJEst.drawTots()" style="accent-color:#4fb3d9"></div></div>':'';  
-var tfH=hasBid?'<div class="aj-tf"><div class="aj-tfl">Service Ticket Details</div><div class="aj-fd"><label>PM Agreement</label><select id="aj-fpm"><option value="">(none)</option>'+pm+'</select></div><div class="aj-fd"><label>Status</label><select id="aj-fs"><option>Open</option><option>In Progress</option><option>Completed</option></select></div><div class="aj-fd"><label>Customer</label><input id="aj-fc" placeholder="Customer name"></div><div class="aj-fd"><label>Address</label><input id="aj-fa" placeholder="Site address"></div><div class="aj-fd"><label>Priority</label><select id="aj-fp"><option>Normal</option><option>High</option><option>Emergency</option></select></div><div class="aj-fd"><label>Technician</label><input id="aj-ft" placeholder="Tech name"></div><div class="aj-fd"><label>Scheduled Date</label><input type="date" id="aj-fsd"></div><div class="aj-fd"><label>Invoice Date</label><input type="date" id="aj-fid"></div><div class="aj-fd full"><label>Equipment</label><input id="aj-fe" placeholder="Units serviced"></div><div class="aj-fd full"><label>Notes</label><textarea id="aj-fn" placeholder="Notes..."></textarea></div></div>':'';  
+var tfH=hasBid?'<div class="aj-tf"><div class="aj-tfl">Quote Details</div><div class="aj-fd"><label>Customer</label><input id="aj-fc" placeholder="Customer name"></div><div class="aj-fd"><label>Address</label><input id="aj-fa" placeholder="Site address"></div><div class="aj-fd"><label>Priority</label><select id="aj-fp"><option>Normal</option><option>High</option><option>Emergency</option></select></div><div class="aj-fd"><label>Technician</label><input id="aj-ft" placeholder="Tech name"></div><div class="aj-fd full"><label>Equipment / Description</label><input id="aj-fe" placeholder="Units, scope summary"></div><div class="aj-fd full"><label>Notes</label><textarea id="aj-fn" placeholder="Conditions, site notes, exclusions..."></textarea></div></div>':'';  
 var repS=this.builderTab==='replace'?
 '<div class="aj-grid"><div><div class="aj-slbl">System Type</div><div class="aj-cat-list">'+rcH+'</div><div class="aj-slbl">Adders</div><div class="aj-warn">Not included in base prices</div>'+adH+'<button class="aj-aab" onclick="window.AJEst.addAds()">+ ADD SELECTED</button></div><div>'+(cat?
 '<div class="aj-ibox"><div style="font-size:12px;font-weight:700;color:#4fb3d9;margin-bottom:6px">'+cat.l+'</div><div class="aj-ie"><div class="aj-inc"><div class="aj-el">INCLUDES</div><p>'+cat.inc+'</p></div><div class="aj-exc"><div class="aj-el">EXCLUDES</div><p>'+cat.exc+'</p></div></div></div><div class="aj-variants">'+vH+'</div>'+sbH:
 '<div class="aj-ph"><div style="font-size:30px">&#x1F448;</div><div>Select a system type</div></div>')+ '</div></div>':
 '<div class="aj-grid"><div><div class="aj-slbl">Category</div><div class="aj-cat-list">'+rpH+'</div></div><div><div class="aj-slbl">'+(rg[this.repairCat]?rg[this.repairCat].c:'')+' - click + to add</div>'+riH+'</div></div>';
-var bidS=hasBid?'<div style="margin-top:14px"><div class="aj-slbl">Estimate</div>'+mkH+'<div class="aj-etbl"><div class="aj-eh"><div>Line Item</div><div>Low</div><div>High</div><div></div></div>'+bH+'<div id="aj-tw"></div></div></div>'+tfH:'';
+var bidS=hasBid?'<div style="margin-top:14px"><div class="aj-slbl">Line Items</div>'+mkH+'<div class="aj-etbl"><div class="aj-eh"><div>Line Item</div><div>Low</div><div>High</div><div></div></div>'+bH+'<div id="aj-tw"></div></div></div>'+tfH:'';
 var sc='<div class="aj-scope-row"><button class="aj-pill'+(this.scope==='residential'?' active':'')+'" onclick="window.AJEst.scope=\'residential\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.repairCat=0;window.AJEst.draw()">Residential</button><button class="aj-pill'+(this.scope==='commercial'?' active':'')+'" onclick="window.AJEst.scope=\'commercial\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.repairCat=0;window.AJEst.draw()">Commercial</button><div class="aj-divider"></div><button class="aj-pill blue'+(this.builderTab==='replace'?' active':'')+'" onclick="window.AJEst.builderTab=\'replace\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.draw()">Replacement</button><button class="aj-pill blue'+(this.builderTab==='repair'?' active':'')+'" onclick="window.AJEst.builderTab=\'repair\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.draw()">Repair/Service</button></div>';
-var html='<div id="aj-est-overlay" onclick="if(event.target===this)window.AJEst.close()"><div id="aj-est-modal"><div class="aj-est-hdr"><h2>REPLACEMENT &amp; REPAIR ESTIMATOR</h2><button onclick="window.AJEst.close()" style="background:none;border:none;color:#6a8fb0;font-size:20px;cursor:pointer">&times;</button></div><div class="aj-est-body">'+sc+repS+bidS+'</div><div class="aj-footer"><button class="aj-cn" onclick="window.AJEst.close()">Cancel</button>'+(hasBid?'<button class="aj-sv" onclick="window.AJEst.saveTix()">Save Service Ticket</button>':'')+'</div></div></div>';
+var html='<div id="aj-est-overlay" onclick="if(event.target===this)window.AJEst.close()"><div id="aj-est-modal"><div class="aj-est-hdr"><h2>BUILD QUOTE</h2><button onclick="window.AJEst.close()" style="background:none;border:none;color:#6a8fb0;font-size:20px;cursor:pointer">&times;</button></div><div class="aj-est-body">'+sc+repS+bidS+'</div><div class="aj-footer"><button class="aj-cn" onclick="window.AJEst.close()">Cancel</button>'+(hasBid?'<button class="aj-sv" onclick="window.AJEst.saveQuote()">Save Quote</button>':'')+'</div></div></div>';
 var ex=document.getElementById('aj-est-overlay');if(ex)ex.remove();
 document.body.insertAdjacentHTML('beforeend',html);
 this.drawTots();
 }
 };
 window.AJEst=E;
+
+function renderQuotesPanel(){
+var el=document.getElementById('aj-quotes-panel');
+if(el){window.AJEst.renderQuotesList();return;}
+// Find the Service Tickets tab content area and prepend quotes panel
+var svcArea=document.querySelector('[data-tab="tickets"]') || 
+  [].slice.call(document.querySelectorAll('div')).find(function(d){
+    return d.textContent.trim()==='No service tickets yet. Click "+ Service Ticket" to log one.';
+  });
+if(!svcArea||!svcArea.parentNode)return;
+var panel=document.createElement('div');
+panel.id='aj-quotes-section';
+panel.innerHTML='<div style="margin-bottom:20px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:#c9a84c;letter-spacing:2px;text-transform:uppercase">Estimates / Quotes</div><div style="font-size:9px;color:#6a8fb0">Award a quote to create a service ticket</div></div><div id="aj-quotes-panel"></div><div style="border-top:1px solid #1e4272;margin:16px 0 12px"></div><div style="font-size:11px;font-weight:700;color:#4fb3d9;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Service Tickets</div></div>';
+svcArea.parentNode.insertBefore(panel,svcArea);
+window.AJEst.renderQuotesList();
+}
+
 function injectBtn(){
 var b=[].slice.call(document.querySelectorAll('button')).find(function(x){return x.textContent.trim()==='+ Service Ticket';});
 if(b&&!document.getElementById('aj-est-trigger')){
-var n=document.createElement('button');n.id='aj-est-trigger';n.className='aj-est-btn';n.textContent='Est. Quote';n.onclick=function(){window.AJEst.open();};b.parentNode.insertBefore(n,b);
+var n=document.createElement('button');
+n.id='aj-est-trigger';
+n.className='aj-est-btn';
+n.textContent='Est. Quote';
+n.onclick=function(){window.AJEst.open();};
+b.parentNode.insertBefore(n,b);
+}
+// Also try to render quotes panel when on service tickets tab
+if(document.getElementById('aj-est-trigger')&&!document.getElementById('aj-quotes-section')){
+renderQuotesPanel();
 }
 }
+
 injectBtn();
-var obs=new MutationObserver(injectBtn);obs.observe(document.body,{childList:true,subtree:true});
+var obs=new MutationObserver(function(){
+injectBtn();
+if(document.getElementById('aj-quotes-section')){
+window.AJEst.renderQuotesList();
+}
+});
+obs.observe(document.body,{childList:true,subtree:true});
 })();
