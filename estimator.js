@@ -234,7 +234,7 @@ window.AJEst=E;
 
 function renderQuotesPage() {
   var cfg = JSON.parse(localStorage.getItem('aj_supabase_config')||'{}');
-  var body = document.getElementById('aj-quotes-body');
+  var body = document.getElementById('aj-qinner');
   if (!body) return;
   body.innerHTML = '<div style="color:#6a8fb0;text-align:center;padding:40px">Loading...</div>';
   function ff(n){return '$'+Number(n||0).toLocaleString();}
