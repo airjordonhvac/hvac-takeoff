@@ -228,6 +228,8 @@ var E = {
 };
 
 window.AJEst=E;
+window._showQuotes=showQuotesOverlay;
+window._renderQuotes=renderQuotesPage;
 window.AJEst=E;
 
 function renderQuotesPage() {
