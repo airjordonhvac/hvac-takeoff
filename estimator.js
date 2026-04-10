@@ -427,28 +427,123 @@ svcArea.parentNode.insertBefore(panel,svcArea);
 window.AJEst.renderQuotesList();
 }
 
-function injectBtn(){
-var b=[].slice.call(document.querySelectorAll('button')).find(function(x){return x.textContent.trim()==='+ Service Ticket';});
-if(b&&!document.getElementById('aj-est-trigger')){
-var n=document.createElement('button');
-n.id='aj-est-trigger';
-n.className='aj-est-btn';
-n.textContent='Est. Quote';
-n.onclick=function(){window.AJEst.open();};
-b.parentNode.insertBefore(n,b);
-}
-// Also try to render quotes panel when on service tickets tab
-if(document.getElementById('aj-est-trigger')&&!document.getElementById('aj-quotes-section')){
-renderQuotesPanel();
-}
-}
 
-injectBtn();
-var obs=new MutationObserver(function(){
-injectBtn();
-if(document.getElementById('aj-quotes-section')){
-window.AJEst.renderQuotesList();
-}
-});
-obs.observe(document.body,{childList:true,subtree:true});
+  // ── QUOTES TAB RENDERER ──
+  function renderQuotesTab() {
+    var panel = document.getElementById('aj-quotes-tab-inner');
+    if (!panel) return;
+    var quotes = JSON.parse(localStorage.getItem('takeoff_quotes') || '[]').slice().reverse();
+    if (quotes.length === 0) {
+      panel.innerHTML = '<div style="text-align:center;padding:40px;color:#6a8fb0;font-size:13px">No quotes yet. Click <b style="color:#c9a84c">Est. Quote</b> to build one.</div>';
+      return;
+    }
+    var S = window.AJEst;
+    panel.innerHTML = quotes.map(function(q) {
+      var awarded = q.status === 'Awarded';
+      var sc = awarded ? '#c9a84c' : '#4fb3d9';
+      var dt = new Date(q.createdAt).toLocaleDateString();
+      var loS = '$' + Number(q.bidLow||0).toLocaleString();
+      var hiS = '$' + Number(q.bidHigh||0).toLocaleString();
+      var qS  = q.quote ? '$' + Number(q.quote).toLocaleString() : '';
+      return '<div style="background:#152a45;border:1px solid #1e4272;border-radius:8px;padding:14px;margin-bottom:10px">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px">'
+        + '<div style="display:flex;align-items:center;gap:10px">'
+        + '<span style="font-size:11px;font-weight:700;color:#c9a84c">' + (q.quoteNumber||'QT') + '</span>'
+        + '<span style="font-size:12px;font-weight:600;color:#e8f0f8">' + (q.customer||'(no customer)') + '</span>'
+        + '<span style="font-size:9px;color:#6a8fb0">' + (q.type||'') + '</span>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;gap:8px">'
+        + '<span style="font-size:12px;font-weight:700;color:#34d399">' + loS + '</span>'
+        + '<span style="color:#6a8fb0">&ndash;</span>'
+        + '<span style="font-size:12px;font-weight:700;color:#f59e0b">' + hiS + '</span>'
+        + '<span style="font-size:8px;padding:2px 8px;border-radius:10px;background:' + sc + '22;color:' + sc + ';font-weight:700">' + (q.status||'Open').toUpperCase() + '</span>'
+        + '</div></div>'
+        + '<div style="font-size:9px;color:#6a8fb0;margin-bottom:4px">' + (q.address||'') + (q.address ? '  &middot;  ' : '') + dt + '</div>'
+        + (qS ? '<div style="font-size:9px;color:#c9a84c;margin-bottom:6px">Quoted: <b>' + qS + '</b></div>' : '')
+        + '<div style="font-size:9px;color:#6a8fb0;white-space:pre-wrap;max-height:40px;overflow:hidden;margin-bottom:8px;opacity:.85">' + (q.notes||'').slice(0,120) + '</div>'
+        + (!awarded
+          ? '<div style="display:flex;gap:8px"><button onclick="window.AJEst.awardQuote(\'' + q.id + '\')" style="padding:6px 16px;border-radius:5px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer">Award \u2192 Service Ticket</button>'
+          + '<button onclick="window.AJEst.deleteQuote(\'' + q.id + '\')" style="padding:6px 12px;border-radius:5px;background:transparent;border:1px solid #ef444455;color:#ef4444;font-family:inherit;font-size:10px;cursor:pointer">Delete</button></div>'
+          : '<div style="font-size:9px;color:#c9a84c;font-weight:700">\u2713 Awarded</div>')
+        + '</div>';
+    }).join('');
+  }
+  window.AJEst.renderQuotesList = renderQuotesTab;
+
+  // ── QUOTES TAB BUTTON + PANEL ──
+  function injectQuotesTab() {
+    if (document.getElementById('aj-quotes-tab-btn')) {
+      renderQuotesTab();
+      return;
+    }
+    var svcBtn = [].slice.call(document.querySelectorAll('button')).find(function(b){
+      return b.textContent.includes('Service Ticket') && !b.textContent.includes('+');
+    });
+    if (!svcBtn || !svcBtn.parentNode) return;
+
+    // Add Quotes tab button
+    var qBtn = document.createElement('button');
+    qBtn.id = 'aj-quotes-tab-btn';
+    qBtn.textContent = '\u26a1 Quotes';
+    qBtn.style.cssText = 'padding:6px 14px;border-radius:20px;border:1.5px solid #c9a84c;background:#c9a84c18;color:#c9a84c;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;margin-right:8px;letter-spacing:1px';
+    qBtn.onclick = function() { toggleQuotesPanel(); };
+    svcBtn.parentNode.insertBefore(qBtn, svcBtn);
+
+    // Create collapsible Quotes panel above the service tickets list
+    var emptyMsg = [].slice.call(document.querySelectorAll('p,div')).find(function(el){
+      return el.textContent.trim() === 'No service tickets yet. Click "+ Service Ticket" to log one.';
+    });
+    var insertTarget = emptyMsg ? emptyMsg.parentNode : svcBtn.closest('[data-tab]') || svcBtn.parentNode.parentNode;
+
+    var panel = document.createElement('div');
+    panel.id = 'aj-quotes-panel-wrap';
+    panel.style.cssText = 'margin-bottom:20px;display:none';
+    panel.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+      + '<div style="font-size:11px;font-weight:700;color:#c9a84c;letter-spacing:2px;text-transform:uppercase">Estimates / Quotes</div>'
+      + '<button onclick="window.AJEst.open()" style="padding:5px 12px;border-radius:5px;border:1.5px solid #c9a84c;background:#c9a84c18;color:#c9a84c;font-family:inherit;font-size:9px;font-weight:700;cursor:pointer">+ New Quote</button>'
+      + '</div>'
+      + '<div id="aj-quotes-tab-inner"></div>';
+    insertTarget.parentNode.insertBefore(panel, insertTarget);
+    panel.style.display = 'block';
+    renderQuotesTab();
+  }
+
+  function toggleQuotesPanel() {
+    var panel = document.getElementById('aj-quotes-panel-wrap');
+    if (panel) {
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      if (panel.style.display === 'block') renderQuotesTab();
+    }
+  }
+
+  // ── EST. QUOTE BUTTON ──
+  function injectEstBtn() {
+    var svcBtn = [].slice.call(document.querySelectorAll('button')).find(function(b){
+      return b.textContent.trim() === '+ Service Ticket';
+    });
+    if (svcBtn && !document.getElementById('aj-est-trigger')) {
+      var n = document.createElement('button');
+      n.id = 'aj-est-trigger';
+      n.className = 'aj-est-btn';
+      n.textContent = 'Est. Quote';
+      n.onclick = function() { window.AJEst.open(); };
+      svcBtn.parentNode.insertBefore(n, svcBtn);
+    }
+    injectQuotesTab();
+  }
+
+  injectEstBtn();
+
+  // ── SAFE MUTATION OBSERVER — no infinite loop ──
+  var _busy = false;
+  var obs = new MutationObserver(function() {
+    if (_busy) return;
+    _busy = true;
+    setTimeout(function() {
+      injectEstBtn();
+      _busy = false;
+    }, 100);
+  });
+  obs.observe(document.body, {childList: true, subtree: true});
+
 })();
