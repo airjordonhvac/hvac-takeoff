@@ -195,6 +195,7 @@ var E = {
     localStorage.setItem('takeoff_quotes', JSON.stringify(ex));
     sbPost('takeoff_quotes', quote);
     this.close();
+    setTimeout(function(){var ov=document.getElementById('aj-quotes-ov');if(ov){ov.style.display='flex';if(window._renderQuotes)window._renderQuotes();}else if(window._showQuotes){window._showQuotes();}},200);
     showToast('Quote saved! (' + quote.quoteNumber + ')', '#4fb3d9');
   },
 
@@ -228,6 +229,11 @@ var E = {
 };
 
 window.AJEst=E;
+window._ajAwardQuote=_ajAwardQuote;
+window._ajDeleteQuote=_ajDeleteQuote;
+window._ajChangeStatus=_ajChangeStatus;
+window._renderQuotes=renderQuotesPage;
+window._showQuotes=showQuotesOverlay;
 window._showQuotes=showQuotesOverlay;
 window._renderQuotes=renderQuotesPage;
 window.AJEst=E;
