@@ -228,15 +228,7 @@ var E = {
 }
 };
 
-window.AJEst=E;
-window._ajAwardQuote=_ajAwardQuote;
-window._ajDeleteQuote=_ajDeleteQuote;
-window._ajChangeStatus=_ajChangeStatus;
-window._renderQuotes=renderQuotesPage;
-window._showQuotes=showQuotesOverlay;
-window._showQuotes=showQuotesOverlay;
-window._renderQuotes=renderQuotesPage;
-window.AJEst=E;
+
 
 function renderQuotesPage() {
   var cfg = JSON.parse(localStorage.getItem('aj_supabase_config')||'{}');
@@ -480,4 +472,12 @@ window._ajChangeStatus = function(id, newStatus) {
   }
   renderQuotesPage();
 };
+
+  // ── WINDOW EXPORTS (inside IIFE so closure vars are accessible) ──
+  window.AJEst=E;
+  window._showQuotes=showQuotesOverlay;
+  window._renderQuotes=renderQuotesPage;
+  window._ajAwardQuote=_ajAwardQuote;
+  window._ajDeleteQuote=_ajDeleteQuote;
+  window._ajChangeStatus=_ajChangeStatus;
 })();
