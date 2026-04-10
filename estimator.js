@@ -240,4 +240,28 @@ function injectUI(){}
 injectUI();
 var _obs=new MutationObserver(function(muts){if(_injBusy)return;if(!muts.some(function(m){return[].slice.call(m.addedNodes).some(function(n){if(n.nodeType!==1)return false;var ov=document.getElementById('aj-quotes-ov');return !ov||!ov.contains(n);});}))return;_injBusy=true;setTimeout(function(){injectUI();_injBusy=false;},200);});_obs.observe(document.body,{childList:true,subtree:true});
 
+
+
+// ── QUOTES NAV BUTTON ──────────────────────────────────────────────────────
+function injectQuotesNav() {
+  if (document.getElementById('aj-quotes-nav')) return;
+  var takeoffBtn = [].slice.call(document.querySelectorAll('button')).find(function(b) {
+    return b.textContent.trim() === '📐 Takeoff';
+  });
+  if (!takeoffBtn || !takeoffBtn.parentNode) return;
+  var btn = document.createElement('button');
+  btn.id = 'aj-quotes-nav';
+  btn.className = takeoffBtn.className;
+  btn.style.cssText = takeoffBtn.style.cssText;
+  btn.style.borderColor = '#c9a84c';
+  btn.style.color = '#c9a84c';
+  btn.style.background = '#c9a84c18';
+  btn.innerHTML = '📋 Quotes';
+  btn.onclick = function(e) { e.stopPropagation(); showQuotesOverlay(); };
+  takeoffBtn.parentNode.appendChild(btn);
+}
+injectQuotesNav();
+// Retry after React renders (in case nav isn't ready yet)
+setTimeout(injectQuotesNav, 500);
+setTimeout(injectQuotesNav, 1500);
 })();
