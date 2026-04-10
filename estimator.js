@@ -200,7 +200,7 @@ var E = {
 
   draw:function(){
   var S=this;
-  var REP=REP,RPR=RPR,ADD=ADD;
+  
   var cats=REP[S.scope],rg=RPR[S.scope];
   var cat=S.selCat?cats[S.selCat]:null,vv=cat?cat.v:[];
   var tc={RTU:'#a78bfa',ALL:'#67e8f9',COMM:'#fb923c',RES:'#6ee7b7',OPT:'#fcd34d'};
