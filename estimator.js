@@ -230,7 +230,66 @@ var E = {
 window.AJEst=E;
 window.AJEst=E;
 
-function renderQuotesPage(){var inner=document.getElementById('aj-qinner');if(!inner)return;var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]').slice().reverse();if(!quotes.length){inner.innerHTML='<div style="text-align:center;padding:80px 20px;color:#6a8fb0"><div style="font-size:40px;margin-bottom:16px">&#x1F4CB;</div><div style="font-size:15px;font-weight:600;color:#e8f0f8;margin-bottom:8px">No quotes yet</div><div style="font-size:12px">Go to <b style="color:#c9a84c">Service &rarr; Service Tickets</b> and click <b style="color:#c9a84c">Est. Quote</b></div></div>';return}inner.innerHTML=quotes.map(function(q){var awarded=q.status==='Awarded';var sc=awarded?'#c9a84c':'#4fb3d9';var dt=q.createdAt?new Date(q.createdAt).toLocaleDateString():'';var lo=ff(q.bidLow||0);var hi=ff(q.bidHigh||0);var qp=q.quote?ff(q.quote):'';return '<div style="background:#152a45;border:1px solid #1e4272;border-radius:10px;padding:16px;margin-bottom:12px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px"><div><div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><span style="font-size:12px;font-weight:700;color:#c9a84c;letter-spacing:1px">'+(q.quoteNumber||'QT-???')+'</span><span style="font-size:9px;padding:2px 8px;border-radius:10px;background:'+sc+'22;color:'+sc+';font-weight:700">'+(q.status||'Open').toUpperCase()+'</span></div><div style="font-size:14px;font-weight:600;color:#e8f0f8">'+(q.customer||'(no customer)')+'</div>'+(q.address?'<div style="font-size:11px;color:#6a8fb0;margin-top:2px">'+q.address+'</div>':'')+'</div><div style="text-align:right;font-size:10px;color:#6a8fb0;white-space:nowrap">'+(q.type||'')+(q.type&&dt?'<br>':'')+st+'</div></div><div style="display:flex;align-items:center;gap:16px;padding:10px 14px;background:#0f2035;border-radius:7px;margin-bottom:10px"><div><div style="font-size:8px;color:#34d399;letter-spacing:1px;margin-bottom:2px">MARKET LOW</div><div style="font-size:18px;font-weight:700;color:#34d399">'+lo+'</div></div><div style="color:#1e4272;font-size:14px">\u2500</div><div><div style="font-size:8px;color:#f59e0b;letter-spacing:1px;margin-bottom:2px">MARKET HIGH</div><div style="font-size:18px;font-weight:700;color:#f59e0b">'+hi+'</div></div>'+(qp?'<div style="margin-left:auto;text-align:right"><div style="font-size:8px;color:#c9a84c;letter-spacing:1px;margin-bottom:2px">QUOTED PRICE</div><div style="font-size:22px;font-weight:700;color:#c9a84c">'+qp+'</div></div>':'')+'</div>' +(q.notes&&q.notes.trim()?'<div style="font-size:10px;color:#6a8fb0;white-space:pre-wrap;max-height:50px;overflow:hidden;margin-bottom:10px;line-height:1.5">'+q.notes.slice(0,200)+'</div>' :'')+(!awarded?'<div style="display:flex;gap:8px"><button onclick="window._ajAwardQuote(\''+q.id+'\')" style="padding:7px 18px;border-radius:6px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">Award \u2192 Service Ticket</button><button onclick="window._ajDeleteQuote(\''+q.id+'\')" style="padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #ef444455;color:#ef4444;font-family:inherit;font-size:11px;cursor:pointer">Delete</button></div>':'<div style="font-size:10px;color:#c9a84c;font-weight:700">\u2713 Awarded '+(q.awardedAt?new Date(q.awardedAt).toLocaleDateString():'')+'</div>')+'</div>';}).join('');}
+function renderQuotesPage(){
+  var inner=document.getElementById("aj-qinner");
+  if(!inner)return;
+  inner.innerHTML="<div style=\"text-align:center;padding:40px;color:#6a8fb0\">Loading...</div>";
+  var cfg=JSON.parse(localStorage.getItem("aj_supabase_config")||"{}");
+  function render(rows){
+    if(!rows||!rows.length){
+      inner.innerHTML="<div style=\"text-align:center;padding:80px 20px;color:#6a8fb0\"><div style=\"font-size:40px\">&#x1F4CB;</div><div style=\"font-size:15px;font-weight:600;color:#e8f0f8;margin:12px 0 6px\">No quotes yet</div><div style=\"font-size:12px\">Click <b style=\"color:#c9a84c\">+ New Quote</b> to build your first estimate</div></div>";
+      return;
+    }
+    inner.innerHTML=rows.map(function(q){
+      var aw=(q.status||"").toLowerCase()==="awarded";
+      var sc=aw?"#c9a84c":"#4fb3d9";
+      var lo=q.bidLow?"$"+Number(q.bidLow).toLocaleString():"--";
+      var hi=q.bidHigh?"$"+Number(q.bidHigh).toLocaleString():"--";
+      var qp=q.quote?"$"+Number(q.quote).toLocaleString():"";
+      var dt=q.createdAt?new Date(q.createdAt).toLocaleDateString():"";
+      var id=q.id;
+      return "<div style=\"background:#152a45;border:1px solid #1e4272;border-radius:10px;padding:16px;margin-bottom:12px\">"+
+        "<div style=\"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px\">"+
+          "<div>"+
+            "<div style=\"display:flex;align-items:center;gap:10px;margin-bottom:4px\">"+
+              "<span style=\"font-size:12px;font-weight:700;color:#c9a84c;letter-spacing:1px\">"+(q.quoteNumber||"QT-???")+"</span>"+
+              "<span style=\"font-size:9px;padding:2px 8px;border-radius:10px;background:"+sc+"22;color:"+sc+";font-weight:700\">"+(q.status||"OPEN").toUpperCase()+"</span>"+
+            "</div>"+
+            "<div style=\"font-size:14px;font-weight:600;color:#e8f0f8\">"+(q.customer||"(no customer)")+"</div>"+
+            (q.address?"<div style=\"font-size:11px;color:#6a8fb0;margin-top:2px\">"+q.address+"</div>":"")+
+          "</div>"+
+          "<div style=\"text-align:right;font-size:10px;color:#6a8fb0\">"+(q.type||"")+(q.type&&dt?"<br>":"")+dt+"</div>"+
+        "</div>"+
+        "<div style=\"display:flex;align-items:center;gap:16px;padding:10px 14px;background:#0f2035;border-radius:7px;margin-bottom:10px\">"+
+          "<div><div style=\"font-size:8px;color:#34d399;letter-spacing:1px;margin-bottom:2px\">MARKET LOW</div><div style=\"font-size:18px;font-weight:700;color:#34d399\">"+lo+"</div></div>"+
+          "<div style=\"color:#1e4272\">&#x2500;</div>"+
+          "<div><div style=\"font-size:8px;color:#f59e0b;letter-spacing:1px;margin-bottom:2px\">MARKET HIGH</div><div style=\"font-size:18px;font-weight:700;color:#f59e0b\">"+hi+"</div></div>"+
+          (qp?"<div style=\"margin-left:auto;text-align:right\"><div style=\"font-size:8px;color:#c9a84c;letter-spacing:1px;margin-bottom:2px\">QUOTED PRICE</div><div style=\"font-size:22px;font-weight:700;color:#c9a84c\">"+qp+"</div></div>":"")+
+        "</div>"+
+        (!aw?
+          "<div style=\"display:flex;gap:8px\">"+
+            "<button onclick=\"window._ajAwardQuote('"+id+"')\" style=\"padding:7px 18px;border-radius:6px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer\">Award &#x2192; Service Ticket</button>"+
+            "<button onclick=\"window._ajDeleteQuote('"+id+"')\" style=\"padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #ef444455;color:#ef4444;font-family:inherit;font-size:11px;cursor:pointer\">Delete</button>"+
+          "</div>"
+        :"<div style=\"font-size:10px;color:#c9a84c;font-weight:700\">&#x2713; Awarded</div>")+
+      "</div>";
+    }).join("");
+  }
+  if(cfg.url&&cfg.key){
+    fetch(cfg.url+"/rest/v1/takeoff_quotes?select=*&order=id.desc",{
+      headers:{"apikey":cfg.key,"Authorization":"Bearer "+cfg.key}
+    }).then(function(r){return r.json();}).then(function(rows){
+      if(Array.isArray(rows)){
+        var ls=JSON.parse(localStorage.getItem("takeoff_quotes")||"[]");
+        rows.forEach(function(r){if(!ls.find(function(l){return l.id===r.id;}))ls.push(r);});
+        localStorage.setItem("takeoff_quotes",JSON.stringify(ls));
+        render(rows);
+      } else { render(JSON.parse(localStorage.getItem("takeoff_quotes")||"[]").slice().reverse()); }
+    }).catch(function(){ render(JSON.parse(localStorage.getItem("takeoff_quotes")||"[]").slice().reverse()); });
+  } else {
+    render(JSON.parse(localStorage.getItem("takeoff_quotes")||"[]").slice().reverse());
+  }
+}
 function showQuotesOverlay(){var ov=document.getElementById('aj-quotes-ov');if(ov){ov.style.display='flex';renderQuotesPage();return;}ov=document.createElement('div');ov.id='aj-quotes-ov';ov.style.cssText='position:fixed;inset:0;z-index:9999;background:#0a1628;display:flex;flex-direction:column;font-family:IBM Plex Mono,monospace';ov.innerHTML='<div style="background:#122340;border-bottom:2px solid #c9a84c;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0"><div style="display:flex;align-items:center;gap:14px"><div style="width:36px;height:36px;background:#c9a84c22;border:1.5px solid #c9a84c;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">&#x1F4CB;</div><div><div style="font-size:15px;font-weight:700;color:#c9a84c;letter-spacing:1px">QUOTES</div><div style="font-size:10px;color:#6a8fb0">Estimate &rarr; Build &rarr; Award to Service Ticket</div></div></div><div style="display:flex;gap:10px;align-items:center"><button onclick="window.AJEst.open()" style="padding:8px 18px;border-radius:6px;border:1.5px solid #c9a84c;background:#c9a84c18;color:#c9a84c;font-family:inherit;font-weight:700;font-size:11px;cursor:pointer">+ New Quote</button><button onclick="document.getElementById(\'aj-quotes-ov\').style.display=\'none\'" style="padding:8px 14px;border-radius:6px;border:1.5px solid #1e4272;background:transparent;color:#6a8fb0;font-family:inherit;font-size:11px;cursor:pointer">&larr; Back</button></div></div><div style="flex:1;overflow-y:auto;padding:20px"><div style="max-width:960px;margin:0 auto"><div id="aj-qinner"></div></div></div>';document.body.appendChild(ov);renderQuotesPage();}
 window._ajAwardQuote=function(qid){var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');var q=quotes.find(function(x){return x.id===qid;});if(!q)return;var now=new Date().toISOString();var ticket={id:Date.now(),customer:q.customer,address:q.address,type:q.type,priority:q.priority||'Normal',status:'Open',scheduledDate:'',completedDate:'',technician:q.technician,equipment:q.equipment||(q.notes||'').slice(0,60),laborHours:0,materialCost:q.bidLow,invoiceAmount:q.quote||q.bidLow,invoiceDate:'',notes:'AWARDEEF FROM QUOTE '+q.quoteNumber+'\n\n'+(q.notes||''),estimateLow:q.bidLow,estimateHigh:q.bidHigh,quotePrice:q.quote,markup:q.markup,contingency:q.contingency,lineItems:q.lineItems,createdAt:now,source:'quote-'+q.quoteNumber};var tix=JSON.parse(localStorage.getItem('takeoff_service_tickets')||'[]');tix.push(ticket);localStorage.setItem('takeoff_service_tickets',JSON.stringify(tix));sbPost('takeoff_service_tickets',ticket);var updated=quotes.map(function(x){return x.id===qid?Object.assign({},x,{status:'Awarded',awardedAt:now}):x;});localStorage.setItem('takeoff_quotes',JSON.stringify(updated));sbPost('takeoff_quotes',Object.assign({},q,{status:'Awarded',awardedAt:now}));window.dispatchEvent(new CustomEvent('aj-ticket-saved',{detail:ticket}));renderQuotesPage();showToast('\u2713 Quote awarded! Service ticket created.','#c9a84c');};
 window._ajDeleteQuote=function(qid){if(!confirm('Delete this quote?'))return;if(!qid)return;var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');localStorage.setItem('takeoff_quotes',JSON.stringify(quotes.filter(function(x){return x.id!==qid;})));sbDel('takeoff_quotes',qid);renderQuotesPage();};
