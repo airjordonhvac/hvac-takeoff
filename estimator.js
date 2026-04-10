@@ -196,73 +196,33 @@ var E = {
     showToast('Quote saved! (' + quote.quoteNumber + ')', '#4fb3d9');
   },
 
-  draw: function () {
-    var S = this;
-    var cats = REP[this.scope];
-    var rg = RPR[this.scope];
-    var cat = this.selCat ? cats[this.selCat] : null;
-    var vv = cat ? cat.v : [];
-    var tc = { RTU: '#a78bfa', ALL: '#67e8f9', COMM: '#fb923c', RES: '#6ee7b7', OPT: '#fcd34d' };
+  draw:function(){
+  var S=this;
+  var REP=window.__REP,RPR=window.__RPR,ADD=window.__ADD;
+  var cats=REP[S.scope],rg=RPR[S.scope];
+  var cat=S.selCat?cats[S.selCat]:null,vv=cat?cat.v:[];
+  var tc={RTU:'#a78bfa',ALL:'#67e8f9',COMM:'#fb923c',RES:'#6ee7b7',OPT:'#fcd34d'};
+  var fa=function(n){return n>=1000?'$'+(n/1000).toFixed(n%1000===0?0:1)+'k':'$'+n;};
+  var ff=function(n){return '$'+Number(n).toLocaleString();};
 
-    var rcH = Object.keys(cats).map(function (k) {
-      var c = cats[k];
-      var ac = S.selCat === k ? ' active' : '';
-      return '<button class="aj-cat-btn' + ac + '" onclick="window.AJEst.selCat=\'' + k + '\';window.AJEst.selIdx=null;window.AJEst.draw()">' + c.i + ' ' + c.l + '</button>';
-    }).join('');
-
-    var rpH = rg.map(function (g, i) {
-      var ac = S.repairCat === i ? ' active' : '';
-      return '<button class="aj-cat-btn' + ac + '" onclick="window.AJEst.repairCat=' + i + ';window.AJEst.draw()">' + g.c + '</button>';
-    }).join('');
-
-    var vH = vv.map(function (v, i) {
-      var ac = S.selIdx === i ? ' sel' : '';
-      return '<button class="aj-var' + ac + '" onclick="window.AJEst.selIdx=' + i + ';window.AJEst.draw()"><div class="aj-vsz">' + v.s + '</div><div class="aj-pr"><div class="aj-lo"><div class="aj-ll">LOW</div><div class="aj-la">' + fa(v.lo) + '</div></div><div class="aj-hi"><div class="aj-ll">HIGH</div><div class="aj-la">' + fa(v.hi) + '</div></div></div></button>';
-    }).join('');
-
-    var riH = (rg[this.repairCat] ? rg[this.repairCat].items : []).map(function (x) {
-      var lbl = x.l.replace(/'/g, '');
-      return '<div class="aj-rr"><div style="font-size:10px;color:#e8f0f8;font-weight:600">' + x.l + '</div>' +
-        '<div style="background:#34d39918;border-radius:4px;padding:2px 6px;text-align:center"><div style="font-size:7px;color:#34d399">LOW</div><div style="font-size:10px;font-weight:700;color:#34d399">' + fa(x.lo) + '</div></div>' +
-        '<div style="background:#f59e0b18;border-radius:4px;padding:2px 6px;text-align:center"><div style="font-size:7px;color:#f59e0b">HIGH</div><div style="font-size:10px;font-weight:700;color:#f59e0b">' + fa(x.hi) + '</div></div>' +
-        '<button class="aj-ra" onclick="window.AJEst.addRI(' + x.lo + ',' + x.hi + ',\'' + lbl + '\')">+</button></div>';
-    }).join('');
-
-    var adH = ADD.map(function (a) {
-      var c = tc[a.t] || '#fcd34d';
-      return '<div class="aj-ai"><input type="checkbox"' + (S.selAdders[a.id] ? ' checked' : '') + ' onchange="window.AJEst.selAdders[\'' + a.id + '\']=this.checked">' +
-        '<div style="flex:1"><div style="display:flex;align-items:center;gap:5px">' +
-        '<span style="font-size:9px;color:#e8f0f8;font-weight:600">' + a.l + '</span>' +
-        '<span style="font-size:7px;padding:1px 5px;border-radius:3px;background:' + c + '22;color:' + c + '">' + a.t + '</span></div>' +
-        '<div style="font-size:8px;color:#6a8fb0">' + fa(a.lo) + '-' + fa(a.hi) + '</div></div></div>';
-    }).join('');
-
-    var bH = this.bidItems.map(function (x, i) {
-      var bc = x.type === 'repair' ? 'aj-tp' : x.type === 'adder' ? 'aj-ta' : 'aj-tr';
-      var sl = x.label.replace(/[<>&"]/g, '');
-      return '<div class="aj-er"><div><input type="text" value="' + sl + '" oninput="window.AJEst.upd(' + i + ',\'label\',this.value)"><span class="aj-tb ' + bc + '">' + x.type + '</span></div>' +
-        '<div style="text-align:right"><input class="aj-li" value="' + x.lo + '" oninput="window.AJEst.upd(' + i + ',\'lo\',+this.value||0)"></div>' +
-        '<div style="text-align:right"><input class="aj-hi2" value="' + x.hi + '" oninput="window.AJEst.upd(' + i + ',\'hi\',+this.value||0)"></div>' +
-        '<button class="aj-db" onclick="window.AJEst.del(' + i + ')">X</button></div>';
-    }).join('');
-
-    var sbH = this.selIdx !== null && cat
-      ? '<div class="aj-sbar"><div><div style="font-size:9px;color:#c9a84c">SELECTED - EQUIP + LABOR ONLY</div>' +
-        '<div style="font-size:12px;font-weight:700;color:#e8f0f8">' + cat.l + ' ' + vv[this.selIdx].s + '</div>' +
-        '<div style="font-size:10px;color:#6a8fb0">' + ff(vv[this.selIdx].lo) + ' - ' + ff(vv[this.selIdx].hi) + '</div></div>' +
-        '<button class="aj-sadd" onclick="window.AJEst.addRep()">+ ADD</button></div>' : '';
-    
-    var hasBid = this.bidItems.length > 0;
-    var mkH = hasBid ? '<div class="aj-mb"><div class="aj-sg"><label>Markup <span id="aj-mkv">' + this.markup + '%</span></label><input type="range" min="10" max="60" value="' + this.markup + '" oninput="window.AJEst.markup=+this.value;document.getElementById(\'aj-mkv\').textContent=this.value+\'%\';window.AJEst.drawTots()"></div><div class="aj-sg"><label>Contingency <span id="aj-ctv" style="color:#4fb3d9">' + this.contingency + '%</span></label><input type="range" min="0" max="25" value="' + this.contingency + '" oninput="window.AJEst.contingency=+this.value;document.getElementById(\'aj-ctv\').textContent=this.value+\'%\';window.AJEst.drawTots()" style="accent-color:#4fb3d9"></div></div>' : '';
-    var tfH = hasBid ? '<div class="aj-tf"><div class="aj-tfl">Quote Details</div><div class="aj-fd"><label>Customer</label><input id="aj-fc" placeholder="Customer name"></div><div class="aj-fd"><label>Address</label><input id="aj-fa" placeholder="Site address"></div><div class="aj-fd"><label>Priority</label><select id="aj-fp"><option>Normal</option><option>High</option><option>Emergency</option></select></div><div class="aj-fd"><label>Technician</label><input id="aj-ft" placeholder="Tech name"></div><div class="aj-fd full"><label>Equipment / Description</label><input id="aj-fe" placeholder="Units serviced, scope"></div><div class="aj-fd full"><label>Notes</label><textarea id="aj-fn" placeholder="Conditions, exclusions, site notes..."></textarea></div></div>' : '';
-    var repS = this.builderTab === 'replace' ? '<div class="aj-grid"><div><div class="aj-slbl">System Type</div><div class="aj-cat-list">' + rcH + '</div><div class="aj-slbl">Adders</div><div class="aj-warn">Not included in base prices above</div>' + adH + '<button class="aj-aab" onclick="window.AJEst.addAds()">+ ADD SELECTED</button></div><div>' + (cat ? '<div class="aj-ibox"><div style="font-size:12px;font-weight:700;color:#4fb3d9;margin-bottom:6px">' + cat.l + '</div><div class="aj-ie"><div class="aj-inc"><div class="aj-el">INCLUDES</div><p>' + cat.inc + '</p></div><div class="aj-exc"><div class="aj-el">EVCLUDES</div><p>' + cat.exc + '</p></div></div></div><div class="aj-variants">' + vH + '</div>' + sbH : '<div class="aj-ph"><div style="font-size:30px">&#x1F448;</div><div>Select a system type</div></div>') + '</div></div>' : '<div class="aj-grid"><div><div class="aj-slbl">Category</div><div class="aj-cat-list">' + rpH + '</div></div><div><div class="aj-slbl">' + (rg[this.repairCat] ? rg[this.repairCat].c : '') + ' - click + to add</div>' + riH + '</div></div>';
-    var bidS = hasBid ? '<div style="margin-top:14px"><div class="aj-slbl">Estimate Line Items</div>' + mkH + '<div class="aj-etbl"><div class="aj-eh"><div>Line Item</div><div>Low</div><div>High</div><div></div></div>' + bH + '<div id="aj-tw"></div></div></div>' + tfH : '';
-    var sc='<div class="aj-scope-row"><button class="aj-pill'+(this.scope==='residential'?' active':'')+'" onclick="window.AJEst.scope=\'residential\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.repairCat=0;window.AJEst.draw()">Residential</button><button class="aj-pill'+(this.scope==='commercial'?' active':'')+'" onclick="window.AJEst.scope=\'commercial\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.repairCat=0;window.AJEst.draw()">Commercial</button><div class="aj-divider"></div><button class="aj-pill blue'+(this.builderTab==='replace'?' active':'')+'" onclick="window.AJEst.builderTab=\'replace\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.draw()">Replacement</button><button class="aj-pill blue'+(this.builderTab==='repair'?' active':'')+'" onclick="window.AJEst.builderTab=\'repair\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.draw()">Repair/Service</button></div>';
-    var html='<div id="aj-est-overlay" onclick="if(event.target===this)window.AJEst.close()"><div id="aj-est-modal"><div class="aj-est-hdr"><h2>BUILD QUOTE</h2><button onclick="window.AJEst.close()" style="background:none;border:none;color:#6a8fb0;font-size:20px;cursor:pointer">&times;</button></div><div class="aj-est-body">'+sc+repS+bidS+'</div><div class="aj-footer"><button class="aj-cn" onclick="window.AJEst.close()">Cancel</button>'+(hasBid?'<button class="aj-sv" onclick="window.AJEst.saveQuote()">Save Quote</button>':'')'+'</div></div></div>';
-    var ex=document.getElementById('aj-est-overlay');if(ex)ex.remove();
-    document.body.insertAdjacentHTML('beforeend',html);
-    this.drawTots();
-  }
+  var rcH=Object.keys(cats).map(function(k){var c=cats[k],ac=S.selCat===k?' active':'';return '<button class="aj-cat-btn'+ac+'" onclick="window.AJEst.selCat=\''+k+'\';window.AJEst.selIdx=null;window.AJEst.draw()">'+c.i+' '+c.l+'</button>';}).join('');
+  var rpH=rg.map(function(g,i){var ac=S.repairCat===i?' active':'';return '<button class="aj-cat-btn'+ac+'" onclick="window.AJEst.repairCat='+i+';window.AJEst.draw()">'+g.c+'</button>';}).join('');
+  var vH=vv.map(function(v,i){var ac=S.selIdx===i?' sel':'';return '<button class="aj-var'+ac+'" onclick="window.AJEst.selIdx='+i+';window.AJEst.draw()"><div class="aj-vsz">'+v.s+'</div><div class="aj-pr"><div class="aj-lo"><div class="aj-ll">LOW</div><div class="aj-la">'+fa(v.lo)+'</div></div><div class="aj-hi"><div class="aj-ll">HIGH</div><div class="aj-la">'+fa(v.hi)+'</div></div></div></button>';}).join('');
+  var riH=(rg[S.repairCat]?rg[S.repairCat].items:[]).map(function(x){var lbl=x.l.replace(/'/g,'');return '<div class="aj-rr"><div style="font-size:10px;color:#e8f0f8;font-weight:600">'+x.l+'</div><div style="background:#34d39918;border-radius:4px;padding:2px 6px;text-align:center"><div style="font-size:7px;color:#34d399">LOW</div><div style="font-size:10px;font-weight:700;color:#34d399">'+fa(x.lo)+'</div></div><div style="background:#f59e0b18;border-radius:4px;padding:2px 6px;text-align:center"><div style="font-size:7px;color:#f59e0b">HIGH</div><div style="font-size:10px;font-weight:700;color:#f59e0b">'+fa(x.hi)+'</div></div><button class="aj-ra" onclick="window.AJEst.addRI('+x.lo+','+x.hi+',\''+lbl+'\')">+</button></div>';}).join('');
+  var adH=ADD.map(function(a){var c=tc[a.t]||'#fcd34d';return '<div class="aj-ai"><input type="checkbox"'+(S.selAdders[a.id]?' checked':'')+' onchange="window.AJEst.selAdders[\''+a.id+'\']=this.checked"><div style="flex:1"><div style="display:flex;align-items:center;gap:5px"><span style="font-size:9px;color:#e8f0f8;font-weight:600">'+a.l+'</span><span style="font-size:7px;padding:1px 5px;border-radius:3px;background:'+c+'22;color:'+c+'">'+a.t+'</span></div><div style="font-size:8px;color:#6a8fb0">'+fa(a.lo)+'-'+fa(a.hi)+'</div></div></div>';}).join('');
+  var bH=S.bidItems.map(function(x,i){var bc=x.type==='repair'?'aj-tp':x.type==='adder'?'aj-ta':'aj-tr';var sl=x.label.replace(/[<>&"]/g,'');return '<div class="aj-er"><div><input type="text" value="'+sl+'" oninput="window.AJEst.upd('+i+',\'label\',this.value)"><span class="aj-tb '+bc+'">'+x.type+'</span></div><div style="text-align:right"><input class="aj-li" value="'+x.lo+'" oninput="window.AJEst.upd('+i+',\'lo\',+this.value||0)"></div><div style="text-align:right"><input class="aj-hi2" value="'+x.hi+'" oninput="window.AJEst.upd('+i+',\'hi\',+this.value||0)"></div><button class="aj-db" onclick="window.AJEst.del('+i+')">X</button></div>';}).join('');
+  var sbH=S.selIdx!==null&&cat?'<div class="aj-sbar"><div><div style="font-size:9px;color:#c9a84c">SELECTED - EQUIP + LABOR ONLY</div><div style="font-size:12px;font-weight:700;color:#e8f0f8">'+cat.l+' '+vv[S.selIdx].s+'</div><div style="font-size:10px;color:#6a8fb0">'+ff(vv[S.selIdx].lo)+' - '+ff(vv[S.selIdx].hi)+'</div></div><button class="aj-sadd" onclick="window.AJEst.addRep()">+ ADD</button></div>':'';
+  var hasBid=S.bidItems.length>0;
+  var mkH=hasBid?'<div class="aj-mb"><div class="aj-sg"><label>Markup <span id="aj-mkv">'+S.markup+'%</span></label><input type="range" min="10" max="60" value="'+S.markup+'" oninput="window.AJEst.markup=+this.value;document.getElementById(\'aj-mkv\').textContent=this.value+\'%\';window.AJEst.drawTots()"></div><div class="aj-sg"><label>Contingency <span id="aj-ctv" style="color:#4fb3d9">'+S.contingency+'%</span></label><input type="range" min="0" max="25" value="'+S.contingency+'" oninput="window.AJEst.contingency=+this.value;document.getElementById(\'aj-ctv\').textContent=this.value+\'%\';window.AJEst.drawTots()" style="accent-color:#4fb3d9"></div></div>':'';
+  var tfH=hasBid?'<div class="aj-tf"><div class="aj-tfl">Quote Details</div><div class="aj-fd"><label>Customer</label><input id="aj-fc" placeholder="Customer name"></div><div class="aj-fd"><label>Address</label><input id="aj-fa" placeholder="Site address"></div><div class="aj-fd"><label>Priority</label><select id="aj-fp"><option>Normal</option><option>High</option><option>Emergency</option></select></div><div class="aj-fd"><label>Technician</label><input id="aj-ft" placeholder="Tech name"></div><div class="aj-fd full"><label>Equipment / Description</label><input id="aj-fe" placeholder="Units serviced, scope"></div><div class="aj-fd full"><label>Notes</label><textarea id="aj-fn" placeholder="Conditions, exclusions, site notes..."></textarea></div></div>':'';
+  var repS=S.builderTab==='replace'?'<div class="aj-grid"><div><div class="aj-slbl">System Type</div><div class="aj-cat-list">'+rcH+'</div><div class="aj-slbl">Adders</div><div class="aj-warn">Not included in base prices above</div>'+adH+'<button class="aj-aab" onclick="window.AJEst.addAds()">+ ADD SELECTED</button></div><div>'+(cat?'<div class="aj-ibox"><div style="font-size:12px;font-weight:700;color:#4fb3d9;margin-bottom:6px">'+cat.l+'</div><div class="aj-ie"><div class="aj-inc"><div class="aj-el">INCLUDES</div><p>'+cat.inc+'</p></div><div class="aj-exc"><div class="aj-el">EXCLUDES</div><p>'+cat.exc+'</p></div></div></div><div class="aj-variants">'+vH+'</div>'+sbH:'<div class="aj-ph"><div style="font-size:30px">&#x1F448;</div><div>Select a system type</div></div>')+'</div></div>':'<div class="aj-grid"><div><div class="aj-slbl">Category</div><div class="aj-cat-list">'+rpH+'</div></div><div><div class="aj-slbl">'+(rg[S.repairCat]?rg[S.repairCat].c:'')+' - click + to add</div>'+riH+'</div></div>';
+  var bidS=hasBid?'<div style="margin-top:14px"><div class="aj-slbl">Estimate Line Items</div>'+mkH+'<div class="aj-etbl"><div class="aj-eh"><div>Line Item</div><div>Low</div><div>High</div><div></div></div>'+bH+'<div id="aj-tw"></div></div></div>'+tfH:'';
+  var sc='<div class="aj-scope-row"><button class="aj-pill'+(S.scope==='residential'?' active':'')+'" onclick="window.AJEst.scope=\'residential\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.repairCat=0;window.AJEst.draw()">Residential</button><button class="aj-pill'+(S.scope==='commercial'?' active':'')+'" onclick="window.AJEst.scope=\'commercial\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.repairCat=0;window.AJEst.draw()">Commercial</button><div class="aj-divider"></div><button class="aj-pill blue'+(S.builderTab==='replace'?' active':'')+'" onclick="window.AJEst.builderTab=\'replace\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.draw()">Replacement</button><button class="aj-pill blue'+(S.builderTab==='repair'?' active':'')+'" onclick="window.AJEst.builderTab=\'repair\';window.AJEst.selCat=null;window.AJEst.selIdx=null;window.AJEst.draw()">Repair/Service</button></div>';
+  var html='<div id="aj-est-overlay" onclick="if(event.target===this)window.AJEst.close()"><div id="aj-est-modal"><div class="aj-est-hdr"><h2>BUILD QUOTE</h2><button onclick="window.AJEst.close()" style="background:none;border:none;color:#6a8fb0;font-size:20px;cursor:pointer">&times;</button></div><div class="aj-est-body">'+sc+repS+bidS+'</div><div class="aj-footer"><button class="aj-cn" onclick="window.AJEst.close()">Cancel</button>'+(hasBid?'<button class="aj-sv" onclick="window.AJEst.saveQuote()">Save Quote</button>':'')+'</div></div></div>';
+  var ex=document.getElementById('aj-est-overlay');if(ex)ex.remove();
+  document.body.insertAdjacentHTML('beforeend',html);
+  this.drawTots();
+}
 };
 
 window.AJEst=E;
