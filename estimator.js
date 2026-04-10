@@ -268,6 +268,7 @@ function renderQuotesPage(){
         "</div>"+
         (!aw?
           "<div style=\"display:flex;gap:8px\">"+
+            "<button onclick=\"window._ajEditQuote('"+id+"')\" style=\"padding:7px 18px;border-radius:6px;background:#1e3a5f;border:1px solid #4fb3d9;color:#4fb3d9;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer\">&#x270F; Edit</button> "+
             "<button onclick=\"window._ajAwardQuote('"+id+"')\" style=\"padding:7px 18px;border-radius:6px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer\">Award &#x2192; Service Ticket</button>"+
             "<button onclick=\"window._ajDeleteQuote('"+id+"')\" style=\"padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #ef444455;color:#ef4444;font-family:inherit;font-size:11px;cursor:pointer\">Delete</button>"+
           "</div>"
@@ -323,4 +324,83 @@ injectQuotesNav();
 // Retry after React renders (in case nav isn't ready yet)
 setTimeout(injectQuotesNav, 500);
 setTimeout(injectQuotesNav, 1500);
+
+// ── EDIT QUOTE ─────────────────────────────────────────────────────────────
+window._ajEditQuote = function(id) {
+  var quotes = JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+  var q = quotes.find(function(x){return x.id===id;});
+  if(!q) return;
+  // Close the quotes overlay
+  var ov = document.getElementById('aj-quotes-overlay');
+  if(ov) ov.remove();
+  // Load quote data into AJEst and reopen the modal
+  window.AJEst.bidItems = Array.isArray(q.lineItems) ? q.lineItems : (q.lineItems ? JSON.parse(q.lineItems) : []);
+  window.AJEst.markup = q.markup || 30;
+  window.AJEst.contingency = q.contingency || 5;
+  window.AJEst.scope = q.scope || 'commercial';
+  window.AJEst._editingId = id;
+  window.AJEst.selCat = null;
+  window.AJEst.selIdx = null;
+  window.AJEst.draw();
+  // Pre-fill form fields after draw
+  setTimeout(function(){
+    var fc=document.getElementById('aj-fc'), fa=document.getElementById('aj-fa'),
+        ft=document.getElementById('aj-ft'), fe=document.getElementById('aj-fe'),
+        fn=document.getElementById('aj-fn'), fp=document.getElementById('aj-fp');
+    if(fc) fc.value = q.customer||'';
+    if(fa) fa.value = q.address||'';
+    if(ft) ft.value = q.technician||'';
+    if(fe) fe.value = q.equipment||'';
+    if(fn) fn.value = q.notes||'';
+    if(fp) fp.value = q.priority||'Normal';
+    // Change Save button label to Update Quote
+    var sv = document.querySelector('.aj-sv');
+    if(sv) { sv.textContent='Update Quote'; sv.onclick=function(){window.AJEst._ajSaveEdit();}; }
+  }, 200);
+};
+
+window.AJEst._ajSaveEdit = function() {
+  var id = this._editingId;
+  if(!id) { this.saveQuote(); return; }
+  var quotes = JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+  var idx = quotes.findIndex(function(x){return x.id===id;});
+  if(idx===-1) { this.saveQuote(); return; }
+  // Build updated quote — preserve original id and quoteNumber
+  var lo=0, hi=0;
+  this.bidItems.forEach(function(x){lo+=x.lo;hi+=x.hi;});
+  var mk=this.markup/100, ct=this.contingency/100;
+  var qlo=Math.round(lo*(1+mk)*(1+ct)), qhi=Math.round(hi*(1+mk)*(1+ct));
+  var qp=Math.round((qlo+qhi)/2);
+  var fc=document.getElementById('aj-fc'), fa=document.getElementById('aj-fa'),
+      ft=document.getElementById('aj-ft'), fe=document.getElementById('aj-fe'),
+      fn=document.getElementById('aj-fn'), fp=document.getElementById('aj-fp');
+  var updated = Object.assign({}, quotes[idx], {
+    customer: fc?fc.value:quotes[idx].customer,
+    address:  fa?fa.value:quotes[idx].address,
+    technician: ft?ft.value:quotes[idx].technician,
+    equipment: fe?fe.value:quotes[idx].equipment,
+    notes:    fn?fn.value:quotes[idx].notes,
+    priority: fp?fp.value:quotes[idx].priority,
+    bidLow:lo, bidHigh:hi, quote:qp, markup:this.markup, contingency:this.contingency,
+    lineItems: JSON.stringify(this.bidItems),
+    scope: this.scope
+  });
+  quotes[idx] = updated;
+  localStorage.setItem('takeoff_quotes', JSON.stringify(quotes));
+  // Sync to Supabase
+  var cfg=JSON.parse(localStorage.getItem('aj_supabase_config')||'{}');
+  if(cfg.url&&cfg.key) {
+    fetch(cfg.url+'/rest/v1/takeoff_quotes',{
+      method:'POST',
+      headers:{'apikey':cfg.key,'Authorization':'Bearer '+cfg.key,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(updated)
+    });
+  }
+  this._editingId = null;
+  this.bidItems=[];
+  // Close modal and reopen quotes
+  var ex=document.getElementById('aj-est-overlay'); if(ex) ex.remove();
+  showToast('Quote updated','#4fb3d9');
+  setTimeout(showQuotesOverlay, 200);
+};
 })();
