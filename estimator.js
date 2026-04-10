@@ -58,7 +58,7 @@ commercial:[
 fa:function(n){return n>=1000?'$'+(n/1000).toFixed(n%1000===0?0:1)+'k':'$'+n;},
 ff:function(n){return '$'+Number(n).toLocaleString();},
 uid:function(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);},
-tots:function(){var lo=this.bidItems.reduce(function(s,x){return s+parseFloat(x.lo||0);},0);var hi=this.bidItems.reduce(function(s,x){return s+parseFloat(x.hi||0);},0);var m=1+this.markup/100,c=1+this.contingency/100;return{rLo:lo,rHi:hi,bLo:Math.round(lo*m*c),bHi:Math.round(hi*m*c)};},
+tots:function(){var lo=this.bidItems.reduce(function(s,x){return s+parseFloat(x.lo||0);},0);var hi=this.bidItems.reduce(function(s,x){return s+parseFloat(x.hi||0);},0);var pos=Math.min(1,Math.max(0,(this.markup-10)/50+(this.contingency/100)));var quote=lo>=hi?lo:Math.round(lo+pos*(hi-lo));return{rLo:lo,rHi:hi,quote:t.quote,pos:Math.round(pos*100)};},
 init:function(){try{var cfg=JSON.parse(localStorage.getItem('aj_supabase_config')||'{}'  );this.SB_URL=cfg.url||'';this.SB_KEY=cfg.key||'';}catch(e){}},
 sbSave:function(tbl,data){if(!this.SB_URL)return;try{fetch(this.SB_URL+'/rest/v1/'+tbl,{method:'POST',headers:{'apikey':this.SB_KEY,'Authorization':'Bearer '+this.SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(data)});}catch(e){}},
 open:function(){this.init();this.bidItems=[];this.selCat=null;this.selIdx=null;this.selAdders={};this.scope='residential';this.builderTab='replace';this.repairCat=0;this.markup=30;this.contingency=10;this.draw();},
@@ -72,6 +72,7 @@ saveQuote:function(){
 var S=this,t=this.tots();
 if(this.bidItems.length===0)return;
 var li=this.bidItems.map(function(x){return x.label+': '+S.ff(x.lo)+' - '+S.ff(x.hi);}).join('\n');
+var quote=t.quote;
 var xn=document.getElementById('aj-fn')?document.getElementById('aj-fn').value:'';
 var notes=li+(xn?'\n'+xn:'');
 var g=function(id){var el=document.getElementById(id);return el?el.value:'';};
@@ -87,8 +88,8 @@ var quote={
   technician:g('aj-ft'),
   equipment:g('aj-fe')||(this.bidItems[0]?this.bidItems[0].label:''),
   notes:notes,
-  bidLow:t.bLo,
-  bidHigh:t.bHi,
+  bidLow:t.rLo,
+  bidHigh:t.rHi,
   baseLow:t.rLo,
   baseHigh:t.rHi,
   markup:this.markup,
@@ -200,7 +201,27 @@ var el=document.getElementById('aj-tw');if(!el)return;
 var t=this.tots();
 var a='<div style="font-size:9px;color:#6a8fb0;font-weight:700">BASE COST</div><div style="font-size:11px;font-weight:700;color:#34d399">'+this.ff(t.rLo)+'</div><div style="font-size:11px;font-weight:700;color:#f59e0b">'+this.ff(t.rHi)+'</div><div></div>';
 var b='<div><div style="font-size:11px;font-weight:700;color:#c9a84c">TOTAL QUOTE</div><div style="font-size:8px;color:#6a8fb0">'+this.markup+'% markup + '+this.contingency+'% contingency</div></div><div style="font-size:14px;font-weight:700;color:#34d399">'+this.ff(t.bLo)+'</div><div style="font-size:14px;font-weight:700;color:#f59e0b">'+this.ff(t.bHi)+'</div><div></div>';
-el.innerHTML='<div class="aj-sub">'+a+'</div><div class="aj-grd">'+b+'</div>';
+var pct=t.pos;
+var bw=Math.max(2,Math.min(97,pct));
+el.innerHTML=
+'<div style="border-top:2px solid #1e4272;background:#0f2035;padding:10px 12px 6px">'
++'<div style="font-size:8px;color:#6a8fb0;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Market Range — Fixed</div>'
++'<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px">'
++'<div><div style="font-size:7px;color:#34d399;letter-spacing:1px;margin-bottom:2px">LOW</div><div style="font-size:15px;font-weight:700;color:#34d399">'+this.ff(t.rLo)+'</div></div>'
++'<div style="font-size:9px;color:#2a4a70">&larr;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&rarr;</div>'
++'<div style="text-align:right"><div style="font-size:7px;color:#f59e0b;letter-spacing:1px;margin-bottom:2px">HIGH</div><div style="font-size:15px;font-weight:700;color:#f59e0b">'+this.ff(t.rHi)+'</div></div>'
++'</div>'
++'<div style="font-size:8px;color:#c9a84c;letter-spacing:1px;margin-bottom:5px">Your Quote &mdash; '+pct+'% of range</div>'
++'<div style="position:relative;height:10px;background:#1e4272;border-radius:5px;margin-bottom:4px">'
++'<div style="position:absolute;left:0;width:'+bw+'%;height:100%;background:linear-gradient(90deg,#34d399,#c9a84c);border-radius:5px;transition:width .15s"></div>'
++'<div style="position:absolute;left:'+bw+'%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;background:#122340;border:2px solid #c9a84c;border-radius:50%;box-shadow:0 0 8px #c9a84c99"></div>'
++'</div>'
++'<div style="display:flex;justify-content:space-between;font-size:8px;color:#6a8fb0;margin-bottom:2px"><span>'+this.ff(t.rLo)+'</span><span>'+this.ff(t.rHi)+'</span></div>'
++'</div>'
++'<div style="background:linear-gradient(90deg,#c9a84c22,#c9a84c08);border-top:2px solid #c9a84c;padding:12px;display:flex;align-items:center;justify-content:space-between">'
++'<div><div style="font-size:10px;font-weight:700;color:#c9a84c;letter-spacing:1.5px">YOUR QUOTED PRICE</div>'
++'<div style="font-size:8px;color:#6a8fb0;margin-top:2px">Slides within fixed market range via sliders below</div></div>'
++'<div style="font-size:26px;font-weight:700;color:#c9a84c">'+this.ff(t.quote)+'</div></div>';
 },
 draw:function(){
 var S=this,cats=this.REP[this.scope],rg=this.RPR[this.scope];
