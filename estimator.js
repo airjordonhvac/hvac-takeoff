@@ -266,13 +266,14 @@ function renderQuotesPage(){
           "<div><div style=\"font-size:8px;color:#f59e0b;letter-spacing:1px;margin-bottom:2px\">MARKET HIGH</div><div style=\"font-size:18px;font-weight:700;color:#f59e0b\">"+hi+"</div></div>"+
           (qp?"<div style=\"margin-left:auto;text-align:right\"><div style=\"font-size:8px;color:#c9a84c;letter-spacing:1px;margin-bottom:2px\">QUOTED PRICE</div><div style=\"font-size:22px;font-weight:700;color:#c9a84c\">"+qp+"</div></div>":"")+
         "</div>"+
-        (!aw?
-          "<div style=\"display:flex;gap:8px\">"+
+        "<div style=\"display:flex;gap:8px;align-items:center;flex-wrap:wrap\">"+
             "<button onclick=\"window._ajEditQuote('"+id+"')\" style=\"padding:7px 18px;border-radius:6px;background:#1e3a5f;border:1px solid #4fb3d9;color:#4fb3d9;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer\">&#x270F; Edit</button> "+
-            "<button onclick=\"window._ajAwardQuote('"+id+"')\" style=\"padding:7px 18px;border-radius:6px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer\">Award &#x2192; Service Ticket</button>"+
-            "<button onclick=\"window._ajDeleteQuote('"+id+"')\" style=\"padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #ef444455;color:#ef4444;font-family:inherit;font-size:11px;cursor:pointer\">Delete</button>"+
-          "</div>"
-        :"<div style=\"font-size:10px;color:#c9a84c;font-weight:700\">&#x2713; Awarded</div>")+
+            (!aw?
+              " "+"<button onclick=\"window._ajAwardQuote('"+id+"')\" style=\"padding:7px 18px;border-radius:6px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer\">Award &#x2192; Service Ticket</button>"+" "+"<button onclick=\"window._ajDeleteQuote('"+id+"')\" style=\"padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #ef444455;color:#ef4444;font-family:inherit;font-size:11px;cursor:pointer\">Delete</button>"
+            :
+              "<span style=\"margin-left:4px;font-size:11px;color:#c9a84c;font-weight:700\">&#x2713; Awarded</span>"
+            )+
+            "</div>"+
       "</div>";
     }).join("");
   }
