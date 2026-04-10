@@ -90,6 +90,8 @@ var quote={
   notes:notes,
   bidLow:t.rLo,
   bidHigh:t.rHi,
+  quote_price:t.quote,
+  position_pct:t.pos,
   baseLow:t.rLo,
   baseHigh:t.rHi,
   markup:this.markup,
