@@ -4249,6 +4249,18 @@ Object.entries(allManualProjects).forEach(([k,v])=>{if(v.equipment||v.ductwork)P
   const [allCatMult,setAllCatMult]=useState(()=>lsGet("takeoff_catmult",{}));
   const [pmAgreements,setPmAgreements]=useState(()=>lsGet("takeoff_pm_agreements",[]));
   const [serviceTickets,setServiceTickets]=useState(()=>lsGet("takeoff_service_tickets",[]));
+  // Listen for awarded quotes from estimator and inject into React state
+  useEffect(()=>{
+    function onTicketSaved(e){
+      if(!e.detail)return;
+      setServiceTickets(prev=>{
+        const exists=prev.some(function(t){return t.id===e.detail.id;});
+        return exists?prev:[...prev,e.detail];
+      });
+    }
+    window.addEventListener('aj-ticket-saved',onTicketSaved);
+    return function(){window.removeEventListener('aj-ticket-saved',onTicketSaved);};
+  },[]);
   const [popsPos,setPopsPos]=useState(()=>lsGet("pops_pos",[])||[]);
   const [financialsOverhead,setFinancialsOverhead]=useState(()=>lsGet("financials_overhead",{})||{});
   const saveFinancialsOverhead=(next)=>{setFinancialsOverhead(next);lsSet("financials_overhead",next);sbSet("financials_overhead",next);};
