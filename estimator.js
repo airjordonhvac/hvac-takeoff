@@ -1,5 +1,8 @@
 (function () {
-'use strict';
+'u
+window.__REP = REP;
+window.__RPR = RPR;
+window.__ADD = ADD;se strict';
 
 // ── CONFIG ────────────────────────────────────────────────────────────
 var SB = (function () {
