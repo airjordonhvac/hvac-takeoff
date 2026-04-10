@@ -58,7 +58,7 @@ commercial:[
 fa:function(n){return n>=1000?'$'+(n/1000).toFixed(n%1000===0?0:1)+'k':'$'+n;},
 ff:function(n){return '$'+Number(n).toLocaleString();},
 uid:function(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);},
-tots:function(){var lo=this.bidItems.reduce(function(s,x){return s+parseFloat(x.lo||0);},0);var hi=this.bidItems.reduce(function(s,x){return s+parseFloat(x.hi||0);},0);var pos=Math.min(1,Math.max(0,(this.markup-10)/50+(this.contingency/100)));var quote=lo>=hi?lo:Math.round(lo+pos*(hi-lo));return{rLo:lo,rHi:hi,quote:t.quote,pos:Math.round(pos*100)};},
+tots:function(){var lo=this.bidItems.reduce(function(s,x){return s+parseFloat(x.lo||0);},0);var hi=this.bidItems.reduce(function(s,x){return s+parseFloat(x.hi||0);},0);var pos=Math.min(1,Math.max(0,(this.markup-10)/50+this.contingency/100));var q=lo+(hi-lo)*pos;return{rLo:lo,rHi:hi,quote:Math.round(q),pos:Math.round(pos*100)};},
 init:function(){try{var cfg=JSON.parse(localStorage.getItem('aj_supabase_config')||'{}'  );this.SB_URL=cfg.url||'';this.SB_KEY=cfg.key||'';}catch(e){}},
 sbSave:function(tbl,data){if(!this.SB_URL)return;try{fetch(this.SB_URL+'/rest/v1/'+tbl,{method:'POST',headers:{'apikey':this.SB_KEY,'Authorization':'Bearer '+this.SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(data)});}catch(e){}},
 open:function(){this.init();this.bidItems=[];this.selCat=null;this.selIdx=null;this.selAdders={};this.scope='residential';this.builderTab='replace';this.repairCat=0;this.markup=30;this.contingency=10;this.draw();},
@@ -68,6 +68,163 @@ addRI:function(lo,hi,lbl){this.bidItems.push({id:this.uid(),label:'R '+lbl,lo:lo
 addAds:function(){var self=this;this.ADD.filter(function(a){return self.selAdders[a.id];}).forEach(function(a){self.bidItems.push({id:self.uid(),label:'+ '+a.l,lo:a.lo,hi:a.hi,type:'adder'});});this.selAdders={};this.draw();},
 del:function(i){this.bidItems.splice(i,1);this.draw();},
 upd:function(i,f,v){if(this.bidItems[i])this.bidItems[i][f]=v;this.drawTots();},
+saveQuote:function(){
+var S=this,t=this.tots();
+if(this.bidItems.length===0)return;
+var li=this.bidItems.map(function(x){return x.label+': '+S.ff(x.lo)+' - '+S.ff(x.hi);}).join('\n');
+var quote=t.quote;
+var xn=document.getElementById('aj-fn')?document.getElementById('aj-fn').value:'';
+var notes=li+(xn?'\n'+xn:'');
+var g=function(id){var el=document.getElementById(id);return el?el.value:'';};
+var quote={
+  id:this.uid(),
+  quoteNumber:'QT-'+(Date.now().toString().slice(-6)),
+  customer:g('aj-fc'),
+  address:g('aj-fa'),
+  scope:this.scope,
+  type:this.bidItems.some(function(x){return x.type==='replace';})?'Replacement':'Repair',
+  priority:g('aj-fp')||'Normal',
+  status:'Open',
+  technician:g('aj-ft'),
+  equipment:g('aj-fe')||(this.bidItems[0]?this.bidItems[0].label:''),
+  notes:notes,
+  bidLow:t.rLo,
+  bidHigh:t.rHi,
+  quote_price:t.quote,
+  position_pct:t.pos,
+  baseLow:t.rLo,
+  baseHigh:t.rHi,
+  markup:this.markup,
+  contingency:this.contingency,
+  lineItems:JSON.stringify(this.bidItems),
+  createdAt:new Date().toISOString(),
+  awardedAt:null,
+  source:'estimator'
+};
+var ex=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+ex.push(quote);
+localStorage.setItem('takeoff_quotes',JSON.stringify(ex));
+this.sbSave('takeoff_quotes',quote);
+this.close();
+this.renderQuotesList();
+var toast=document.createElement('div');
+toast.className='aj-toast';
+toast.textContent='Quote saved! ('+quote.quoteNumber+')';
+document.body.appendChild(toast);
+setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},3500);
+},
+awardQuote:function(qid){
+var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+var q=quotes.find(function(x){return x.id===qid;});
+if(!q)return;
+// Build a service ticket from the quote
+var ticket={
+  id:Date.now(),
+  pmId:'',
+  customer:q.customer,
+  address:q.address,
+  type:q.type,
+  priority:q.priority||'Normal',
+  status:'Open',
+  scheduledDate:'',
+  completedDate:'',
+  technician:q.technician,
+  equipment:q.equipment,
+  laborHours:0,
+  materialCost:q.baseLow,
+  invoiceAmount:q.bidLow,
+  invoiceDate:'',
+  notes:'AWARDED FROM QUOTE '+q.quoteNumber+'\n\nSCOPE: '+q.notes+'\n\nBID: '+this.ff(q.bidLow)+' - '+this.ff(q.bidHigh),
+  createdAt:new Date().toISOString(),
+  source:'quote-'+q.quoteNumber
+};
+// Write to service tickets (React state picks this up on next render)
+var tix=JSON.parse(localStorage.getItem('takeoff_service_tickets')||'[]');
+tix.push(ticket);
+localStorage.setItem('takeoff_service_tickets',JSON.stringify(tix));
+this.sbSave('takeoff_service_tickets',ticket);
+// Mark quote as awarded
+var updated=quotes.map(function(x){return x.id===qid?Object.assign({},x,{status:'Awarded',awardedAt:new Date().toISOString()}):x;});
+localStorage.setItem('takeoff_quotes',JSON.stringify(updated));
+this.renderQuotesList();
+// Force React to reload service tickets by dispatching event
+window.dispatchEvent(new CustomEvent('aj-ticket-saved',{detail:ticket}));
+// Click Service Tickets tab to refresh
+var sb=[].slice.call(document.querySelectorAll('button')).find(function(b){return b.textContent.includes('Service Ticket')&&!b.textContent.includes('+');});
+if(sb)sb.click();
+var toast=document.createElement('div');
+toast.className='aj-toast';
+toast.style.background='#c9a84c';
+toast.textContent='Quote awarded! Service ticket created.';
+document.body.appendChild(toast);
+setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},4000);
+},
+deleteQuote:function(qid){
+if(!confirm('Delete this quote?'))return;
+var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+localStorage.setItem('takeoff_quotes',JSON.stringify(quotes.filter(function(x){return x.id!==qid;})));
+this.renderQuotesList();
+},
+renderQuotesList:function(){
+var el=document.getElementById('aj-quotes-panel');
+if(!el)return;
+var quotes=JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
+if(quotes.length===0){el.innerHTML='<div style="color:#6a8fb0;font-size:12px;padding:16px 0;text-align:center">No quotes yet. Click Est. Quote to build one.</div>';return;}
+var S=this;
+var rows=quotes.slice().reverse().map(function(q){
+  var isAwarded=q.status==='Awarded';
+  var statusColor=isAwarded?'#c9a84c':'#4fb3d9';
+  var dt=new Date(q.createdAt).toLocaleDateString();
+  return '<div style="background:#152a45;border:1px solid #1e4272;border-radius:8px;padding:12px 14px;margin-bottom:8px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'+
+    '<div style="display:flex;align-items:center;gap:10px">'+
+    '<span style="font-size:10px;font-weight:700;color:#c9a84c;letter-spacing:1px">'+q.quoteNumber+'</span>'+
+    '<span style="font-size:11px;font-weight:600;color:#e8f0f8">'+( q.customer||'(no customer)')+'</span>'+
+    '<span style="font-size:9px;color:#6a8fb0">'+q.type+'</span>'+
+    '</div>'+
+    '<div style="display:flex;align-items:center;gap:8px">'+
+    '<span style="font-size:11px;font-weight:700;color:#34d399">'+S.ff(q.bidLow)+'</span>'+
+    '<span style="font-size:10px;color:#6a8fb0">-</span>'+
+    '<span style="font-size:11px;font-weight:700;color:#f59e0b">'+S.ff(q.bidHigh)+'</span>'+
+    '<span style="font-size:8px;padding:2px 8px;border-radius:10px;background:'+statusColor+'22;color:'+statusColor+';font-weight:700;letter-spacing:1px">'+q.status.toUpperCase()+'</span>'+
+    '</div></div>'+
+    '<div style="font-size:9px;color:#6a8fb0;margin-bottom:8px">'+( q.address||'')+'  ·  '+dt+'</div>'+
+    '<div style="font-size:9px;color:#6a8fb0;white-space:pre-wrap;max-height:40px;overflow:hidden;margin-bottom:8px">'+q.notes.slice(0,120)+(q.notes.length>120?'...':'' )+'</div>'+
+    (!isAwarded?
+    '<div style="display:flex;gap:8px"><button onclick="window.AJEst.awardQuote(\''+ q.id +'\')" style="padding:5px 14px;border-radius:5px;background:#c9a84c;border:none;color:#0a1628;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer">Award → Service Ticket</button>'+
+    '<button onclick="window.AJEst.deleteQuote(\''+ q.id +'\')" style="padding:5px 12px;border-radius:5px;background:transparent;border:1px solid #ef444455;color:#ef4444;font-family:inherit;font-size:10px;cursor:pointer">Delete</button></div>':
+    '<div style="font-size:9px;color:#c9a84c;font-weight:700">Awarded '+new Date(q.awardedAt).toLocaleDateString()+'</div>');
+  +'</div>';
+}).join('');
+el.innerHTML=rows;
+},
+drawTots:function() {
+  var el = document.getElementById('aj-tw'); if (!el) return;
+  var t = this.tots();
+  var pct = t.pos, bw = Math.max(2,Math.min(97,pct));
+  var lo = this.ff(t.rLo), hi = this.ff(t.rHi), q = this.ff(t.quote);
+  el.innerHTML =
+    '<div style="border-top:2px solid #1e4272;background:#0a1628;padding:10px 14px">' +
+      '<div style="display:grid;grid-template-columns:1fr 110px 110px;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #1e4272">' +
+        '<div style="font-size:9px;color:#6a8fb0;letter-spacing:1.5px;text-transform:uppercase">Market Range Total</div>' +
+        '<div style="text-align:right"><div style="font-size:8px;color:#34d399;letter-spacing:1px;margin-bottom:1px">SUM LOW</div>' +
+        '<div style="font-size:18px;font-weight:700;color:#34d399">' + lo + '</div></div>' +
+        '<div style="text-align:right"><div style="font-size:8px;color:#f59e0b;letter-spacing:1px;margin-bottom:1px">SUM HIGH</div>' +
+        '<div style="font-size:18px;font-weight:700;color:#f59e0b">' + hi + '</div></div>' +
+      '</div>' +
+      '<div style="font-size:8px;color:#c9a84c;letter-spacing:1px;margin-bottom:6px">Your Quote Position \u2014 ' + pct + '%</div>' +
+      '<div style="position:relative;height:10px;background:#1e4272;border-radius:5px;margin-bottom:4px">' +
+        '<div style="position:absolute;left:0;width:' + bw + '%;height:100%;background:linear-gradient(90deg,#34d399,#c9a84c);border-radius:5px;transition:width .15s"></div>' +
+        '<div style="position:absolute;left:' + bw + '%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;background:#122340;border:2px solid #c9a84c;border-radius:50%;box-shadow:0 0 6px #c9a84c99"></div>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:8px;color:#6a8fb0;margin-bottom:2px"><span>' + lo + '</span><span>' + hi + '</span></div>' +
+    '</div>' +
+    '<div style="background:linear-gradient(90deg,#c9a84c22,transparent);border-top:2px solid #c9a84c;padding:12px 14px;display:grid;grid-template-columns:1fr auto;align-items:center">' +
+      '<div><div style="font-size:9px;font-weight:700;color:#c9a84c;letter-spacing:1.5px;text-transform:uppercase">Your Quoted Price</div>' +
+      '<div style="font-size:8px;color:#6a8fb0;margin-top:2px">Slides between ' + lo + ' \u2013 ' + hi + '</div></div>' +
+      '<div style="font-size:28px;font-weight:700;color:#c9a84c">' + q + '</div>' +
+    '</div>';
+},
 saveQuote:function(){
 var S=this,t=this.tots();
 if(this.bidItems.length===0)return;
