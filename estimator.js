@@ -224,6 +224,24 @@ var E = {
   var ex=document.getElementById('aj-est-overlay');if(ex)ex.remove();
   document.body.insertAdjacentHTML('beforeend',html);
   this.drawTots();
+  // Re-populate edit fields if in edit mode
+  if (this._editingId && this._editQuoteData) {
+    var _eq = this._editQuoteData;
+    setTimeout(function(){
+      var fc=document.getElementById('aj-fc'), fa=document.getElementById('aj-fa'),
+          ft=document.getElementById('aj-ft'), fe=document.getElementById('aj-fe'),
+          fn=document.getElementById('aj-fn'), fp=document.getElementById('aj-fp');
+      if(fc) fc.value=_eq.customer||'';
+      if(fa) fa.value=_eq.address||'';
+      if(ft) ft.value=_eq.technician||'';
+      if(fe) fe.value=_eq.equipment||'';
+      if(fn) fn.value=_eq.notes||'';
+      if(fp) fp.value=_eq.priority||'Normal';
+      // Change Save button to Update Quote
+      var sv=document.querySelector('.aj-sv');
+      if(sv){sv.textContent='Update Quote';sv.onclick=function(){window.AJEst._ajSaveEdit();};}
+    },50);
+  }
 }
 };
 
@@ -390,6 +408,7 @@ window._ajEditQuote = function(id) {
   window.AJEst.contingency = q.contingency || 5;
   window.AJEst.scope = q.scope || 'commercial';
   window.AJEst._editingId = id;
+  window.AJEst._editQuoteData = q;
   window.AJEst.selCat = null;
   window.AJEst.selIdx = null;
   window.AJEst.draw();
