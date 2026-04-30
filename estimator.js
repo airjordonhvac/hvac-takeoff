@@ -165,6 +165,7 @@ var E = {
   },
 
   saveQuote: function () {
+        if (this._editingId) { this._ajSaveEdit(); return; }
     var t = this.tots();
     if (this.bidItems.length === 0) return;
     var li = this.bidItems.map(function (x) { return x.label + ': ' + ff(x.lo) + ' - ' + ff(x.hi); }).join('\n');
