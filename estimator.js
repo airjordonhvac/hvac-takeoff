@@ -438,9 +438,7 @@ E._ajSaveEdit = function() {
   // Build updated quote — preserve original id and quoteNumber
   var lo=0, hi=0;
   this.bidItems.forEach(function(x){lo+=x.lo;hi+=x.hi;});
-  var mk=this.markup/100, ct=this.contingency/100;
-  var qlo=Math.round(lo*(1+mk)*(1+ct)), qhi=Math.round(hi*(1+mk)*(1+ct));
-  var qp=Math.round((qlo+qhi)/2);
+  var t=this.tots(); var qp=t.quote;
   var fc=document.getElementById('aj-fc'), fa=document.getElementById('aj-fa'),
       ft=document.getElementById('aj-ft'), fe=document.getElementById('aj-fe'),
       fn=document.getElementById('aj-fn'), fp=document.getElementById('aj-fp');
