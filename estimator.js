@@ -407,11 +407,11 @@ window._ajEditQuote = function(id) {
     if(fp) fp.value = q.priority||'Normal';
     // Change Save button label to Update Quote
     var sv = document.querySelector('.aj-sv');
-    if(sv) { sv.textContent='Update Quote'; sv.onclick=function(){window.AJEst._ajSaveEdit();}; }
+    if(sv) { sv.textContent='Update Quote'; sv.onclick=function(){E._ajSaveEdit();}; }
   }, 200);
 };
 
-window.AJEst._ajSaveEdit = function() {
+E._ajSaveEdit = function() {
   var id = this._editingId;
   if(!id) { this.saveQuote(); return; }
   var quotes = JSON.parse(localStorage.getItem('takeoff_quotes')||'[]');
