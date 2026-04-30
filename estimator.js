@@ -1,7 +1,5 @@
 (function () {
-REP = REP;
-RPR = RPR;
-ADD = ADD;'use strict';
+'use strict';
 
 // ── CONFIG ────────────────────────────────────────────────────────────
 var SB = (function () {
