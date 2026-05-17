@@ -204,15 +204,15 @@
     border: none;
     color: var(--muted);
     font-family: var(--mono);
-    font-size: 14px;
+    font-size: 18px;
     cursor: pointer;
-    padding: 4px 6px;
+    padding: 4px 8px;
     line-height: 1;
-    opacity: 0;
-    transition: opacity 0.15s ease;
+    opacity: 0.4;
+    transition: opacity 0.15s ease, color 0.15s ease;
   }
-  .weather-block:hover .remove-btn { opacity: 1; }
-  .weather-block .remove-btn:hover { color: var(--red); }
+  .weather-block .remove-btn:hover { opacity: 1; color: var(--red); }
+  .weather-block .remove-btn:active { opacity: 1; color: var(--red); }
 
   /* ===== SECTION HEADINGS ===== */
   .section-head {
