@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Brief · Air Jordon HVAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://zottjoyiczglrkaodjfr.supabase.co">
+<style>
+  :root {
+    --navy:        #0B1A2E;
+    --navy-deep:   #060F1E;
+    --navy-soft:   #16263F;
+    --sky:         #6FB8E8;
+    --sky-bright:  #9DD2F5;
+    --gold:        #D4A645;
+    --gold-bright: #E8C16B;
+    --bone:        #F4EFE6;
+    --paper:       #FAF7F1;
+    --ink:         #1A1410;
+    --ink-soft:    #4A4038;
+    --muted:       #8A8278;
+    --rule:        #D9CFBF;
+    --green:       #2E7D4F;
+    --red:         #B43830;
+    --display: 'Bebas Neue', sans-serif;
+    --serif:   'Fraunces', Georgia, serif;
+    --mono:    'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(26,20,16,0.025) 1px, transparent 1px);
+    background-size: 3px 3px;
+    pointer-events: none; z-index: 100;
+    mix-blend-mode: multiply;
+  }
+
+  /* ===== MASTHEAD ===== */
+  .masthead {
+    padding: 28px 32px 18px;
+    border-bottom: 3px double var(--ink);
+    background: var(--paper);
+  }
+  .masthead-top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .masthead-top .dot {
+    display: inline-block; width: 6px; height: 6px;
+    background: var(--red); border-radius: 50%;
+    margin-right: 6px; vertical-align: 1px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  h1.brief {
+    font-family: var(--display);
+    font-size: clamp(48px, 8vw, 96px);
+    letter-spacing: 0.01em;
+    line-height: 0.9;
+    color: var(--ink);
+  }
+  h1.brief .amp {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--gold);
+  }
+  .masthead-sub {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-top: 10px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .masthead-sub .greeting { font-weight: 500; font-style: normal; color: var(--ink); }
+  .masthead-sub .verse-ref { color: var(--gold); font-weight: 600; font-style: normal; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* ===== GRID ===== */
+  .container {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 0 32px 48px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .col { padding: 24px 0; }
+  .col + .col { border-left: 1px solid var(--rule); padding-left: 24px; }
+  .col:not(:last-child) { padding-right: 24px; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .grid-2 > .col + .col { border-left: 1px solid var(--rule); padding-left: 24px; }
+  .grid-2 > .col:not(:last-child) { padding-right: 24px; }
+
+  /* Full-width section rows (devotion + focus) */
+  .devotion-row, .focus-row {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .focus-row .focus-list { max-width: 720px; }
+
+  /* ===== CITY PICKER ===== */
+  .add-city-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .add-city-btn:hover { background: var(--gold); color: var(--navy); }
+  .city-picker {
+    background: var(--bone);
+    border-left: 3px solid var(--gold);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .city-picker input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+  }
+  .city-picker input:focus { border-color: var(--navy); }
+  .city-results { margin-top: 8px; max-height: 220px; overflow-y: auto; }
+  .city-results .opt {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--ink);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .city-results .opt:hover { background: var(--paper); }
+  .city-results .opt .region {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .city-results .empty {
+    padding: 8px 10px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .weather-block { position: relative; }
+  .weather-block .remove-btn {
+    position: absolute;
+    top: 2px; right: 0;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .weather-block:hover .remove-btn { opacity: 1; }
+  .weather-block .remove-btn:hover { color: var(--red); }
+
+  /* ===== SECTION HEADINGS ===== */
+  .section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .section-head h2 {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .section-head .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  /* ===== CHECK-IN ===== */
+  .checkin-card {
+    background: var(--navy);
+    color: var(--bone);
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    border-left: 4px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+  .checkin-card::before {
+    content: '';
+    position: absolute; right: -40px; top: -40px;
+    width: 160px; height: 160px;
+    border: 1px solid rgba(212,166,69,0.15);
+    border-radius: 50%;
+  }
+  .checkin-card::after {
+    content: '';
+    position: absolute; right: -20px; top: -20px;
+    width: 120px; height: 120px;
+    border: 1px solid rgba(212,166,69,0.1);
+    border-radius: 50%;
+  }
+  .checkin-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .checkin-prompt {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 400;
+    color: var(--bone);
+    position: relative; z-index: 1;
+  }
+  .checkin-theme {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--sky);
+    margin-top: 12px;
+    position: relative; z-index: 1;
+  }
+  .energy-row {
+    display: flex; gap: 6px; margin-top: 16px;
+    position: relative; z-index: 1;
+  }
+  .energy-row .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sky);
+    margin-right: 8px;
+    align-self: center;
+  }
+  .energy-btn {
+    width: 24px; height: 24px;
+    border: 1px solid rgba(159,210,245,0.4);
+    background: transparent;
+    color: var(--bone);
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .energy-btn:hover { background: rgba(159,210,245,0.15); border-color: var(--sky); }
+  .energy-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 600; }
+
+  /* ===== ASTROLOGY (Sky Report) ===== */
+  .astro-card {
+    background: linear-gradient(170deg, #0A1628 0%, #1A1240 70%, #2A1640 100%);
+    color: var(--bone);
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+  }
+  .astro-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(232,193,107,0.7), transparent 40%),
+      radial-gradient(1px 1px at 70% 20%, rgba(159,210,245,0.5), transparent 40%),
+      radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.4), transparent 40%),
+      radial-gradient(1px 1px at 85% 60%, rgba(232,193,107,0.5), transparent 40%),
+      radial-gradient(2px 2px at 60% 85%, rgba(159,210,245,0.4), transparent 40%),
+      radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.6), transparent 40%),
+      radial-gradient(1px 1px at 90% 35%, rgba(255,255,255,0.5), transparent 40%);
+    pointer-events: none;
+  }
+  .astro-card > * { position: relative; z-index: 1; }
+  .astro-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .astro-headline {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    color: var(--bone);
+    line-height: 1.05;
+    margin-bottom: 4px;
+  }
+  .astro-subhead {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--sky-bright);
+    margin-bottom: 14px;
+  }
+  .astro-sky {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 14px;
+    padding: 10px 0 12px;
+    border-top: 1px solid rgba(212,166,69,0.25);
+    border-bottom: 1px solid rgba(212,166,69,0.25);
+    margin-bottom: 14px;
+  }
+  .astro-sky-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--bone);
+  }
+  .astro-sky-row .pl { color: var(--gold); letter-spacing: 0.05em; }
+  .astro-sky-row .pos { color: var(--bone); }
+  .astro-aspects {
+    margin-bottom: 14px;
+  }
+  .astro-aspect {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px dotted rgba(255,255,255,0.08);
+    font-family: var(--serif);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .astro-aspect:last-child { border-bottom: none; }
+  .astro-aspect .glyph {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    flex-shrink: 0;
+    width: 80px;
+    letter-spacing: 0.05em;
+  }
+  .astro-aspect .text {
+    color: var(--bone);
+  }
+  .astro-aspect.harmonious .glyph { color: #8DD9A7; }
+  .astro-aspect.challenging .glyph { color: #E89070; }
+  .astro-aspect.neutral .glyph { color: var(--sky-bright); }
+  .astro-reading {
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--sky-bright);
+    border-left: 2px solid var(--gold);
+    padding-left: 14px;
+    margin-top: 4px;
+  }
+  .astro-reading .lbl {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .astro-empty {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 8px 0;
+  }
+  @media (max-width: 900px) {
+    .astro-sky { grid-template-columns: 1fr; }
+    .astro-aspect .glyph { width: 70px; }
+  }
+
+  /* ===== WEATHER ===== */
+  .weather-block { margin-bottom: 16px; }
+  .weather-block:last-child { margin-bottom: 0; }
+  .weather-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .weather-loc {
+    font-family: var(--display);
+    font-size: 18px;
+    letter-spacing: 0.03em;
+  }
+  .weather-loc .sublabel {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0;
+    margin-left: 6px;
+  }
+  .weather-temp {
+    font-family: var(--display);
+    font-size: 38px;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .weather-temp .unit {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    vertical-align: top;
+    margin-left: 2px;
+  }
+  .weather-desc {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .weather-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+  .weather-stats div { display: flex; flex-direction: column; }
+  .weather-stats .v { color: var(--ink); font-size: 13px; font-weight: 500; margin-top: 2px; }
+  .weather-stats .l { text-transform: uppercase; color: var(--muted); font-size: 9px; }
+  .field-flag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 8px;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .field-flag.warn { background: var(--red); color: var(--bone); }
+  .field-flag.ok { background: var(--green); color: var(--bone); }
+
+  /* ===== MARKETS ===== */
+  .markets-table {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 12px;
+    border-collapse: collapse;
+  }
+  .markets-table tr {
+    border-bottom: 1px solid var(--rule);
+  }
+  .markets-table tr:last-child { border-bottom: none; }
+  .markets-table td {
+    padding: 8px 4px;
+    vertical-align: baseline;
+  }
+  .markets-table .sym {
+    font-weight: 600;
+    color: var(--ink);
+    width: 28%;
+  }
+  .markets-table .price {
+    text-align: right;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .markets-table .chg {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    width: 22%;
+  }
+  .markets-table .chg.up { color: var(--green); }
+  .markets-table .chg.dn { color: var(--red); }
+  .markets-table .name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    font-weight: 400;
+  }
+  .market-group-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 12px 0 4px;
+    border-bottom: 1px solid var(--gold);
+    margin-top: 4px;
+  }
+  .market-group-label:first-child { margin-top: 0; }
+
+  /* ===== NEWS ===== */
+  .news-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .news-item:last-child { border-bottom: none; }
+  .news-item .src {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 3px;
+  }
+  .news-item .headline {
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.3;
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+    display: block;
+  }
+  .news-item .headline:hover { color: var(--navy); text-decoration: underline; text-decoration-color: var(--gold); }
+  .news-item .time {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* ===== KPI / SNAPSHOT ===== */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .kpi-card {
+    background: var(--bone);
+    padding: 14px 16px;
+    border-top: 3px solid var(--navy);
+  }
+  .kpi-card.accent { border-top-color: var(--gold); }
+  .kpi-card.warn { border-top-color: var(--red); }
+  .kpi-card.ok { border-top-color: var(--green); }
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .kpi-value {
+    font-family: var(--display);
+    font-size: 32px;
+    line-height: 1;
+    color: var(--ink);
+    margin: 6px 0 4px;
+    letter-spacing: 0.01em;
+  }
+  .kpi-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .kpi-card.warn .kpi-value { color: var(--red); }
+
+  .milestone-strip {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: var(--navy);
+    color: var(--bone);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px;
+  }
+  .milestone-strip .lbl {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .milestone-strip .next {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--bone);
+  }
+  .milestone-strip .next b { font-weight: 600; color: var(--sky-bright); }
+  .milestone-strip .days {
+    font-family: var(--display);
+    font-size: 30px;
+    color: var(--gold-bright);
+    line-height: 1;
+  }
+  .milestone-strip .days small { font-size: 11px; font-family: var(--mono); color: var(--bone); display: block; letter-spacing: 0.1em; }
+
+  /* ===== FOCUS ===== */
+  .focus-list {
+    list-style: none;
+    counter-reset: focus;
+  }
+  .focus-list li {
+    counter-increment: focus;
+    padding: 12px 0 12px 36px;
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  .focus-list li:last-child { border-bottom: none; }
+  .focus-list li::before {
+    content: counter(focus, decimal-leading-zero);
+    position: absolute; left: 0; top: 12px;
+    font-family: var(--display);
+    font-size: 24px;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+  }
+  .focus-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink);
+    padding: 0;
+    outline: none;
+  }
+  .focus-input::placeholder {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ===== DEVOTION ===== */
+  .devotion-card {
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-soft) 100%);
+    color: var(--bone);
+    padding: 26px 28px;
+    position: relative;
+    border-bottom: 4px solid var(--gold);
+  }
+  .devotion-card .ornament {
+    position: absolute; top: 20px; right: 24px;
+    font-family: var(--serif); font-style: italic;
+    color: var(--gold); font-size: 36px; opacity: 0.4;
+    line-height: 1;
+  }
+  .devotion-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .verse-text {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.45;
+    font-weight: 400;
+    color: var(--bone);
+    margin-bottom: 8px;
+    max-width: 90%;
+  }
+  .verse-text::before { content: '"'; color: var(--gold); font-size: 32px; line-height: 0; vertical-align: -10px; margin-right: 2px; font-style: italic; }
+  .verse-text::after { content: '"'; color: var(--gold); font-size: 32px; line-height: 0; vertical-align: -10px; margin-left: 2px; font-style: italic; }
+  .verse-cite {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sky);
+    margin-bottom: 16px;
+  }
+  .reflection {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--sky-bright);
+    border-left: 2px solid var(--gold);
+    padding-left: 16px;
+    max-width: 88%;
+  }
+  .reflection .lbl {
+    display: block;
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 24px 32px 16px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  footer a { color: var(--gold); text-decoration: none; margin: 0 8px; }
+
+  /* ===== LOADING / EMPTY ===== */
+  .loading {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding: 8px 0;
+    font-style: italic;
+  }
+  .loading::after {
+    content: '...';
+    animation: ellipsis 1.4s infinite;
+  }
+  @keyframes ellipsis {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 900px) {
+    .grid, .grid-2 { grid-template-columns: 1fr; }
+    .col + .col { border-left: none; border-top: 1px solid var(--rule); padding-left: 0; padding-top: 24px; }
+    .col:not(:last-child) { padding-right: 0; padding-bottom: 0; }
+    .container { padding: 0 20px 40px; }
+    .masthead { padding: 20px 20px 14px; }
+    h1.brief { font-size: 56px; }
+    .kpi-grid { grid-template-columns: 1fr; }
+    .weather-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: reveal 0.6s ease forwards;
+  }
+  @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+  .reveal:nth-child(1) { animation-delay: 0.05s; }
+  .reveal:nth-child(2) { animation-delay: 0.12s; }
+  .reveal:nth-child(3) { animation-delay: 0.19s; }
+  .reveal:nth-child(4) { animation-delay: 0.26s; }
+</style>
+</head>
+<body>
+
+<!-- ============ MASTHEAD ============ -->
+<header class="masthead">
+  <div class="masthead-top">
+    <div><span class="dot"></span>LIVE · <span id="now-time">--:--</span> CT</div>
+    <div>VOL. I · NO. <span id="issue-no">001</span></div>
+    <div id="now-date">Loading...</div>
+  </div>
+  <h1 class="brief">The Morning <span class="amp">&</span> Brief</h1>
+  <div class="masthead-sub">
+    <div class="greeting">Good morning, Jordon.</div>
+    <div class="verse-ref">A daily intelligence sheet · Air Jordon HVAC</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ============ DEVOTION (full-width, top) ============ -->
+  <div class="devotion-row reveal">
+    <div class="section-head">
+      <h2>Devotion</h2>
+      <span class="meta">Daily Word</span>
+    </div>
+    <div class="devotion-card">
+      <div class="ornament">❦</div>
+      <div class="devotion-kicker">Today's Reading</div>
+      <div class="verse-text" id="verse-text">Loading scripture…</div>
+      <div class="verse-cite" id="verse-cite">—</div>
+      <div class="reflection">
+        <span class="lbl">Reflection</span>
+        <span id="reflection-text">Loading…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ROW 1: CHECK-IN + WEATHER + MARKETS ============ -->
+  <div class="grid">
+
+    <!-- COLUMN 1: CHECK-IN + WEATHER -->
+    <div class="col reveal">
+      <div class="section-head">
+        <h2>Field Conditions</h2>
+        <span class="meta">
+          <button id="add-city-btn" class="add-city-btn">+ ADD CITY</button>
+        </span>
+      </div>
+
+      <!-- City picker modal -->
+      <div id="city-picker" class="city-picker" hidden>
+        <input type="text" id="city-search" placeholder="Search city (e.g. Austin, Jacksboro)…" autocomplete="off">
+        <div id="city-results" class="city-results"></div>
+      </div>
+
+      <div class="checkin-card">
+        <div class="checkin-kicker">Morning Check-In</div>
+        <div class="checkin-prompt" id="checkin-prompt">Loading today's prompt…</div>
+        <div class="checkin-theme" id="checkin-theme"></div>
+        <div class="energy-row">
+          <span class="label">Energy</span>
+          <button class="energy-btn" data-e="1">1</button>
+          <button class="energy-btn" data-e="2">2</button>
+          <button class="energy-btn" data-e="3">3</button>
+          <button class="energy-btn" data-e="4">4</button>
+          <button class="energy-btn" data-e="5">5</button>
+          <button class="energy-btn" data-e="6">6</button>
+          <button class="energy-btn" data-e="7">7</button>
+          <button class="energy-btn" data-e="8">8</button>
+          <button class="energy-btn" data-e="9">9</button>
+          <button class="energy-btn" data-e="10">10</button>
+        </div>
+      </div>
+
+      <div class="astro-card" id="astro-card">
+        <div class="astro-kicker">Sky Report · The Astrological Weather</div>
+        <div class="astro-headline" id="astro-headline">Reading the sky…</div>
+        <div class="astro-subhead" id="astro-subhead"></div>
+        <div class="astro-sky" id="astro-sky"></div>
+        <div class="astro-aspects" id="astro-aspects"></div>
+        <div class="astro-reading" id="astro-reading"></div>
+      </div>
+
+      <div id="weather-container">
+        <div class="loading">Pulling weather</div>
+      </div>
+    </div>
+
+    <!-- COLUMN 2: NEWS (general) -->
+    <div class="col reveal">
+      <div class="section-head">
+        <h2>The World This Morning</h2>
+        <span class="meta">Top Stories</span>
+      </div>
+      <div id="news-general">
+        <div class="loading">Fetching headlines</div>
+      </div>
+    </div>
+
+    <!-- COLUMN 3: MARKETS -->
+    <div class="col reveal">
+      <div class="section-head">
+        <h2>Markets</h2>
+        <span class="meta" id="markets-time">Live</span>
+      </div>
+      <div id="markets-container">
+        <div class="loading">Pulling tape</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ ROW 2: AJH SNAPSHOT + AI WIRE ============ -->
+  <div class="grid-2">
+
+    <div class="col reveal">
+      <div class="section-head">
+        <h2>Air Jordon HVAC · Snapshot</h2>
+        <span class="meta" id="kpi-time">Loading</span>
+      </div>
+      <div id="kpi-container">
+        <div class="loading">Reading Supabase</div>
+      </div>
+      <div class="milestone-strip" id="milestone-strip">
+        <div>
+          <div class="lbl">Next Milestone</div>
+          <div class="next" id="milestone-text">Chase Hudson Oaks · <b>HVAC Startup</b></div>
+        </div>
+        <div class="days" id="milestone-days">--<small>DAYS</small></div>
+      </div>
+    </div>
+
+    <div class="col reveal">
+      <div class="section-head">
+        <h2>AI Wire</h2>
+        <span class="meta">Models · Tools · Industry</span>
+      </div>
+      <div id="news-ai">
+        <div class="loading">Fetching AI desk</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ ROW 3: TODAY'S FOCUS (full-width) ============ -->
+  <div class="focus-row reveal">
+    <div class="section-head">
+      <h2>Today's Focus</h2>
+      <span class="meta">Top 3 · <span id="today-short"></span></span>
+    </div>
+    <ol class="focus-list">
+      <li><input class="focus-input" type="text" data-focus="1" placeholder="Most important thing today…"></li>
+      <li><input class="focus-input" type="text" data-focus="2" placeholder="Second priority…"></li>
+      <li><input class="focus-input" type="text" data-focus="3" placeholder="Third priority…"></li>
+    </ol>
+  </div>
+
+</div>
+
+<footer>
+  Air Jordon HVAC LLC · TX TACLA150420E · LA CL.02359 · MBE Certified
+  &nbsp;·&nbsp; <a href="https://airjordonhvac.github.io/hvac-financials">Financial Hub</a>
+  <a href="https://airjordonhvac.github.io/hvac-takeoff">Takeoff</a>
+</footer>
+
+<!-- =============================================================== -->
+<!-- =====================  CONFIG  ================================ -->
+<!-- =============================================================== -->
+<script>
+  /* --------------------------------------------------------------
+     EDIT THESE TO CUSTOMIZE
+     -------------------------------------------------------------- */
+  const CONFIG = {
+    // Add a free NewsAPI.org key here (https://newsapi.org/register, 30 seconds)
+    // Page works without it — industry RSS still loads, general news shows a "set key" message
+    NEWSAPI_KEY: '48fb5baba9194075a122a350a85293fd',
+
+    // Financial Modeling Prep — free 250 calls/day, no card required
+    // Sign up at https://site.financialmodelingprep.com/developer/docs (30 seconds)
+    // Powers: indices, materials watchlist, top gainers/losers
+    FMP_KEY: 'Z6hGhTh8UBi6tEduyZOMSNDhpJNESUis',
+
+    // Supabase — already public-anon, safe to ship in browser
+    SUPABASE_URL: 'https://zottjoyiczglrkaodjfr.supabase.co',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvdHRqb3lpY3pnbHJrYW9kamZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNDk3NTAsImV4cCI6MjA4OTgyNTc1MH0.5LycZbEK23JVyHPvSG3JHqLwumoFLDCkZzLQ4ERLqTE', // paste your anon key here
+
+    // Default weather locations — user can add/remove via UI
+    DEFAULT_LOCATIONS: [
+      { name: 'DALLAS',        sub: 'HQ',                          lat: 32.7767, lon: -96.7970 },
+      { name: 'HUDSON OAKS',   sub: 'Chase Branch · JM Stitt',     lat: 32.7560, lon: -97.7048 },
+    ],
+
+    // AI news RSS feeds
+    AI_FEEDS: [
+      { src: 'TechCrunch AI',     url: 'https://techcrunch.com/category/artificial-intelligence/feed/' },
+      { src: 'The Verge AI',      url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml' },
+      { src: 'MIT Tech Review',   url: 'https://www.technologyreview.com/feed/' },
+      { src: 'VentureBeat AI',    url: 'https://venturebeat.com/category/ai/feed/' },
+    ],
+
+    // World / business news RSS feeds — keyless, browser-friendly
+    WORLD_FEEDS: [
+      { src: 'Reuters',           url: 'https://feeds.reuters.com/reuters/businessNews' },
+      { src: 'NPR Business',      url: 'https://feeds.npr.org/1006/rss.xml' },
+      { src: 'BBC Business',      url: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
+      { src: 'CNBC Top News',     url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
+      { src: 'AP Top News',       url: 'https://feeds.apnews.com/rss/apf-topnews' },
+    ],
+
+    // Chase milestone for the strip
+    MILESTONE: { name: 'Chase Hudson Oaks · HVAC Startup', date: '2026-05-31' },
+  };
+
+  /* --------------------------------------------------------------
+     DATE / TIME HEADER
+     -------------------------------------------------------------- */
+  function fmtDate() {
+    const now = new Date();
+    const opts = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+    document.getElementById('now-date').textContent =
+      now.toLocaleDateString('en-US', opts).toUpperCase();
+    const tShort = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const todayEl = document.getElementById('today-short');
+    if (todayEl) todayEl.textContent = tShort;
+
+    // Issue number = days since 2026-01-01
+    const start = new Date('2026-01-01');
+    const issue = Math.floor((now - start) / 86400000) + 1;
+    document.getElementById('issue-no').textContent = String(issue).padStart(3, '0');
+  }
+  function fmtClock() {
+    const now = new Date();
+    const t = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Chicago' });
+    document.getElementById('now-time').textContent = t;
+  }
+  fmtDate(); fmtClock();
+  setInterval(fmtClock, 30000);
+
+  /* --------------------------------------------------------------
+     MORNING CHECK-IN
+     Rotation tuned to Jordon's chart:
+       Aquarius Sun (9th) — vision/systems/long-range
+       Scorpio Moon (5th) — channeled intensity, creative output
+       Cancer Asc + Mars 1st — protective leader carrying weight
+     -------------------------------------------------------------- */
+  const PROMPTS = [
+    { p: "What's the one decision today that future-Jordon will thank you for?", t: "Aquarius vision · play the long game" },
+    { p: "Energy at 10 — where does it cut deepest today?",                       t: "Scorpio Moon · channel the intensity" },
+    { p: "Who on the crew needs to feel covered before noon?",                    t: "Cancer rising · the people you carry" },
+    { p: "What's the system you'd build if today were boring?",                   t: "Aquarius · build the machine" },
+    { p: "Where are you trading depth for speed — and is it worth it?",           t: "Scorpio Moon · honor the deep work" },
+    { p: "What would 'done' look like by 6 PM?",                                  t: "Mars in 1st · the line in the sand" },
+    { p: "Which open loop is quietly eating attention? Close it first.",         t: "Aquarius · clear the channel" },
+    { p: "If you only protect one thing today, what is it?",                      t: "Cancer rising · perimeter of the home" },
+    { p: "Where does the easy answer cost you on the back end?",                  t: "Scorpio · see what's beneath" },
+    { p: "Which conversation are you avoiding? It compounds.",                    t: "Mars · the one move you don't want to make" },
+    { p: "What's one thing your future bonding agent will see in today?",         t: "Saturn in Aquarius · disciplined ambition" },
+    { p: "Who haven't you thanked this week? Send it before the morning is gone.", t: "Jupiter in Libra · grow through relationship" },
+    { p: "What number should you know before the first call?",                    t: "Mercury · the data you walk in with" },
+    { p: "Where can you delegate today and free up Friday?",                      t: "9th house · trade activity for altitude" },
+    { p: "What's the unsexy task that quietly moves the company?",                t: "Saturn · the work no one applauds" },
+    { p: "If today were a chapter title, what is it?",                            t: "Mercury in Pisces · name what you're in" },
+    { p: "What's worth saying 'no' to before 9 AM?",                              t: "Mars · guard the edges" },
+    { p: "Where are you the bottleneck? Solve that first.",                       t: "Aquarius · the system over the self" },
+    { p: "What does 'a great day' look like — not perfect, great?",               t: "Venus in Aries · ambition with appetite" },
+    { p: "What would you tell yourself five years ago about today?",              t: "9th house · long view, daily move" },
+  ];
+
+  // Day-stable selection so it's consistent through the day
+  function dayIndex(arr) {
+    const d = new Date();
+    const seed = d.getFullYear() * 1000 + Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+    return seed % arr.length;
+  }
+  function loadCheckin() {
+    const pick = PROMPTS[dayIndex(PROMPTS)];
+    document.getElementById('checkin-prompt').textContent = pick.p;
+    document.getElementById('checkin-theme').textContent = pick.t;
+
+    // Restore energy if logged today
+    const key = 'energy-' + new Date().toISOString().slice(0,10);
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      const btn = document.querySelector(`.energy-btn[data-e="${saved}"]`);
+      if (btn) btn.classList.add('active');
+    }
+    document.querySelectorAll('.energy-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.energy-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        localStorage.setItem(key, b.dataset.e);
+      });
+    });
+  }
+  loadCheckin();
+
+  /* --------------------------------------------------------------
+     FOCUS — persist to localStorage by date
+     -------------------------------------------------------------- */
+  (function loadFocus() {
+    const dayKey = 'focus-' + new Date().toISOString().slice(0,10);
+    const saved = JSON.parse(localStorage.getItem(dayKey) || '{}');
+    document.querySelectorAll('.focus-input').forEach(inp => {
+      const k = inp.dataset.focus;
+      if (saved[k]) inp.value = saved[k];
+      inp.addEventListener('input', () => {
+        const cur = JSON.parse(localStorage.getItem(dayKey) || '{}');
+        cur[k] = inp.value;
+        localStorage.setItem(dayKey, JSON.stringify(cur));
+      });
+    });
+  })();
+
+  /* --------------------------------------------------------------
+     WEATHER — Open-Meteo (no API key) + city picker
+     -------------------------------------------------------------- */
+  const WCODES = {
+    0:  'Clear sky',         1: 'Mainly clear',    2: 'Partly cloudy',  3: 'Overcast',
+    45: 'Fog',               48: 'Rime fog',
+    51: 'Light drizzle',     53: 'Drizzle',        55: 'Heavy drizzle',
+    61: 'Light rain',        63: 'Rain',           65: 'Heavy rain',
+    71: 'Light snow',        73: 'Snow',           75: 'Heavy snow',
+    80: 'Rain showers',      81: 'Rain showers',   82: 'Violent showers',
+    95: 'Thunderstorm',      96: 'Storm w/ hail',  99: 'Severe storm',
+  };
+
+  const CITIES_KEY = 'morning-cities';
+  function getCities() {
+    const saved = localStorage.getItem(CITIES_KEY);
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) { /* fall through */ }
+    }
+    return CONFIG.DEFAULT_LOCATIONS;
+  }
+  function saveCities(cities) {
+    localStorage.setItem(CITIES_KEY, JSON.stringify(cities));
+  }
+
+  async function loadWeather() {
+    const container = document.getElementById('weather-container');
+    container.innerHTML = '';
+    const cities = getCities();
+
+    if (!cities.length) {
+      container.innerHTML = '<div class="loading">No cities — tap + ADD CITY to start</div>';
+      return;
+    }
+
+    for (const loc of cities) {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}` +
+                  `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_gusts_10m,precipitation` +
+                  `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_gusts_10m_max` +
+                  `&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America/Chicago&forecast_days=1`;
+      try {
+        const r = await fetch(url);
+        const d = await r.json();
+        const cur = d.current, day = d.daily;
+        const desc = WCODES[cur.weather_code] || 'Conditions';
+
+        // Field condition flag
+        let flag = '';
+        const gust = day.wind_gusts_10m_max[0];
+        const precip = day.precipitation_probability_max[0];
+        if (gust >= 30) flag = '<span class="field-flag warn">High Wind · Rooftop Caution</span>';
+        else if (precip >= 60) flag = '<span class="field-flag warn">Rain Likely · Plan Indoor Work</span>';
+        else if (gust >= 20) flag = '<span class="field-flag">Breezy · Watch Crane/Lift Ops</span>';
+        else flag = '<span class="field-flag ok">Clear for Field Ops</span>';
+
+        const block = document.createElement('div');
+        block.className = 'weather-block';
+        block.innerHTML = `
+          <button class="remove-btn" data-city="${loc.name}" title="Remove">×</button>
+          <div class="weather-head">
+            <div class="weather-loc">${loc.name}<span class="sublabel">${loc.sub || ''}</span></div>
+            <div class="weather-temp">${Math.round(cur.temperature_2m)}<span class="unit">°F</span></div>
+          </div>
+          <div class="weather-desc">${desc} · H ${Math.round(day.temperature_2m_max[0])}° / L ${Math.round(day.temperature_2m_min[0])}°</div>
+          <div class="weather-stats">
+            <div><span class="l">Wind</span><span class="v">${Math.round(cur.wind_speed_10m)} mph</span></div>
+            <div><span class="l">Gusts</span><span class="v">${Math.round(gust)} mph</span></div>
+            <div><span class="l">Rain Prob</span><span class="v">${precip}%</span></div>
+            <div><span class="l">Humidity</span><span class="v">${cur.relative_humidity_2m}%</span></div>
+          </div>
+          ${flag}
+        `;
+        container.appendChild(block);
+      } catch (e) {
+        const block = document.createElement('div');
+        block.className = 'weather-block';
+        block.innerHTML = `<div class="weather-loc">${loc.name}</div><div class="loading">Couldn't fetch</div>`;
+        container.appendChild(block);
+      }
+    }
+
+    // Wire up remove buttons
+    container.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.city;
+        const remaining = getCities().filter(c => c.name !== name);
+        saveCities(remaining);
+        loadWeather();
+      });
+    });
+  }
+  loadWeather();
+
+  /* --------- City picker UI --------- */
+  (function setupCityPicker() {
+    const btn = document.getElementById('add-city-btn');
+    const picker = document.getElementById('city-picker');
+    const input = document.getElementById('city-search');
+    const results = document.getElementById('city-results');
+    let searchTimer;
+
+    btn.addEventListener('click', () => {
+      picker.hidden = !picker.hidden;
+      if (!picker.hidden) {
+        input.focus();
+        results.innerHTML = '<div class="empty">Type a city name…</div>';
+      }
+    });
+
+    input.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      const q = input.value.trim();
+      if (q.length < 2) {
+        results.innerHTML = '<div class="empty">Type a city name…</div>';
+        return;
+      }
+      searchTimer = setTimeout(async () => {
+        try {
+          const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=8&language=en`;
+          const r = await fetch(url);
+          const d = await r.json();
+          if (!d.results?.length) {
+            results.innerHTML = '<div class="empty">No matches</div>';
+            return;
+          }
+          results.innerHTML = d.results.map((c, i) => {
+            const region = [c.admin1, c.country_code].filter(Boolean).join(' · ');
+            return `<div class="opt" data-idx="${i}">
+              <span>${c.name}</span>
+              <span class="region">${region}</span>
+            </div>`;
+          }).join('');
+          results.querySelectorAll('.opt').forEach(opt => {
+            opt.addEventListener('click', () => {
+              const c = d.results[+opt.dataset.idx];
+              const newCity = {
+                name: c.name.toUpperCase(),
+                sub: [c.admin1, c.country_code].filter(Boolean).join(' · '),
+                lat: c.latitude,
+                lon: c.longitude,
+              };
+              const cities = getCities();
+              if (!cities.some(x => x.name === newCity.name && Math.abs(x.lat - newCity.lat) < 0.01)) {
+                cities.push(newCity);
+                saveCities(cities);
+              }
+              picker.hidden = true;
+              input.value = '';
+              loadWeather();
+            });
+          });
+        } catch (e) {
+          results.innerHTML = '<div class="empty">Search failed</div>';
+        }
+      }, 250);
+    });
+  })();
+
+  /* --------------------------------------------------------------
+     MARKETS — Financial Modeling Prep
+     Free tier: 250 calls/day, no card required, browser-friendly
+     Three calls per page load: quotes, gainers, losers
+     -------------------------------------------------------------- */
+
+  // Indices + materials watchlist (FMP symbol conventions)
+  const TICKERS = [
+    { group: 'INDICES', items: [
+      { sym: '^GSPC', name: 'S&P 500' },
+      { sym: '^DJI',  name: 'Dow Jones' },
+      { sym: '^IXIC', name: 'Nasdaq' },
+      { sym: '^TNX',  name: '10-Yr Treasury' },
+    ]},
+    { group: 'MATERIALS · YOUR INPUTS', items: [
+      { sym: 'HG=F',  name: 'Copper · futures' },
+      { sym: 'STLD',  name: 'Steel Dynamics' },
+      { sym: 'NUE',   name: 'Nucor · steel proxy' },
+      { sym: 'NG=F',  name: 'Natural Gas' },
+      { sym: 'CL=F',  name: 'Crude Oil · WTI' },
+    ]},
+  ];
+
+  async function loadMarkets() {
+    const c = document.getElementById('markets-container');
+    if (!CONFIG.FMP_KEY) {
+      c.innerHTML = `
+        <div class="news-item">
+          <div class="src">SETUP</div>
+          <a class="headline" href="https://site.financialmodelingprep.com/developer/docs" target="_blank">
+            Add a free FMP API key in CONFIG to enable market data
+          </a>
+          <div class="time">30 seconds · 250 free calls/day · no card</div>
+        </div>`;
+      return;
+    }
+
+    try {
+      const symbols = TICKERS.flatMap(g => g.items.map(i => i.sym));
+      const quoteURL = `https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${CONFIG.FMP_KEY}`;
+      const gainURL  = `https://financialmodelingprep.com/api/v3/stock_market/gainers?apikey=${CONFIG.FMP_KEY}`;
+      const loseURL  = `https://financialmodelingprep.com/api/v3/stock_market/losers?apikey=${CONFIG.FMP_KEY}`;
+
+      const [qRes, gRes, lRes] = await Promise.all([
+        fetch(quoteURL).then(r => r.json()).catch(() => []),
+        fetch(gainURL).then(r => r.json()).catch(() => []),
+        fetch(loseURL).then(r => r.json()).catch(() => []),
+      ]);
+
+      const byId = Object.fromEntries((Array.isArray(qRes) ? qRes : []).map(q => [q.symbol, q]));
+
+      // Build the indices/materials table
+      let html = '<table class="markets-table">';
+      for (const g of TICKERS) {
+        html += `<tr><td colspan="3" class="market-group-label">${g.group}</td></tr>`;
+        for (const t of g.items) {
+          const q = byId[t.sym];
+          if (!q || q.price == null) {
+            html += `<tr><td class="sym">${t.sym}<span class="name">${t.name}</span></td><td class="price">—</td><td class="chg">—</td></tr>`;
+            continue;
+          }
+          const dir = q.change >= 0 ? 'up' : 'dn';
+          const sign = q.change >= 0 ? '+' : '';
+          const priceFmt = q.price.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+          const pct = q.changesPercentage != null ? q.changesPercentage.toFixed(2) : '—';
+          html += `
+            <tr>
+              <td class="sym">${t.sym.replace(/^\^/, '')}<span class="name">${t.name}</span></td>
+              <td class="price">${priceFmt}</td>
+              <td class="chg ${dir}">${sign}${pct}%</td>
+            </tr>`;
+        }
+      }
+      html += '</table>';
+
+      // Top movers
+      const fmtMover = (m, dir) => {
+        const sign = dir === 'up' ? '+' : '';
+        const pct = m.changesPercentage != null ? m.changesPercentage.toFixed(2) : '—';
+        const price = m.price != null ? m.price.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '—';
+        return `
+          <tr>
+            <td class="sym">${m.symbol}<span class="name">${(m.name || '').slice(0, 28)}</span></td>
+            <td class="price">${price}</td>
+            <td class="chg ${dir}">${sign}${pct}%</td>
+          </tr>`;
+      };
+
+      const gainers = (Array.isArray(gRes) ? gRes : []).slice(0, 3);
+      const losers  = (Array.isArray(lRes) ? lRes : []).slice(0, 3);
+
+      if (gainers.length) {
+        html += '<table class="markets-table" style="margin-top:14px;">';
+        html += `<tr><td colspan="3" class="market-group-label">TOP GAINERS · TODAY</td></tr>`;
+        gainers.forEach(m => html += fmtMover(m, 'up'));
+        html += '</table>';
+      }
+      if (losers.length) {
+        html += '<table class="markets-table" style="margin-top:14px;">';
+        html += `<tr><td colspan="3" class="market-group-label">TOP LOSERS · TODAY</td></tr>`;
+        losers.forEach(m => html += fmtMover(m, 'dn'));
+        html += '</table>';
+      }
+
+      c.innerHTML = html;
+      document.getElementById('markets-time').textContent =
+        'AS OF ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Chicago' });
+    } catch (e) {
+      c.innerHTML = `<div class="loading" style="color:var(--red);">Market feed error · ${e.message}</div>`;
+    }
+  }
+  loadMarkets();
+
+  /* --------------------------------------------------------------
+     NEWS — GENERAL (NewsAPI) + INDUSTRY (RSS via proxy)
+     -------------------------------------------------------------- */
+  function timeAgo(iso) {
+    if (!iso) return '';
+    const diff = (Date.now() - new Date(iso).getTime()) / 60000;
+    if (diff < 60) return Math.round(diff) + 'm ago';
+    if (diff < 1440) return Math.round(diff/60) + 'h ago';
+    return Math.round(diff/1440) + 'd ago';
+  }
+
+  async function loadGeneralNews() {
+    const c = document.getElementById('news-general');
+    c.innerHTML = '';
+    const all = [];
+    for (const feed of CONFIG.WORLD_FEEDS) {
+      try {
+        const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+        const r = await fetch(url);
+        const d = await r.json();
+        (d.items || []).slice(0, 3).forEach(it => {
+          all.push({ src: feed.src, title: it.title, url: it.link, pubDate: it.pubDate });
+        });
+      } catch (e) {/* skip feed */}
+    }
+    if (!all.length) {
+      c.innerHTML = `<div class="loading">No headlines pulled — feeds may be down</div>`;
+      return;
+    }
+    all.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
+    c.innerHTML = all.slice(0, 7).map(a => `
+      <div class="news-item">
+        <div class="src">${a.src}</div>
+        <a class="headline" href="${a.url}" target="_blank" rel="noopener">${a.title}</a>
+        <div class="time">${timeAgo(a.pubDate)}</div>
+      </div>
+    `).join('');
+  }
+  loadGeneralNews();
+
+  async function loadAINews() {
+    const c = document.getElementById('news-ai');
+    c.innerHTML = '';
+    const all = [];
+    for (const feed of CONFIG.AI_FEEDS) {
+      try {
+        const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+        const r = await fetch(url);
+        const d = await r.json();
+        (d.items || []).slice(0, 4).forEach(it => {
+          all.push({ src: feed.src, title: it.title, url: it.link, pubDate: it.pubDate });
+        });
+      } catch (e) {/* skip this feed */}
+    }
+    if (!all.length) {
+      c.innerHTML = `<div class="loading">No AI headlines pulled — feeds may be down</div>`;
+      return;
+    }
+    // sort by date desc, top 8
+    all.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
+    c.innerHTML = all.slice(0, 8).map(a => `
+      <div class="news-item">
+        <div class="src">${a.src}</div>
+        <a class="headline" href="${a.url}" target="_blank" rel="noopener">${a.title}</a>
+        <div class="time">${timeAgo(a.pubDate)}</div>
+      </div>
+    `).join('');
+  }
+  loadAINews();
+
+  /* --------------------------------------------------------------
+     AIR JORDON HVAC KPI BLOCK
+     Pulls from Supabase using public anon key.
+     Three cards: Active Contract Value, Total AR, AR > 30 Days
+     -------------------------------------------------------------- */
+  async function loadKPIs() {
+    const c = document.getElementById('kpi-container');
+    if (!CONFIG.SUPABASE_ANON_KEY) {
+      c.innerHTML = `
+        <div class="kpi-grid">
+          <div class="kpi-card accent">
+            <div class="kpi-label">Active Contract Value</div>
+            <div class="kpi-value">$—</div>
+            <div class="kpi-sub">Paste SUPABASE_ANON_KEY in CONFIG</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total AR</div>
+            <div class="kpi-value">$—</div>
+            <div class="kpi-sub">—</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">AR · Over 30 Days</div>
+            <div class="kpi-value">$—</div>
+            <div class="kpi-sub">—</div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    try {
+      // Pull the pre-computed snapshot row written by the accounting app's dashboard.
+      // Single source of truth — matches what shows on hvac-accounting exactly.
+      const r = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/brief_snapshot?id=eq.current&select=*`, {
+        headers: {
+          'apikey': CONFIG.SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
+        },
+      });
+      if (!r.ok) throw new Error(`brief_snapshot: ${r.status} ${await r.text()}`);
+      const rows = await r.json();
+      if (!Array.isArray(rows) || rows.length === 0) throw new Error('brief_snapshot is empty');
+      const s = rows[0];
+
+      const fmt$ = n => {
+        if (!n || n < 0.01) return '$0';
+        if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+        if (n >= 10000) return '$' + (n/1000).toFixed(1) + 'K';
+        return '$' + Math.round(n).toLocaleString('en-US');
+      };
+
+      // Age of the snapshot — if it's stale, flag it
+      const updatedAt = new Date(s.updated_at);
+      const ageMin = (Date.now() - updatedAt.getTime()) / 60000;
+      const ageStr = ageMin < 60 ? Math.round(ageMin) + 'm ago'
+                   : ageMin < 1440 ? Math.round(ageMin/60) + 'h ago'
+                   : Math.round(ageMin/1440) + 'd ago';
+
+      c.innerHTML = `
+        <div class="kpi-grid">
+          <div class="kpi-card accent">
+            <div class="kpi-label">Active Contract Value</div>
+            <div class="kpi-value">${fmt$(s.active_contract_value)}</div>
+            <div class="kpi-sub">${s.active_count || 0} active job${s.active_count === 1 ? '' : 's'}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total AR</div>
+            <div class="kpi-value">${fmt$(s.open_ar)}</div>
+            <div class="kpi-sub">${s.open_ar_count || 0} open invoice${s.open_ar_count === 1 ? '' : 's'}</div>
+          </div>
+          <div class="kpi-card ${s.ar_over_30 > 0 ? 'warn' : 'ok'}">
+            <div class="kpi-label">AR · Over 30 Days</div>
+            <div class="kpi-value">${fmt$(s.ar_over_30)}</div>
+            <div class="kpi-sub">${s.ar_over_30 > 0 ? 'Action required' : 'Clear'}</div>
+          </div>
+        </div>`;
+      document.getElementById('kpi-time').textContent =
+        `SYNCED ${ageStr.toUpperCase()}`;
+    } catch (e) {
+      c.innerHTML = `
+        <div class="kpi-grid">
+          <div class="kpi-card warn" style="grid-column: 1 / -1;">
+            <div class="kpi-label">Snapshot Error</div>
+            <div class="kpi-value" style="font-size:16px;">${e.message}</div>
+            <div class="kpi-sub">Open the accounting dashboard to refresh the snapshot.</div>
+          </div>
+        </div>`;
+    }
+  }
+  loadKPIs();
+
+  /* --------------------------------------------------------------
+     MILESTONE COUNTDOWN
+     -------------------------------------------------------------- */
+  (function () {
+    const target = new Date(CONFIG.MILESTONE.date);
+    const days = Math.ceil((target - new Date()) / 86400000);
+    document.getElementById('milestone-text').innerHTML =
+      CONFIG.MILESTONE.name.replace(/(·.*$)/, '<b>$1</b>');
+    document.getElementById('milestone-days').innerHTML =
+      days + '<small>' + (days >= 0 ? 'DAYS OUT' : 'DAYS PAST') + '</small>';
+  })();
+
+  /* --------------------------------------------------------------
+     DEVOTION — curated rotation
+     60 verses themed for: stewardship, leadership, patience,
+     long-game discipline, the dignity of work, the burden of carrying others
+     -------------------------------------------------------------- */
+  const DEVOTIONS = [
+    { v: "Commit to the Lord whatever you do, and he will establish your plans.",
+      c: "Proverbs 16:3",
+      r: "Plans don't get blessed by being clever — they get established by being entrusted. Before the day's calls and decisions, hand them over." },
+    { v: "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.",
+      c: "Colossians 3:23",
+      r: "Even the unglamorous parts of running this business — the invoices, the punch lists, the late nights on the takeoff — they all count. Audience of One." },
+    { v: "The plans of the diligent lead to profit as surely as haste leads to poverty.",
+      c: "Proverbs 21:5",
+      r: "Diligence isn't speed. It's the right move, made carefully, repeated. The compounding is invisible until it isn't." },
+    { v: "Do you see someone skilled in their work? They will serve before kings.",
+      c: "Proverbs 22:29",
+      r: "The license, the engineering, the field knowledge — these aren't just credentials. They're the reason the door opens. Sharpen the craft." },
+    { v: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.",
+      c: "Joshua 1:9",
+      r: "Founders carry weight that nobody sees. The reminder isn't to be fearless — it's to move anyway, with company you can't see." },
+    { v: "He who began a good work in you will carry it on to completion until the day of Christ Jesus.",
+      c: "Philippians 1:6",
+      r: "What's built here isn't finished. Days like today are mid-build. That's not a failure — that's the assignment." },
+    { v: "Trust in the Lord with all your heart and lean not on your own understanding.",
+      c: "Proverbs 3:5",
+      r: "Engineering trains you to compute every answer. Some answers don't compute. That's where trust does the work." },
+    { v: "Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.",
+      c: "Galatians 6:9",
+      r: "The work you're doing this season — bonding, MBE pursuit, building the apps — doesn't pay off this morning. It pays off later. Keep going." },
+    { v: "She is clothed with strength and dignity; she can laugh at the days to come.",
+      c: "Proverbs 31:25",
+      r: "Strength isn't grim. People who've built something can hold the future loosely. Build like that." },
+    { v: "Better is the end of a thing than its beginning, and the patient in spirit is better than the proud in spirit.",
+      c: "Ecclesiastes 7:8",
+      r: "You're not at the start anymore, and you're not at the end. The middle is where most quit. Pace it." },
+    { v: "Two are better than one, because they have a good return for their labor.",
+      c: "Ecclesiastes 4:9",
+      r: "Solo founder doesn't mean alone. The partnerships, the crew, the bonding agent — leverage compounds when shared." },
+    { v: "The race is not to the swift or the battle to the strong... but time and chance happen to them all.",
+      c: "Ecclesiastes 9:11",
+      r: "Show up consistently. Be ready when the chance arrives. That's the whole strategy." },
+    { v: "A good name is more desirable than great riches; to be esteemed is better than silver or gold.",
+      c: "Proverbs 22:1",
+      r: "Every PO, every callback, every honest invoice — that's your name being written. The brand isn't the logo. It's the receipts." },
+    { v: "The wise store up choice food and olive oil, but fools gulp theirs down.",
+      c: "Proverbs 21:20",
+      r: "Profitability isn't a victory lap — it's reserves. Cash, equipment, talent. Stock the warehouse for the lean season nobody's predicting yet." },
+    { v: "Whoever is faithful in very little is also faithful in much.",
+      c: "Luke 16:10",
+      r: "The way you handle a small invoice tells the truth about how you'd handle a $5M project. Today's $1,200 is rehearsal." },
+    { v: "Cast your bread upon the waters, for after many days you will find it again.",
+      c: "Ecclesiastes 11:1",
+      r: "Generosity, good work, fair dealing — they don't return on the next transaction. They return on the next decade." },
+    { v: "Patience is better than pride.",
+      c: "Ecclesiastes 7:8",
+      r: "The fastest founders aren't the loudest. They're the ones who can wait three quarters for the right deal." },
+    { v: "Apply your heart to instruction and your ears to words of knowledge.",
+      c: "Proverbs 23:12",
+      r: "You're still learning — bonding, public-sector contracting, the AI tools. Every week you choose to be taught is a week the business gets sharper." },
+    { v: "The lamp of the body is the eye. If your eye is good, your whole body will be full of light.",
+      c: "Matthew 6:22",
+      r: "What you fix your attention on, you become. Choose carefully what gets your morning hours." },
+    { v: "Be careful then how you live—not as unwise but as wise, making the most of every opportunity.",
+      c: "Ephesians 5:15–16",
+      r: "Today's opportunity may not look like one. The wise see it anyway." },
+  ];
+
+  (function loadDevotion() {
+    const pick = DEVOTIONS[dayIndex(DEVOTIONS)];
+    document.getElementById('verse-text').textContent = pick.v;
+    document.getElementById('verse-cite').textContent = pick.c;
+    document.getElementById('reflection-text').textContent = pick.r;
+  })();
+
+  /* ==============================================================
+     ASTROLOGY · SKY REPORT
+     Local astronomical computation — no API calls.
+     Uses simplified VSOP87 / ELP2000 series accurate to ~0.1° for
+     planets and ~0.2° for the Moon. Plenty for aspect detection
+     with the orbs we're using.
+     ============================================================== */
+
+  // ----- Math helpers -----
+  const DEG = 180 / Math.PI;
+  const RAD = Math.PI / 180;
+  const norm360 = x => { x = x % 360; return x < 0 ? x + 360 : x; };
+  const sind = x => Math.sin(x * RAD);
+  const cosd = x => Math.cos(x * RAD);
+
+  // Julian Day for given Date (UT)
+  function julianDay(date) {
+    const y = date.getUTCFullYear();
+    const m = date.getUTCMonth() + 1;
+    const d = date.getUTCDate()
+      + (date.getUTCHours() + date.getUTCMinutes()/60 + date.getUTCSeconds()/3600) / 24;
+    let yy = y, mm = m;
+    if (mm <= 2) { yy -= 1; mm += 12; }
+    const A = Math.floor(yy / 100);
+    const B = 2 - A + Math.floor(A / 4);
+    return Math.floor(365.25 * (yy + 4716)) + Math.floor(30.6001 * (mm + 1)) + d + B - 1524.5;
+  }
+
+  // ----- Sun ecliptic longitude (Meeus Ch.25, simplified, ~0.01° accuracy) -----
+  function sunLongitude(JD) {
+    const T = (JD - 2451545.0) / 36525;
+    const L0 = norm360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+    const M  = norm360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+    const C  =  (1.914602 - 0.004817 * T - 0.000014 * T * T) * sind(M)
+              + (0.019993 - 0.000101 * T) * sind(2 * M)
+              +  0.000289 * sind(3 * M);
+    return norm360(L0 + C);
+  }
+
+  // ----- Moon ecliptic longitude (Meeus Ch.47, main terms, ~0.2° accuracy) -----
+  function moonLongitude(JD) {
+    const T = (JD - 2451545.0) / 36525;
+    const Lp = norm360(218.3164477 + 481267.88123421 * T - 0.0015786 * T * T);
+    const D  = norm360(297.8501921 + 445267.1114034  * T - 0.0018819 * T * T);
+    const M  = norm360(357.5291092 +  35999.0502909  * T - 0.0001536 * T * T);
+    const Mp = norm360(134.9633964 + 477198.8675055  * T + 0.0087414 * T * T);
+    const F  = norm360( 93.272095  + 483202.0175233  * T - 0.0036539 * T * T);
+    // Top contributing periodic terms in longitude (degrees)
+    const dL = 6.288774 * sind(Mp)
+             + 1.274027 * sind(2*D - Mp)
+             + 0.658314 * sind(2*D)
+             + 0.213618 * sind(2*Mp)
+             - 0.185116 * sind(M)
+             - 0.114332 * sind(2*F)
+             + 0.058793 * sind(2*D - 2*Mp)
+             + 0.057066 * sind(2*D - M - Mp)
+             + 0.053322 * sind(2*D + Mp)
+             + 0.045758 * sind(2*D - M)
+             - 0.040923 * sind(M - Mp)
+             - 0.034720 * sind(D)
+             - 0.030383 * sind(M + Mp);
+    return norm360(Lp + dL);
+  }
+
+  // ----- Planets via simplified heliocentric Keplerian elements (J2000) -----
+  // Mean elements + linear rates. Accurate to ~0.2° for our purposes (1900-2100).
+  // Then converted to geocentric ecliptic longitude.
+  const PLANETS = {
+    Mercury: { a:0.38709927, e:0.20563593, i:7.00497902,  L:252.25032350, lp:77.45779628, node:48.33076593,
+               aR:0.00000037, eR:0.00001906, iR:-0.00594749, LR:149472.67411175, lpR:0.16047689, nodeR:-0.12534081 },
+    Venus:   { a:0.72333566, e:0.00677672, i:3.39467605,  L:181.97909950, lp:131.60246718, node:76.67984255,
+               aR:0.00000390, eR:-0.00004107, iR:-0.00078890, LR:58517.81538729, lpR:0.00268329, nodeR:-0.27769418 },
+    Earth:   { a:1.00000261, e:0.01671123, i:-0.00001531, L:100.46457166, lp:102.93768193, node:0.0,
+               aR:0.00000562, eR:-0.00004392, iR:-0.01294668, LR:35999.37244981, lpR:0.32327364, nodeR:0.0 },
+    Mars:    { a:1.52371034, e:0.09339410, i:1.84969142,  L:-4.55343205,  lp:-23.94362959, node:49.55953891,
+               aR:0.00001847, eR:0.00007882, iR:-0.00813131, LR:19140.30268499, lpR:0.44441088, nodeR:-0.29257343 },
+    Jupiter: { a:5.20288700, e:0.04838624, i:1.30439695,  L:34.39644051,  lp:14.72847983,  node:100.47390909,
+               aR:-0.00011607, eR:-0.00013253, iR:-0.00183714, LR:3034.74612775, lpR:0.21252668, nodeR:0.20469106 },
+    Saturn:  { a:9.53667594, e:0.05386179, i:2.48599187,  L:49.95424423,  lp:92.59887831,  node:113.66242448,
+               aR:-0.00125060, eR:-0.00050991, iR:0.00193609, LR:1222.49362201, lpR:-0.41897216, nodeR:-0.28867794 },
+  };
+
+  function planetGeoLongitude(name, JD) {
+    const T = (JD - 2451545.0) / 36525;
+    const cy = T * 100; // centuries → element rates are per century in this set
+    const p = PLANETS[name];
+    const e = PLANETS.Earth;
+    // Compute heliocentric ecliptic coords of planet and Earth
+    const hc = (el) => {
+      const a  = el.a  + el.aR  * cy;
+      const ec = el.e  + el.eR  * cy;
+      const ic = (el.i + el.iR  * cy) * RAD;
+      const L  = el.L  + el.LR  * cy;
+      const lp = el.lp + el.lpR * cy;
+      const node = (el.node + el.nodeR * cy) * RAD;
+      const M  = norm360(L - lp) * RAD;
+      const w  = (lp - el.node - el.nodeR * cy) * RAD;
+      // Solve Kepler's equation
+      let E = M;
+      for (let k = 0; k < 8; k++) E = E - (E - ec * Math.sin(E) - M) / (1 - ec * Math.cos(E));
+      const xv = a * (Math.cos(E) - ec);
+      const yv = a * Math.sqrt(1 - ec*ec) * Math.sin(E);
+      const v  = Math.atan2(yv, xv);
+      const r  = Math.sqrt(xv*xv + yv*yv);
+      // Heliocentric ecliptic (J2000)
+      const x = r * (Math.cos(node) * Math.cos(v + w) - Math.sin(node) * Math.sin(v + w) * Math.cos(ic));
+      const y = r * (Math.sin(node) * Math.cos(v + w) + Math.cos(node) * Math.sin(v + w) * Math.cos(ic));
+      const z = r * (Math.sin(v + w) * Math.sin(ic));
+      return { x, y, z };
+    };
+    const planet = hc(p);
+    const earth  = hc(e);
+    // Geocentric vector
+    const gx = planet.x - earth.x;
+    const gy = planet.y - earth.y;
+    const lon = norm360(Math.atan2(gy, gx) * DEG);
+    return lon;
+  }
+
+  // ----- Zodiac helpers -----
+  const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+  const GLYPHS = { Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃', Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇',
+                   Asc:'AC', MC:'MC' };
+  function signOf(lon) {
+    const idx = Math.floor(norm360(lon) / 30);
+    return { sign: SIGNS[idx], deg: lon - idx * 30 };
+  }
+  function fmtPos(lon) {
+    const s = signOf(lon);
+    const d = Math.floor(s.deg);
+    const m = Math.round((s.deg - d) * 60);
+    return `${d}° ${s.sign.slice(0,3).toUpperCase()} ${m.toString().padStart(2,'0')}'`;
+  }
+
+  // ----- Natal chart (Jordon: Sun in Aquarius/9th, Moon in Scorpio/5th, Cancer ASC) -----
+  // Longitudes are approximate placements based on the chart provided.
+  // Format: degrees from 0° Aries. Aquarius starts at 300°, Scorpio at 210°, etc.
+  // These can be refined if you provide birth date/time/place for an exact natal calc.
+  const NATAL = {
+    Sun:     { lon: 315, sign: 'Aquarius',   house: 9,  meaning: "your core identity and long-range vision" },
+    Moon:    { lon: 225, sign: 'Scorpio',    house: 5,  meaning: "your emotional core and creative drive" },
+    Asc:     { lon: 95,  sign: 'Cancer',     house: 1,  meaning: "how you show up — protective, caretaking" },
+    Mercury: { lon: 350, sign: 'Pisces',     house: 9,  meaning: "how you think and communicate" },
+    Venus:   { lon: 15,  sign: 'Aries',      house: 10, meaning: "your ambition and public reputation" },
+    Mars:    { lon: 105, sign: 'Cancer',     house: 1,  meaning: "your drive and how you initiate" },
+    Jupiter: { lon: 190, sign: 'Libra',      house: 4,  meaning: "your growth through home and partnership" },
+    Saturn:  { lon: 310, sign: 'Aquarius',   house: 9,  meaning: "your discipline around vision" },
+    Uranus:  { lon: 285, sign: 'Capricorn',  house: 7,  meaning: "where you break convention in relationships" },
+    Neptune: { lon: 280, sign: 'Capricorn',  house: 6,  meaning: "where you find meaning in daily work" },
+    Pluto:   { lon: 235, sign: 'Scorpio',    house: 6,  meaning: "where you transform through routine" },
+  };
+
+  // ----- Aspect math -----
+  const ASPECTS = [
+    { name: 'conjunction', angle: 0,   orb: 4, tone: 'neutral',     desc: 'fuses with' },
+    { name: 'sextile',     angle: 60,  orb: 3, tone: 'harmonious',  desc: 'opens the door for' },
+    { name: 'square',      angle: 90,  orb: 3, tone: 'challenging', desc: 'puts pressure on' },
+    { name: 'trine',       angle: 120, orb: 3, tone: 'harmonious',  desc: 'flows with' },
+    { name: 'opposition',  angle: 180, orb: 4, tone: 'challenging', desc: 'pulls against' },
+  ];
+
+  function aspectBetween(lon1, lon2) {
+    const diff = Math.abs(norm360(lon1 - lon2));
+    const sep = Math.min(diff, 360 - diff);
+    for (const a of ASPECTS) {
+      if (Math.abs(sep - a.angle) <= a.orb) {
+        return { ...a, exact: sep - a.angle, separation: sep };
+      }
+    }
+    return null;
+  }
+
+  // ----- Plain-language interpretation library -----
+  // Generic enough to be honest, specific enough to your context to be useful.
+  const INTERP = {
+    // Transiting planet → what it brings
+    transit: {
+      Sun:     "today's spotlight",
+      Moon:    "today's emotional weather",
+      Mercury: "today's communication and decisions",
+      Venus:   "today's relationships, money, and aesthetic",
+      Mars:    "today's drive and assertion",
+      Jupiter: "expansion and opportunity",
+      Saturn:  "structure, weight, and the long game",
+    },
+    // Natal point → what it represents for you
+    natal: NATAL,
+  };
+
+  function buildAspectText(transitPlanet, asp, natalKey) {
+    const tDesc = INTERP.transit[transitPlanet] || transitPlanet;
+    const n = NATAL[natalKey];
+    const verb = asp.desc;
+    return `${INTERP.transit[transitPlanet] ? tDesc.charAt(0).toUpperCase() + tDesc.slice(1) : transitPlanet} ${verb} ${n.meaning}.`;
+  }
+
+  // ----- Compose unified reading from active aspects -----
+  function composeReading(activeAspects, todayMoon) {
+    if (!activeAspects.length) {
+      return `A quieter sky today — no major transits hitting your chart directly. The Moon in ${signOf(todayMoon).sign} colors the day's mood; everything else is yours to drive. Use the quiet.`;
+    }
+
+    // Rank by tightness (most exact aspects first) and prioritize personal planets hitting personal points
+    const personalPlanets = ['Sun','Moon','Mercury','Venus','Mars'];
+    const personalPoints = ['Sun','Moon','Asc','Mercury','Venus','Mars'];
+    activeAspects.forEach(a => {
+      a.weight = Math.abs(a.exact) + (personalPlanets.includes(a.transit) ? 0 : 1) + (personalPoints.includes(a.natalKey) ? 0 : 1);
+    });
+    activeAspects.sort((x, y) => x.weight - y.weight);
+
+    const top = activeAspects.slice(0, 3);
+    const tones = top.map(a => a.tone);
+    const challenges = tones.filter(t => t === 'challenging').length;
+    const flows = tones.filter(t => t === 'harmonious').length;
+
+    let opener;
+    if (challenges >= 2) {
+      opener = "Today's sky asks for friction. The aspects active right now pull against your defaults — that's not bad, it's the kind of day that forges sharper decisions if you let it.";
+    } else if (flows >= 2) {
+      opener = "Today flows in your favor. The aspects active right now align with how you naturally operate — push on something that's been waiting for momentum.";
+    } else {
+      opener = "Today's sky is mixed — some friction, some openings. Read the room before you push.";
+    }
+
+    const bullets = top.map(a => {
+      const n = NATAL[a.natalKey];
+      const verbMap = {
+        harmonious: 'supports', neutral: 'amplifies', challenging: 'tests',
+      };
+      return `${a.transit} ${verbMap[a.tone]} ${n.meaning}`;
+    });
+
+    const closer = (() => {
+      const moonSign = signOf(todayMoon).sign;
+      const moonNote = {
+        Aries:       'Moon in Aries — push, don\'t wait.',
+        Taurus:      'Moon in Taurus — slow is the strategy.',
+        Gemini:      'Moon in Gemini — many conversations, light footwork.',
+        Cancer:      'Moon crossing your Ascendant — emotionally exposed; protective today.',
+        Leo:         'Moon in Leo — speak with weight, be seen.',
+        Virgo:       'Moon in Virgo — fix the system, don\'t skip the details.',
+        Libra:       'Moon in Libra — partnership thinking; consult before deciding.',
+        Scorpio:     'Moon on your natal Moon — your emotional center is loud today.',
+        Sagittarius: 'Moon in Sagittarius — zoom out, vision over tactics.',
+        Capricorn:   'Moon in Capricorn — discipline pays; the long game shows up.',
+        Aquarius:    'Moon on your Sun and Saturn — your identity and discipline align.',
+        Pisces:      'Moon in Pisces — intuition runs hot; trust the gut.',
+      };
+      return moonNote[moonSign] || '';
+    })();
+
+    return `${opener} The three to watch: ${bullets.join('; ')}. ${closer}`;
+  }
+
+  // ----- Generate today's headline -----
+  function composeHeadline(today, activeAspects) {
+    const moonSign = signOf(today.Moon).sign;
+    if (!activeAspects.length) {
+      return `Moon in ${moonSign} · Quiet sky`;
+    }
+    const challenges = activeAspects.filter(a => a.tone === 'challenging').length;
+    const flows = activeAspects.filter(a => a.tone === 'harmonious').length;
+    if (challenges > flows + 1) return `Moon in ${moonSign} · Pressure day`;
+    if (flows > challenges + 1) return `Moon in ${moonSign} · Open lane`;
+    return `Moon in ${moonSign} · Mixed weather`;
+  }
+
+  // ----- Render the Sky Report -----
+  function renderSkyReport() {
+    const now = new Date();
+    const JD = julianDay(now);
+
+    // Compute today's positions
+    const today = {
+      Sun:     sunLongitude(JD),
+      Moon:    moonLongitude(JD),
+      Mercury: planetGeoLongitude('Mercury', JD),
+      Venus:   planetGeoLongitude('Venus', JD),
+      Mars:    planetGeoLongitude('Mars', JD),
+      Jupiter: planetGeoLongitude('Jupiter', JD),
+      Saturn:  planetGeoLongitude('Saturn', JD),
+    };
+
+    // Find active aspects to natal points
+    const activeAspects = [];
+    for (const tName of Object.keys(today)) {
+      for (const nKey of Object.keys(NATAL)) {
+        const a = aspectBetween(today[tName], NATAL[nKey].lon);
+        if (a) {
+          activeAspects.push({
+            transit: tName,
+            natalKey: nKey,
+            ...a,
+          });
+        }
+      }
+    }
+
+    // Filter out same-body aspects that are just "still in place" from natal
+    // (e.g., transiting Pluto conjunct natal Pluto — that's a years-long generational hit, not "today")
+    const slowSelfAspects = ['Saturn','Jupiter'];
+    const filtered = activeAspects.filter(a =>
+      !(slowSelfAspects.includes(a.transit) && a.natalKey === a.transit)
+    );
+
+    // Sky positions
+    document.getElementById('astro-sky').innerHTML =
+      ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'].map(p => `
+        <div class="astro-sky-row">
+          <span class="pl">${GLYPHS[p]} ${p}</span>
+          <span class="pos">${fmtPos(today[p])}</span>
+        </div>`).join('');
+
+    // Headline + subhead
+    document.getElementById('astro-headline').textContent = composeHeadline(today, filtered);
+    document.getElementById('astro-subhead').textContent =
+      `Sun ${signOf(today.Sun).sign} · Moon ${signOf(today.Moon).sign} · ${filtered.length} active aspect${filtered.length === 1 ? '' : 's'} to your chart`;
+
+    // Aspects list
+    const aspectsEl = document.getElementById('astro-aspects');
+    if (!filtered.length) {
+      aspectsEl.innerHTML = '<div class="astro-empty">No major aspects to your chart in tight orb today.</div>';
+    } else {
+      // Sort by tightness
+      filtered.sort((a,b) => Math.abs(a.exact) - Math.abs(b.exact));
+      aspectsEl.innerHTML = filtered.slice(0, 6).map(a => {
+        const n = NATAL[a.natalKey];
+        const orbStr = Math.abs(a.exact) < 0.5 ? 'exact' : `${Math.abs(a.exact).toFixed(1)}°`;
+        const glyphLine = `${GLYPHS[a.transit]} ${a.name} ${GLYPHS[a.natalKey] || a.natalKey}`;
+        return `
+          <div class="astro-aspect ${a.tone}">
+            <div class="glyph">${glyphLine}</div>
+            <div class="text">${buildAspectText(a.transit, a, a.natalKey)} <span style="color:var(--muted);font-size:11px;font-family:var(--mono);">(${orbStr})</span></div>
+          </div>`;
+      }).join('');
+    }
+
+    // Unified reading
+    document.getElementById('astro-reading').innerHTML =
+      `<span class="lbl">Today's Reading</span>${composeReading(filtered, today.Moon)}`;
+  }
+
+  try { renderSkyReport(); } catch (e) {
+    document.getElementById('astro-card').innerHTML =
+      `<div class="astro-kicker">Sky Report</div><div class="astro-empty">Astro engine error: ${e.message}</div>`;
+    console.error(e);
+  }
+
+</script>
+</body>
+</html>
