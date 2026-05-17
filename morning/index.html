@@ -125,11 +125,20 @@
   .grid-2 > .col:not(:last-child) { padding-right: 24px; }
 
   /* Full-width section rows (devotion + focus) */
-  .devotion-row, .focus-row {
+  .devotion-row, .focus-row, .checkin-row, .snapshot-row {
     padding: 24px 0;
     border-bottom: 1px solid var(--rule);
   }
   .focus-row .focus-list { max-width: 720px; }
+
+  /* When check-in is in a full-width row, give it room to breathe */
+  .checkin-row .checkin-card {
+    margin-bottom: 0;
+    padding: 26px 32px;
+  }
+  .checkin-row .checkin-prompt { font-size: 26px; max-width: 760px; }
+  .checkin-row .checkin-card::before { width: 220px; height: 220px; right: -60px; top: -60px; }
+  .checkin-row .checkin-card::after  { width: 160px; height: 160px; right: -30px; top: -30px; }
 
   /* ===== CITY PICKER ===== */
   .add-city-btn {
@@ -818,6 +827,7 @@
 <div class="container">
 
   <!-- ============ DEVOTION (full-width, top) ============ -->
+  <!-- ============ 1. DEVOTION (full-width banner) ============ -->
   <div class="devotion-row reveal">
     <div class="section-head">
       <h2>Devotion</h2>
@@ -835,10 +845,53 @@
     </div>
   </div>
 
-  <!-- ============ ROW 1: CHECK-IN + WEATHER + MARKETS ============ -->
+  <!-- ============ 2. MORNING CHECK-IN (full-width banner) ============ -->
+  <div class="checkin-row reveal">
+    <div class="section-head">
+      <h2>Morning Check-In</h2>
+      <span class="meta">Today's Question</span>
+    </div>
+    <div class="checkin-card">
+      <div class="checkin-kicker">Pause Before You Move</div>
+      <div class="checkin-prompt" id="checkin-prompt">Loading today's prompt…</div>
+      <div class="checkin-theme" id="checkin-theme"></div>
+      <div class="energy-row">
+        <span class="label">Energy</span>
+        <button class="energy-btn" data-e="1">1</button>
+        <button class="energy-btn" data-e="2">2</button>
+        <button class="energy-btn" data-e="3">3</button>
+        <button class="energy-btn" data-e="4">4</button>
+        <button class="energy-btn" data-e="5">5</button>
+        <button class="energy-btn" data-e="6">6</button>
+        <button class="energy-btn" data-e="7">7</button>
+        <button class="energy-btn" data-e="8">8</button>
+        <button class="energy-btn" data-e="9">9</button>
+        <button class="energy-btn" data-e="10">10</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3. AIR JORDON HVAC SNAPSHOT (full-width) ============ -->
+  <div class="snapshot-row reveal">
+    <div class="section-head">
+      <h2>Air Jordon HVAC · Snapshot</h2>
+      <span class="meta" id="kpi-time">Loading</span>
+    </div>
+    <div id="kpi-container">
+      <div class="loading">Reading Supabase</div>
+    </div>
+    <div class="milestone-strip" id="milestone-strip">
+      <div>
+        <div class="lbl">Next Milestone</div>
+        <div class="next" id="milestone-text">Chase Hudson Oaks · <b>HVAC Startup</b></div>
+      </div>
+      <div class="days" id="milestone-days">--<small>DAYS</small></div>
+    </div>
+  </div>
+
+  <!-- ============ 4. SITUATIONAL AWARENESS (3-col): Weather + World + Markets ============ -->
   <div class="grid">
 
-    <!-- COLUMN 1: CHECK-IN + WEATHER -->
     <div class="col reveal">
       <div class="section-head">
         <h2>Field Conditions</h2>
@@ -847,38 +900,9 @@
         </span>
       </div>
 
-      <!-- City picker modal -->
       <div id="city-picker" class="city-picker" hidden>
         <input type="text" id="city-search" placeholder="Search city (e.g. Austin, Jacksboro)…" autocomplete="off">
         <div id="city-results" class="city-results"></div>
-      </div>
-
-      <div class="checkin-card">
-        <div class="checkin-kicker">Morning Check-In</div>
-        <div class="checkin-prompt" id="checkin-prompt">Loading today's prompt…</div>
-        <div class="checkin-theme" id="checkin-theme"></div>
-        <div class="energy-row">
-          <span class="label">Energy</span>
-          <button class="energy-btn" data-e="1">1</button>
-          <button class="energy-btn" data-e="2">2</button>
-          <button class="energy-btn" data-e="3">3</button>
-          <button class="energy-btn" data-e="4">4</button>
-          <button class="energy-btn" data-e="5">5</button>
-          <button class="energy-btn" data-e="6">6</button>
-          <button class="energy-btn" data-e="7">7</button>
-          <button class="energy-btn" data-e="8">8</button>
-          <button class="energy-btn" data-e="9">9</button>
-          <button class="energy-btn" data-e="10">10</button>
-        </div>
-      </div>
-
-      <div class="astro-card" id="astro-card">
-        <div class="astro-kicker">Sky Report · The Astrological Weather</div>
-        <div class="astro-headline" id="astro-headline">Reading the sky…</div>
-        <div class="astro-subhead" id="astro-subhead"></div>
-        <div class="astro-sky" id="astro-sky"></div>
-        <div class="astro-aspects" id="astro-aspects"></div>
-        <div class="astro-reading" id="astro-reading"></div>
       </div>
 
       <div id="weather-container">
@@ -886,7 +910,6 @@
       </div>
     </div>
 
-    <!-- COLUMN 2: NEWS (general) -->
     <div class="col reveal">
       <div class="section-head">
         <h2>The World This Morning</h2>
@@ -897,7 +920,6 @@
       </div>
     </div>
 
-    <!-- COLUMN 3: MARKETS -->
     <div class="col reveal">
       <div class="section-head">
         <h2>Markets</h2>
@@ -910,23 +932,21 @@
 
   </div>
 
-  <!-- ============ ROW 2: AJH SNAPSHOT + AI WIRE ============ -->
+  <!-- ============ 5. CONTEXT READING (2-col): Sky Report + AI Wire ============ -->
   <div class="grid-2">
 
     <div class="col reveal">
       <div class="section-head">
-        <h2>Air Jordon HVAC · Snapshot</h2>
-        <span class="meta" id="kpi-time">Loading</span>
+        <h2>Sky Report</h2>
+        <span class="meta">The Astrological Weather</span>
       </div>
-      <div id="kpi-container">
-        <div class="loading">Reading Supabase</div>
-      </div>
-      <div class="milestone-strip" id="milestone-strip">
-        <div>
-          <div class="lbl">Next Milestone</div>
-          <div class="next" id="milestone-text">Chase Hudson Oaks · <b>HVAC Startup</b></div>
-        </div>
-        <div class="days" id="milestone-days">--<small>DAYS</small></div>
+      <div class="astro-card" id="astro-card">
+        <div class="astro-kicker">Today's Sky</div>
+        <div class="astro-headline" id="astro-headline">Reading the sky…</div>
+        <div class="astro-subhead" id="astro-subhead"></div>
+        <div class="astro-sky" id="astro-sky"></div>
+        <div class="astro-aspects" id="astro-aspects"></div>
+        <div class="astro-reading" id="astro-reading"></div>
       </div>
     </div>
 
@@ -942,7 +962,7 @@
 
   </div>
 
-  <!-- ============ ROW 3: TODAY'S FOCUS (full-width) ============ -->
+  <!-- ============ 6. TODAY'S FOCUS (full-width close) ============ -->
   <div class="focus-row reveal">
     <div class="section-head">
       <h2>Today's Focus</h2>
