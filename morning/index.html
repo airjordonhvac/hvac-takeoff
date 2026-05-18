@@ -318,6 +318,333 @@
   .energy-btn:hover { background: rgba(159,210,245,0.15); border-color: var(--sky); }
   .energy-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 600; }
 
+  /* ===== JOURNAL (Daily Log) ===== */
+  .journal-row {
+    background: linear-gradient(160deg, #0F1A2E 0%, #0A1322 100%);
+    color: var(--bone);
+    padding: 28px 32px;
+    margin-bottom: 18px;
+    position: relative;
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+  }
+  .journal-row.fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    overflow-y: auto;
+    margin: 0;
+    padding: 32px 28px 80px;
+    background: #0A1322;
+  }
+  .journal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .journal-head h2 {
+    color: var(--bone);
+    font-family: var(--display);
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+  .journal-head .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--sky-bright);
+    letter-spacing: 0.14em;
+  }
+  .journal-actions { display: flex; gap: 8px; align-items: center; }
+  .j-btn {
+    background: transparent;
+    color: var(--sky-bright);
+    border: 1px solid rgba(159,210,245,0.3);
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 2px;
+  }
+  .j-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .j-btn.primary { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 600; }
+  .j-btn.primary:hover { background: #f0c870; color: var(--navy); }
+
+  /* Login banner (shown when signed out) */
+  .journal-login {
+    background: rgba(212,166,69,0.08);
+    border-left: 3px solid var(--gold);
+    padding: 18px 20px;
+    margin: 6px 0 0;
+    border-radius: 2px;
+  }
+  .journal-login p {
+    color: var(--bone);
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 14px;
+  }
+  .journal-login .login-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .journal-login input[type="email"] {
+    flex: 1; min-width: 220px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(159,210,245,0.2);
+    color: var(--bone);
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    border-radius: 2px;
+  }
+  .journal-login input[type="email"]::placeholder { color: var(--muted); }
+  .journal-login input[type="email"]:focus { outline: none; border-color: var(--gold); }
+  .journal-msg {
+    margin-top: 10px;
+    font-family: var(--serif);
+    font-size: 12px;
+    font-style: italic;
+    color: var(--sky-bright);
+  }
+  .journal-msg.error { color: #E89070; }
+  .journal-msg.success { color: #8DD9A7; }
+
+  /* Tab bar */
+  .j-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 18px;
+  }
+  .j-tab {
+    flex: 1;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 12px 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-height: 44px;
+  }
+  .j-tab:hover { color: var(--bone); }
+  .j-tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* Tab panels */
+  .j-panel { display: none; }
+  .j-panel.active { display: block; }
+
+  /* Status line above textareas */
+  .j-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    text-align: right;
+    min-height: 14px;
+  }
+  .j-status.saving { color: var(--sky-bright); }
+  .j-status.saved { color: #8DD9A7; }
+  .j-status.error { color: #E89070; }
+
+  /* Free-write textarea */
+  .j-textarea {
+    width: 100%;
+    min-height: 180px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(159,210,245,0.15);
+    color: var(--bone);
+    padding: 14px 16px;
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.55;
+    border-radius: 2px;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .j-textarea:focus { outline: none; border-color: var(--gold); background: rgba(255,255,255,0.06); }
+  .j-textarea::placeholder { color: var(--muted); font-style: italic; }
+
+  /* Prompt blocks (collapsible guided prompts) */
+  .j-prompts { margin-top: 22px; }
+  .j-prompts-toggle {
+    background: transparent;
+    color: var(--sky-bright);
+    border: none;
+    padding: 8px 0;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .j-prompts-toggle::after { content: '▾'; font-size: 9px; transition: transform 0.2s; }
+  .j-prompts-toggle.open::after { transform: rotate(180deg); }
+  .j-prompts-list { display: none; padding-top: 6px; }
+  .j-prompts-list.open { display: block; }
+  .j-prompt-block {
+    background: rgba(232,193,107,0.04);
+    border-left: 2px solid var(--gold);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-radius: 2px;
+  }
+  .j-prompt-q {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .j-prompt-ctx {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--sky-bright);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .j-prompt-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(159,210,245,0.12);
+    color: var(--bone);
+    padding: 10px 12px;
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.5;
+    border-radius: 2px;
+    resize: vertical;
+    min-height: 60px;
+    box-sizing: border-box;
+  }
+  .j-prompt-input:focus { outline: none; border-color: var(--gold); }
+  .j-prompt-input::placeholder { color: var(--muted); font-style: italic; }
+
+  /* Evening mood selector */
+  .j-mood {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .j-mood-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sky-bright);
+    margin-right: 8px;
+  }
+  .j-mood-btn {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(159,210,245,0.2);
+    color: var(--bone);
+    font-family: var(--mono);
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s ease;
+  }
+  .j-mood-btn:hover { border-color: var(--sky); background: rgba(159,210,245,0.1); }
+  .j-mood-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 600; }
+
+  /* Look-back panel */
+  .j-search-row {
+    display: flex; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .j-search-input {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(159,210,245,0.2);
+    color: var(--bone);
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    border-radius: 2px;
+  }
+  .j-search-input:focus { outline: none; border-color: var(--gold); }
+  .j-lookback-section { margin-bottom: 24px; }
+  .j-lookback-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(232,193,107,0.2);
+  }
+  .j-entry-card {
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--sky);
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 2px;
+  }
+  .j-entry-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--sky-bright);
+    margin-bottom: 6px;
+  }
+  .j-entry-snippet {
+    font-family: var(--serif);
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--bone);
+    white-space: pre-wrap;
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+  .j-entry-snippet.expanded { max-height: none; }
+  .j-entry-card .j-expand {
+    background: transparent;
+    color: var(--sky-bright);
+    border: none;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 6px 0 0;
+  }
+  .j-entry-card .j-expand:hover { color: var(--gold); }
+  .j-empty {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 12px 0;
+  }
+
+  @media (max-width: 700px) {
+    .journal-row { padding: 22px 18px; }
+    .journal-row.fullscreen { padding: 22px 18px 80px; }
+    .journal-head h2 { font-size: 22px; }
+    .j-tab { font-size: 10px; padding: 12px 4px; letter-spacing: 0.08em; }
+    .j-textarea { min-height: 140px; font-size: 15px; }
+  }
+
   /* ===== ASTROLOGY (Sky Report) ===== */
   .astro-card {
     background: linear-gradient(170deg, #0A1628 0%, #1A1240 70%, #2A1640 100%);
@@ -508,6 +835,229 @@
   .field-flag.ok { background: var(--green); color: var(--bone); }
 
   /* ===== MARKETS ===== */
+  .markets-tv {
+    border-radius: 2px;
+    padding: 0;
+    margin-bottom: 14px;
+    min-height: 80px;
+    position: relative;
+  }
+  .markets-tv .markets-table { margin-top: 0; }
+  .markets-tv-loading {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-align: center;
+    padding: 30px 0;
+  }
+  .markets-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .markets-toolbar .gear-btn {
+    background: transparent;
+    border: 1px solid rgba(159,210,245,0.2);
+    color: var(--sky-bright);
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s ease;
+  }
+  .markets-toolbar .gear-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Fear & Greed cards */
+  .fng-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .fng-card {
+    background: var(--ink-50);
+    padding: 12px 14px;
+    border-radius: 2px;
+    text-align: center;
+    position: relative;
+    border-top: 2px solid var(--ink-100);
+  }
+  .fng-card.extreme-fear  { border-top-color: #8B0000; }
+  .fng-card.fear          { border-top-color: #E89070; }
+  .fng-card.neutral       { border-top-color: #B4A87D; }
+  .fng-card.greed         { border-top-color: #A8C77A; }
+  .fng-card.extreme-greed { border-top-color: #4F8F2F; }
+  .fng-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .fng-value {
+    font-family: var(--display);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--ink-900);
+    margin-bottom: 2px;
+  }
+  .fng-tone {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-700);
+  }
+  .fng-tone.extreme-fear  { color: #8B0000; }
+  .fng-tone.fear          { color: #C25F3F; }
+  .fng-tone.neutral       { color: #8a7d50; }
+  .fng-tone.greed         { color: #5F8F2F; }
+  .fng-tone.extreme-greed { color: #3F6F1F; }
+
+  /* Ticker edit modal */
+  .ticker-modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(10,22,40,0.85);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+  }
+  .ticker-modal-bg.open { display: flex; }
+  .ticker-modal {
+    background: var(--bone);
+    color: var(--ink-900);
+    max-width: 520px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 4px;
+    padding: 24px;
+    border-top: 3px solid var(--gold);
+  }
+  .ticker-modal h3 {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    margin: 0 0 6px;
+  }
+  .ticker-modal .sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-700);
+    margin-bottom: 16px;
+  }
+  .ticker-modal .ticker-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid var(--ink-100);
+    border-radius: 2px;
+  }
+  .ticker-modal .ticker-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--ink-50);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .ticker-modal .ticker-list li:last-child { border-bottom: none; }
+  .ticker-modal .ticker-list .sym { color: var(--ink-900); font-weight: 600; }
+  .ticker-modal .ticker-list .desc { color: var(--ink-700); font-family: var(--serif); font-size: 12px; flex: 1; margin-left: 10px; }
+  .ticker-modal .ticker-list .rm {
+    background: transparent;
+    border: 1px solid var(--ink-100);
+    color: var(--ink-700);
+    padding: 3px 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .ticker-modal .ticker-list .rm:hover { background: var(--red); color: white; border-color: var(--red); }
+  .ticker-modal .add-row {
+    display: flex; gap: 6px;
+    margin-bottom: 6px;
+  }
+  .ticker-modal .add-row input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--ink-100);
+    font-family: var(--mono);
+    font-size: 13px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .ticker-modal .add-row input:focus { outline: none; border-color: var(--gold); }
+  .ticker-modal .add-row button {
+    background: var(--ink-900);
+    color: var(--bone);
+    border: none;
+    padding: 8px 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .ticker-modal .add-row button:hover { background: var(--gold); color: var(--ink-900); }
+  .ticker-modal .hint {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-700);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .ticker-modal .hint code {
+    background: var(--ink-50);
+    padding: 1px 5px;
+    font-family: var(--mono);
+    font-size: 10px;
+  }
+  .ticker-modal .modal-actions {
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--ink-100);
+  }
+  .ticker-modal .reset-btn {
+    background: transparent;
+    border: 1px solid var(--ink-100);
+    color: var(--ink-700);
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .ticker-modal .close-btn {
+    background: var(--gold);
+    border: none;
+    color: var(--ink-900);
+    padding: 8px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+  .ticker-modal .close-btn:hover { background: #f0c870; }
+
   .markets-table {
     width: 100%;
     font-family: var(--mono);
@@ -923,10 +1473,29 @@
     <div class="col reveal">
       <div class="section-head">
         <h2>Markets</h2>
-        <span class="meta" id="markets-time">Live</span>
+        <span class="meta" id="markets-time">Loading…</span>
       </div>
-      <div id="markets-container">
-        <div class="loading">Pulling tape</div>
+
+      <div class="markets-toolbar">
+        <span class="muted" style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">Yahoo Finance · weekend-aware</span>
+        <button class="gear-btn" id="markets-edit-btn">⚙ Edit tickers</button>
+      </div>
+
+      <div class="markets-tv" id="markets-tv">
+        <div class="markets-tv-loading">Loading market data…</div>
+      </div>
+
+      <div class="fng-row">
+        <div class="fng-card" id="fng-stocks">
+          <div class="fng-label">F&G · Stocks</div>
+          <div class="fng-value" id="fng-stocks-value">—</div>
+          <div class="fng-tone" id="fng-stocks-tone">loading…</div>
+        </div>
+        <div class="fng-card" id="fng-crypto">
+          <div class="fng-label">F&G · Crypto</div>
+          <div class="fng-value" id="fng-crypto-value">—</div>
+          <div class="fng-tone" id="fng-crypto-tone">loading…</div>
+        </div>
       </div>
     </div>
 
@@ -962,7 +1531,145 @@
 
   </div>
 
-  <!-- ============ 6. TODAY'S FOCUS (full-width close) ============ -->
+  <!-- ============ 6. JOURNAL (Daily Log) ============ -->
+  <div class="journal-row reveal" id="journal-root">
+    <div class="journal-head">
+      <h2>Daily Log</h2>
+      <span class="meta" id="journal-meta">JOURNAL · <span id="journal-date"></span></span>
+      <div class="journal-actions">
+        <button class="j-btn" id="journal-fullscreen-btn" title="Toggle fullscreen for distraction-free writing">⛶ Focus</button>
+      </div>
+    </div>
+
+    <!-- Signed-out state -->
+    <div class="journal-login" id="journal-login" style="display:none;">
+      <p><strong>Private journal.</strong> Sign in with your email to write and read entries. We'll send you a one-tap login link — no password needed.</p>
+      <div class="login-row">
+        <input type="email" id="journal-email" placeholder="you@example.com" autocomplete="email" inputmode="email">
+        <button class="j-btn primary" id="journal-send-link">Send Link</button>
+      </div>
+      <div class="journal-msg" id="journal-login-msg"></div>
+    </div>
+
+    <!-- Signed-in state: tabs + panels -->
+    <div id="journal-app" style="display:none;">
+      <div class="j-tabs" role="tablist">
+        <button class="j-tab active" data-panel="morning" role="tab">Morning</button>
+        <button class="j-tab" data-panel="evening" role="tab">Evening</button>
+        <button class="j-tab" data-panel="lookback" role="tab">Look Back</button>
+      </div>
+
+      <!-- MORNING PANEL -->
+      <div class="j-panel active" id="panel-morning" role="tabpanel">
+        <div class="j-status" id="morning-status"></div>
+        <textarea class="j-textarea" id="morning-text"
+          placeholder="What are you bringing into today? Free-write — anything goes."></textarea>
+
+        <div class="j-prompts">
+          <button class="j-prompts-toggle" id="morning-prompts-toggle">Guided prompts from today's brief</button>
+          <div class="j-prompts-list" id="morning-prompts-list">
+            <div class="j-prompt-block" data-key="devotion">
+              <div class="j-prompt-q">Devotion</div>
+              <div class="j-prompt-ctx" id="prompt-devotion-ctx">Loading…</div>
+              <textarea class="j-prompt-input" data-key="devotion"
+                placeholder="What does this mean for today?"></textarea>
+            </div>
+            <div class="j-prompt-block" data-key="checkin">
+              <div class="j-prompt-q">Check-In</div>
+              <div class="j-prompt-ctx" id="prompt-checkin-ctx">Loading…</div>
+              <textarea class="j-prompt-input" data-key="checkin"
+                placeholder="Sit with the question — what comes up?"></textarea>
+            </div>
+            <div class="j-prompt-block" data-key="sky">
+              <div class="j-prompt-q">Sky Report</div>
+              <div class="j-prompt-ctx" id="prompt-sky-ctx">Loading…</div>
+              <textarea class="j-prompt-input" data-key="sky"
+                placeholder="Does today's reading land? Where?"></textarea>
+            </div>
+            <div class="j-prompt-block" data-key="custom">
+              <div class="j-prompt-q">Open Note</div>
+              <div class="j-prompt-ctx">Anything else worth capturing this morning</div>
+              <textarea class="j-prompt-input" data-key="custom"
+                placeholder="People, deals, decisions, things I noticed…"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EVENING PANEL -->
+      <div class="j-panel" id="panel-evening" role="tabpanel">
+        <div class="j-status" id="evening-status"></div>
+
+        <div class="j-mood">
+          <span class="j-mood-label">End-of-day energy</span>
+          <button class="j-mood-btn" data-mood="1">1</button>
+          <button class="j-mood-btn" data-mood="2">2</button>
+          <button class="j-mood-btn" data-mood="3">3</button>
+          <button class="j-mood-btn" data-mood="4">4</button>
+          <button class="j-mood-btn" data-mood="5">5</button>
+          <button class="j-mood-btn" data-mood="6">6</button>
+          <button class="j-mood-btn" data-mood="7">7</button>
+          <button class="j-mood-btn" data-mood="8">8</button>
+          <button class="j-mood-btn" data-mood="9">9</button>
+          <button class="j-mood-btn" data-mood="10">10</button>
+        </div>
+
+        <textarea class="j-textarea" id="evening-text"
+          placeholder="How did today actually go? Free-write."></textarea>
+
+        <div class="j-prompts">
+          <button class="j-prompts-toggle" id="evening-prompts-toggle">End-of-day prompts</button>
+          <div class="j-prompts-list" id="evening-prompts-list">
+            <div class="j-prompt-block" data-key="worked">
+              <div class="j-prompt-q">What worked</div>
+              <div class="j-prompt-ctx">Specific wins, small or large</div>
+              <textarea class="j-prompt-input" data-ekey="worked"
+                placeholder="Name one or two things that went well…"></textarea>
+            </div>
+            <div class="j-prompt-block" data-key="didnt">
+              <div class="j-prompt-q">What didn't</div>
+              <div class="j-prompt-ctx">No need to fix it now — just name it</div>
+              <textarea class="j-prompt-input" data-ekey="didnt"
+                placeholder="What got stuck, missed, or fell off…"></textarea>
+            </div>
+            <div class="j-prompt-block" data-key="carry">
+              <div class="j-prompt-q">Carry forward</div>
+              <div class="j-prompt-ctx">One thing to remember for tomorrow</div>
+              <textarea class="j-prompt-input" data-ekey="carry"
+                placeholder="A decision, a person, a thread to pick up…"></textarea>
+            </div>
+            <div class="j-prompt-block" data-key="grateful">
+              <div class="j-prompt-q">Grateful for</div>
+              <div class="j-prompt-ctx">Today, specifically</div>
+              <textarea class="j-prompt-input" data-ekey="grateful"
+                placeholder="One thing, said plainly…"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOOK BACK PANEL -->
+      <div class="j-panel" id="panel-lookback" role="tabpanel">
+        <div class="j-search-row">
+          <input type="text" class="j-search-input" id="journal-search"
+            placeholder="Search past entries… (e.g. Chase, mom, energy)">
+          <button class="j-btn" id="journal-search-btn">Search</button>
+        </div>
+
+        <div class="j-lookback-section">
+          <div class="j-lookback-label">On this day</div>
+          <div id="lookback-otd"><div class="j-empty">Loading past entries…</div></div>
+        </div>
+
+        <div class="j-lookback-section" id="search-results-section" style="display:none;">
+          <div class="j-lookback-label">Search Results</div>
+          <div id="search-results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 7. TODAY'S FOCUS (full-width close) ============ -->
   <div class="focus-row reveal">
     <div class="section-head">
       <h2>Today's Focus</h2>
@@ -975,6 +1682,35 @@
     </ol>
   </div>
 
+</div>
+
+<!-- Ticker edit modal -->
+<div class="ticker-modal-bg" id="ticker-modal-bg">
+  <div class="ticker-modal" role="dialog" aria-modal="true">
+    <h3>Edit Tickers</h3>
+    <p class="sub">Customize which symbols show in your live market tape.</p>
+
+    <ul class="ticker-list" id="ticker-list"></ul>
+
+    <div class="add-row">
+      <input type="text" id="ticker-add-input" placeholder="e.g. NVDA  or  BTC-USD  or  ^VIX" autocomplete="off">
+      <button id="ticker-add-btn">Add</button>
+    </div>
+    <div class="hint">
+      Uses Yahoo Finance symbol format. Examples:<br>
+      <strong>Stocks:</strong> <code>AAPL</code>, <code>NVDA</code>, <code>NUE</code>, <code>STLD</code><br>
+      <strong>Indices:</strong> <code>^GSPC</code> (S&P), <code>^DJI</code> (Dow), <code>^IXIC</code> (Nasdaq), <code>^VIX</code> (VIX), <code>^RUT</code> (Russell)<br>
+      <strong>Crypto:</strong> <code>BTC-USD</code>, <code>ETH-USD</code>, <code>SOL-USD</code>, <code>XRP-USD</code> (or just <code>BTC</code> works too)<br>
+      <strong>Futures:</strong> <code>GC=F</code> (Gold), <code>CL=F</code> (Crude), <code>NG=F</code> (Nat Gas), <code>HG=F</code> (Copper)<br>
+      <strong>FX & Rates:</strong> <code>DX-Y.NYB</code> (DXY), <code>^TNX</code> (10-Yr Treasury), <code>EURUSD=X</code> (EUR/USD)<br>
+      <em>Tip: search the symbol on finance.yahoo.com to find the exact format.</em>
+    </div>
+
+    <div class="modal-actions">
+      <button class="reset-btn" id="ticker-reset-btn">Reset to defaults</button>
+      <button class="close-btn" id="ticker-close-btn">Done</button>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -1290,117 +2026,286 @@
   })();
 
   /* --------------------------------------------------------------
-     MARKETS — Financial Modeling Prep
-     Free tier: 250 calls/day, no card required, browser-friendly
-     Three calls per page load: quotes, gainers, losers
+     MARKETS — Yahoo Finance v8 chart endpoint via corsproxy.io
+     No API key, weekend-aware (returns Friday close on Sat/Sun),
+     user-editable ticker list. Rendered in our own brand style.
      -------------------------------------------------------------- */
 
-  // Indices + materials watchlist (FMP symbol conventions)
-  const TICKERS = [
-    { group: 'INDICES', items: [
-      { sym: '^GSPC', name: 'S&P 500' },
-      { sym: '^DJI',  name: 'Dow Jones' },
-      { sym: '^IXIC', name: 'Nasdaq' },
-      { sym: '^TNX',  name: '10-Yr Treasury' },
-    ]},
-    { group: 'MATERIALS · YOUR INPUTS', items: [
-      { sym: 'HG=F',  name: 'Copper · futures' },
-      { sym: 'STLD',  name: 'Steel Dynamics' },
-      { sym: 'NUE',   name: 'Nucor · steel proxy' },
-      { sym: 'NG=F',  name: 'Natural Gas' },
-      { sym: 'CL=F',  name: 'Crude Oil · WTI' },
-    ]},
+  const DEFAULT_TICKERS = [
+    { sym: '^GSPC',    desc: 'S&P 500',       group: 'INDICES' },
+    { sym: '^DJI',     desc: 'Dow Jones',     group: 'INDICES' },
+    { sym: '^IXIC',    desc: 'Nasdaq',        group: 'INDICES' },
+    { sym: '^VIX',     desc: 'VIX Volatility',group: 'INDICES' },
+    { sym: 'DX-Y.NYB', desc: 'US Dollar · DXY',group: 'FX & RATES' },
+    { sym: '^TNX',     desc: '10-Yr Treasury',group: 'FX & RATES' },
+    { sym: 'BTC-USD',  desc: 'Bitcoin',       group: 'CRYPTO' },
+    { sym: 'ETH-USD',  desc: 'Ethereum',      group: 'CRYPTO' },
+    { sym: 'GC=F',     desc: 'Gold · futures',group: 'COMMODITIES' },
+    { sym: 'CL=F',     desc: 'Crude Oil · WTI',group: 'COMMODITIES' },
+    { sym: 'HG=F',     desc: 'Copper · futures',group: 'YOUR INPUTS' },
+    { sym: 'NG=F',     desc: 'Natural Gas',   group: 'YOUR INPUTS' },
+    { sym: 'NUE',      desc: 'Nucor · steel', group: 'YOUR INPUTS' },
+    { sym: 'STLD',     desc: 'Steel Dynamics',group: 'YOUR INPUTS' },
   ];
 
-  async function loadMarkets() {
-    const c = document.getElementById('markets-container');
-    if (!CONFIG.FMP_KEY) {
-      c.innerHTML = `
-        <div class="news-item">
-          <div class="src">SETUP</div>
-          <a class="headline" href="https://site.financialmodelingprep.com/developer/docs" target="_blank">
-            Add a free FMP API key in CONFIG to enable market data
-          </a>
-          <div class="time">30 seconds · 250 free calls/day · no card</div>
-        </div>`;
-      return;
-    }
+  const TICKER_LS_KEY = 'aj.morning.tickers.v2';
 
+  function getTickers() {
     try {
-      const symbols = TICKERS.flatMap(g => g.items.map(i => i.sym));
-      const quoteURL = `https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${CONFIG.FMP_KEY}`;
-      const gainURL  = `https://financialmodelingprep.com/api/v3/stock_market/gainers?apikey=${CONFIG.FMP_KEY}`;
-      const loseURL  = `https://financialmodelingprep.com/api/v3/stock_market/losers?apikey=${CONFIG.FMP_KEY}`;
-
-      const [qRes, gRes, lRes] = await Promise.all([
-        fetch(quoteURL).then(r => r.json()).catch(() => []),
-        fetch(gainURL).then(r => r.json()).catch(() => []),
-        fetch(loseURL).then(r => r.json()).catch(() => []),
-      ]);
-
-      const byId = Object.fromEntries((Array.isArray(qRes) ? qRes : []).map(q => [q.symbol, q]));
-
-      // Build the indices/materials table
-      let html = '<table class="markets-table">';
-      for (const g of TICKERS) {
-        html += `<tr><td colspan="3" class="market-group-label">${g.group}</td></tr>`;
-        for (const t of g.items) {
-          const q = byId[t.sym];
-          if (!q || q.price == null) {
-            html += `<tr><td class="sym">${t.sym}<span class="name">${t.name}</span></td><td class="price">—</td><td class="chg">—</td></tr>`;
-            continue;
-          }
-          const dir = q.change >= 0 ? 'up' : 'dn';
-          const sign = q.change >= 0 ? '+' : '';
-          const priceFmt = q.price.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 });
-          const pct = q.changesPercentage != null ? q.changesPercentage.toFixed(2) : '—';
-          html += `
-            <tr>
-              <td class="sym">${t.sym.replace(/^\^/, '')}<span class="name">${t.name}</span></td>
-              <td class="price">${priceFmt}</td>
-              <td class="chg ${dir}">${sign}${pct}%</td>
-            </tr>`;
-        }
+      const raw = localStorage.getItem(TICKER_LS_KEY);
+      if (raw) {
+        const t = JSON.parse(raw);
+        if (Array.isArray(t) && t.length) return t;
       }
-      html += '</table>';
+    } catch (e) {}
+    return [...DEFAULT_TICKERS];
+  }
+  function saveTickers(t) {
+    localStorage.setItem(TICKER_LS_KEY, JSON.stringify(t));
+  }
 
-      // Top movers
-      const fmtMover = (m, dir) => {
-        const sign = dir === 'up' ? '+' : '';
-        const pct = m.changesPercentage != null ? m.changesPercentage.toFixed(2) : '—';
-        const price = m.price != null ? m.price.toLocaleString('en-US', { maximumFractionDigits: 2 }) : '—';
-        return `
-          <tr>
-            <td class="sym">${m.symbol}<span class="name">${(m.name || '').slice(0, 28)}</span></td>
-            <td class="price">${price}</td>
-            <td class="chg ${dir}">${sign}${pct}%</td>
-          </tr>`;
+  // Fetch one Yahoo Finance ticker via corsproxy.io
+  async function fetchYahooQuote(sym) {
+    const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=2d`;
+    const url = `https://corsproxy.io/?${encodeURIComponent(target)}`;
+    try {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(r.status);
+      const d = await r.json();
+      const m = d?.chart?.result?.[0]?.meta;
+      if (!m) return null;
+      const price = m.regularMarketPrice;
+      const prev = m.chartPreviousClose ?? m.previousClose ?? price;
+      return {
+        sym,
+        price,
+        prev,
+        chg: price - prev,
+        pct: ((price - prev) / prev) * 100,
+        name: m.shortName || m.longName || sym,
+        time: m.regularMarketTime ? new Date(m.regularMarketTime * 1000) : null,
+        currency: m.currency || 'USD',
       };
-
-      const gainers = (Array.isArray(gRes) ? gRes : []).slice(0, 3);
-      const losers  = (Array.isArray(lRes) ? lRes : []).slice(0, 3);
-
-      if (gainers.length) {
-        html += '<table class="markets-table" style="margin-top:14px;">';
-        html += `<tr><td colspan="3" class="market-group-label">TOP GAINERS · TODAY</td></tr>`;
-        gainers.forEach(m => html += fmtMover(m, 'up'));
-        html += '</table>';
-      }
-      if (losers.length) {
-        html += '<table class="markets-table" style="margin-top:14px;">';
-        html += `<tr><td colspan="3" class="market-group-label">TOP LOSERS · TODAY</td></tr>`;
-        losers.forEach(m => html += fmtMover(m, 'dn'));
-        html += '</table>';
-      }
-
-      c.innerHTML = html;
-      document.getElementById('markets-time').textContent =
-        'AS OF ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Chicago' });
     } catch (e) {
-      c.innerHTML = `<div class="loading" style="color:var(--red);">Market feed error · ${e.message}</div>`;
+      return null;
     }
   }
-  loadMarkets();
+
+  function fmtPrice(p, sym) {
+    if (p == null) return '—';
+    // Treasury yields are already in %
+    if (sym === '^TNX' || sym === '^FVX' || sym === '^TYX') return p.toFixed(3);
+    // Big numbers like BTC, indices
+    if (p >= 1000) return p.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+    if (p >= 1) return p.toFixed(2);
+    return p.toFixed(4); // small prices (some forex, microcaps)
+  }
+
+  function renderMarketsWidget() {
+    const wrap = document.getElementById('markets-tv');
+    if (!wrap) return;
+    wrap.innerHTML = '<div class="markets-tv-loading">Loading market data…</div>';
+
+    const tickers = getTickers();
+    // Group tickers
+    const grouped = {};
+    tickers.forEach((t, idx) => {
+      const g = t.group || 'WATCHLIST';
+      if (!grouped[g]) grouped[g] = [];
+      grouped[g].push({ ...t, idx });
+    });
+
+    // Fetch all in parallel
+    Promise.all(tickers.map(t => fetchYahooQuote(t.sym))).then(results => {
+      const byIdx = {};
+      results.forEach((r, i) => { byIdx[i] = r; });
+
+      let html = '<table class="markets-table">';
+      for (const [groupName, items] of Object.entries(grouped)) {
+        html += `<tr><td colspan="3" class="market-group-label">${escapeHTML(groupName)}</td></tr>`;
+        items.forEach(item => {
+          const q = byIdx[item.idx];
+          if (!q || q.price == null) {
+            html += `<tr><td class="sym">${escapeHTML(item.sym.replace(/^\^/, ''))}<span class="name">${escapeHTML(item.desc || '')}</span></td><td class="price">—</td><td class="chg">—</td></tr>`;
+            return;
+          }
+          const dir = q.pct >= 0 ? 'up' : 'dn';
+          const sign = q.pct >= 0 ? '+' : '';
+          const priceStr = fmtPrice(q.price, q.sym);
+          const pctStr = q.pct != null ? q.pct.toFixed(2) : '—';
+          html += `
+            <tr>
+              <td class="sym">${escapeHTML(item.sym.replace(/^\^/, '').replace(/\=F$/, ''))}<span class="name">${escapeHTML(item.desc || q.name)}</span></td>
+              <td class="price">${priceStr}</td>
+              <td class="chg ${dir}">${sign}${pctStr}%</td>
+            </tr>`;
+        });
+      }
+      html += '</table>';
+      wrap.innerHTML = html;
+
+      // Find the latest market time across all successful results
+      const times = results.filter(r => r?.time).map(r => r.time.getTime());
+      const timeEl = document.getElementById('markets-time');
+      if (timeEl && times.length) {
+        const latest = new Date(Math.max(...times));
+        const now = new Date();
+        const ageMin = (now - latest) / 60000;
+        const sameDay = latest.toDateString() === now.toDateString();
+        let label;
+        if (ageMin < 60 && sameDay) {
+          label = 'AS OF ' + latest.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Chicago' }) + ' CT';
+        } else if (sameDay) {
+          label = 'AS OF ' + latest.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Chicago' }) + ' CT';
+        } else {
+          // Weekend / after-hours — show "Fri 4:00 PM ET" style
+          label = 'AS OF ' + latest.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase() + ' ' +
+                  latest.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/New_York' }) + ' ET';
+        }
+        timeEl.textContent = label;
+      }
+    }).catch(e => {
+      wrap.innerHTML = `<div class="markets-tv-loading">Market feed error · <a href="https://corsproxy.io" target="_blank" style="color:var(--sky-bright);">corsproxy</a> may be down</div>`;
+    });
+  }
+
+  /* --------- Fear & Greed Indices --------- */
+  function fngClass(score) {
+    if (score < 25) return 'extreme-fear';
+    if (score < 45) return 'fear';
+    if (score < 55) return 'neutral';
+    if (score < 75) return 'greed';
+    return 'extreme-greed';
+  }
+  function fngLabel(score) {
+    if (score < 25) return 'Extreme Fear';
+    if (score < 45) return 'Fear';
+    if (score < 55) return 'Neutral';
+    if (score < 75) return 'Greed';
+    return 'Extreme Greed';
+  }
+
+  async function loadFearGreed() {
+    // Stocks F&G from CNN
+    try {
+      const r = await fetch('https://production.dataviz.cnn.io/index/fearandgreed/graphdata');
+      const d = await r.json();
+      const score = Math.round(d?.fear_and_greed?.score || 0);
+      const card = document.getElementById('fng-stocks');
+      const cls = fngClass(score);
+      card.className = 'fng-card ' + cls;
+      document.getElementById('fng-stocks-value').textContent = score;
+      const tone = document.getElementById('fng-stocks-tone');
+      tone.textContent = fngLabel(score);
+      tone.className = 'fng-tone ' + cls;
+    } catch (e) {
+      document.getElementById('fng-stocks-value').textContent = '—';
+      document.getElementById('fng-stocks-tone').textContent = 'unavailable';
+    }
+    // Crypto F&G from Alternative.me
+    try {
+      const r = await fetch('https://api.alternative.me/fng/?limit=1');
+      const d = await r.json();
+      const score = parseInt(d?.data?.[0]?.value || '0', 10);
+      const card = document.getElementById('fng-crypto');
+      const cls = fngClass(score);
+      card.className = 'fng-card ' + cls;
+      document.getElementById('fng-crypto-value').textContent = score;
+      const tone = document.getElementById('fng-crypto-tone');
+      tone.textContent = fngLabel(score);
+      tone.className = 'fng-tone ' + cls;
+    } catch (e) {
+      document.getElementById('fng-crypto-value').textContent = '—';
+      document.getElementById('fng-crypto-tone').textContent = 'unavailable';
+    }
+  }
+
+  /* --------- Ticker edit modal --------- */
+  (function setupTickerEditor() {
+    const editBtn = document.getElementById('markets-edit-btn');
+    const modalBg = document.getElementById('ticker-modal-bg');
+    const list = document.getElementById('ticker-list');
+    const addInput = document.getElementById('ticker-add-input');
+    const addBtn = document.getElementById('ticker-add-btn');
+    const closeBtn = document.getElementById('ticker-close-btn');
+    const resetBtn = document.getElementById('ticker-reset-btn');
+
+    function renderList() {
+      const tickers = getTickers();
+      if (!tickers.length) {
+        list.innerHTML = '<li style="padding:14px;color:var(--ink-700);text-align:center;font-family:var(--serif);font-style:italic;">No tickers yet. Add one below.</li>';
+        return;
+      }
+      list.innerHTML = tickers.map((t, i) => `
+        <li>
+          <span class="sym">${escapeHTML(t.sym)}</span>
+          <span class="desc">${escapeHTML(t.desc || '')}${t.group ? ' · ' + escapeHTML(t.group) : ''}</span>
+          <button class="rm" data-idx="${i}">Remove</button>
+        </li>
+      `).join('');
+      list.querySelectorAll('.rm').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx, 10);
+          const t = getTickers();
+          t.splice(idx, 1);
+          saveTickers(t);
+          renderList();
+        });
+      });
+    }
+
+    function addTicker() {
+      const raw = addInput.value.trim();
+      if (!raw) return;
+      // Yahoo Finance symbols — accept as-is, normalize common shortcuts
+      let sym = raw.toUpperCase();
+      // Convenience: bare crypto names get auto-suffixed
+      if (/^(BTC|ETH|SOL|XRP|ADA|DOGE|AVAX|LTC|MATIC|LINK|DOT)$/.test(sym)) sym += '-USD';
+      const t = getTickers();
+      if (t.some(x => x.sym === sym)) {
+        addInput.value = '';
+        return;
+      }
+      t.push({ sym, desc: sym, group: 'WATCHLIST' });
+      saveTickers(t);
+      addInput.value = '';
+      renderList();
+    }
+
+    editBtn.addEventListener('click', () => {
+      renderList();
+      modalBg.classList.add('open');
+      setTimeout(() => addInput.focus(), 50);
+    });
+    addBtn.addEventListener('click', addTicker);
+    addInput.addEventListener('keydown', e => { if (e.key === 'Enter') addTicker(); });
+
+    closeBtn.addEventListener('click', () => {
+      modalBg.classList.remove('open');
+      renderMarketsWidget(); // re-render with new list
+    });
+    modalBg.addEventListener('click', e => {
+      if (e.target === modalBg) {
+        modalBg.classList.remove('open');
+        renderMarketsWidget();
+      }
+    });
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Reset ticker list to defaults?')) {
+        saveTickers([...DEFAULT_TICKERS]);
+        renderList();
+      }
+    });
+  })();
+
+  // Tiny helper for safe HTML injection
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // Boot markets
+  renderMarketsWidget();
+  loadFearGreed();
 
   /* --------------------------------------------------------------
      NEWS — GENERAL (NewsAPI) + INDUSTRY (RSS via proxy)
@@ -1996,6 +2901,555 @@
       `<div class="astro-kicker">Sky Report</div><div class="astro-empty">Astro engine error: ${e.message}</div>`;
     console.error(e);
   }
+
+  /* ==============================================================
+     JOURNAL · Daily Log
+     Supabase Auth (magic link) + journal_entries table
+     ============================================================== */
+
+  (function initJournal() {
+    const SB_URL = CONFIG.SUPABASE_URL;
+    const SB_KEY = CONFIG.SUPABASE_ANON_KEY;
+    const todayISO = new Date().toISOString().slice(0, 10);
+
+    // Display the journal date in the header
+    const dateEl = document.getElementById('journal-date');
+    if (dateEl) {
+      const d = new Date();
+      dateEl.textContent = d.toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      }).toUpperCase();
+    }
+
+    // ---- Auth state (stored in localStorage) ----
+    // Supabase sessions use access_token + refresh_token. We store them and
+    // refresh when needed. Keys match what supabase-js uses, so users who are
+    // already signed in via the accounting app stay signed in here too.
+    const SESSION_KEY = 'sb-zottjoyiczglrkaodjfr-auth-token';
+
+    function getSession() {
+      try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return null;
+        const s = JSON.parse(raw);
+        if (!s.access_token) return null;
+        // Check expiry
+        if (s.expires_at && (s.expires_at * 1000) < Date.now()) {
+          // Expired — try refresh later
+          return { ...s, expired: true };
+        }
+        return s;
+      } catch (e) { return null; }
+    }
+
+    async function refreshSession() {
+      const s = getSession();
+      if (!s || !s.refresh_token) return null;
+      try {
+        const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`, {
+          method: 'POST',
+          headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: s.refresh_token }),
+        });
+        if (!r.ok) return null;
+        const d = await r.json();
+        const newSession = {
+          access_token: d.access_token,
+          refresh_token: d.refresh_token,
+          expires_at: d.expires_at,
+          expires_in: d.expires_in,
+          token_type: d.token_type,
+          user: d.user,
+        };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
+        return newSession;
+      } catch (e) { return null; }
+    }
+
+    async function authedFetch(path, opts = {}) {
+      let s = getSession();
+      if (s && s.expired) s = await refreshSession();
+      if (!s) throw new Error('Not authenticated');
+      const headers = Object.assign({
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + s.access_token,
+        'Content-Type': 'application/json',
+      }, opts.headers || {});
+      return fetch(`${SB_URL}${path}`, { ...opts, headers });
+    }
+
+    // ---- Send magic link ----
+    async function sendMagicLink(email) {
+      const r = await fetch(`${SB_URL}/auth/v1/otp`, {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim(),
+          options: {
+            // Where Supabase will send the user after they click the link
+            email_redirect_to: location.origin + location.pathname,
+          },
+          create_user: true,
+        }),
+      });
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        throw new Error(err.msg || err.error_description || `${r.status}`);
+      }
+      return true;
+    }
+
+    // ---- Handle magic-link callback ----
+    // When user clicks the email link, Supabase redirects back with tokens
+    // in the URL hash: #access_token=...&refresh_token=...&expires_in=...
+    function handleAuthCallback() {
+      if (!location.hash || !location.hash.includes('access_token=')) return false;
+      const params = new URLSearchParams(location.hash.slice(1));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      const expires_in = parseInt(params.get('expires_in') || '3600', 10);
+      if (!access_token) return false;
+      const session = {
+        access_token,
+        refresh_token,
+        expires_at: Math.floor(Date.now() / 1000) + expires_in,
+        expires_in,
+        token_type: 'bearer',
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      // Clean URL
+      history.replaceState(null, '', location.pathname);
+      return true;
+    }
+
+    // ---- Sign out ----
+    function signOut() {
+      localStorage.removeItem(SESSION_KEY);
+      render();
+    }
+
+    // ---- Get user ID from session ----
+    async function getUserId() {
+      const s = getSession();
+      if (!s) return null;
+      if (s.user && s.user.id) return s.user.id;
+      // Fetch user info if not cached
+      try {
+        const r = await authedFetch('/auth/v1/user');
+        if (!r.ok) return null;
+        const u = await r.json();
+        // Cache it
+        const updated = { ...s, user: u };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+        return u.id;
+      } catch (e) { return null; }
+    }
+
+    // ===================================================
+    //   JOURNAL APP (runs after auth confirmed)
+    // ===================================================
+    let userId = null;
+    let currentEntry = null; // The today's row, if it exists
+    let saveTimer = null;
+
+    function debouncedSave() {
+      clearTimeout(saveTimer);
+      setStatus('morning-status', 'saving', 'Saving…');
+      setStatus('evening-status', 'saving', 'Saving…');
+      saveTimer = setTimeout(saveEntry, 1500);
+    }
+
+    function setStatus(elId, cls, text) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.className = 'j-status ' + cls;
+      el.textContent = text;
+      if (cls === 'saved') {
+        setTimeout(() => { if (el.textContent === text) { el.textContent = ''; el.className = 'j-status'; } }, 2500);
+      }
+    }
+
+    function collectMorningPrompts() {
+      const blocks = document.querySelectorAll('#morning-prompts-list .j-prompt-input');
+      const out = {};
+      blocks.forEach(b => { out[b.dataset.key] = b.value; });
+      return out;
+    }
+    function collectEveningPrompts() {
+      const blocks = document.querySelectorAll('#evening-prompts-list .j-prompt-input');
+      const out = {};
+      blocks.forEach(b => { out[b.dataset.ekey] = b.value; });
+      return out;
+    }
+    function getMoodEvening() {
+      const active = document.querySelector('.j-mood-btn.active');
+      return active ? parseInt(active.dataset.mood, 10) : null;
+    }
+
+    async function saveEntry() {
+      if (!userId) return;
+      const payload = {
+        user_id: userId,
+        entry_date: todayISO,
+        morning_text: document.getElementById('morning-text')?.value || '',
+        evening_text: document.getElementById('evening-text')?.value || '',
+        morning_prompts: collectMorningPrompts(),
+        evening_prompts: collectEveningPrompts(),
+        mood_evening: getMoodEvening(),
+      };
+      // Pull mood_morning from the existing check-in if set
+      const checkinKey = `aj.checkin.${todayISO}`;
+      try {
+        const ck = JSON.parse(localStorage.getItem(checkinKey) || '{}');
+        if (ck.energy) payload.mood_morning = ck.energy;
+      } catch (e) { /* ignore */ }
+
+      try {
+        const r = await authedFetch(
+          `/rest/v1/journal_entries?on_conflict=user_id,entry_date`,
+          {
+            method: 'POST',
+            headers: {
+              'Prefer': 'resolution=merge-duplicates,return=representation',
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+        if (!r.ok) {
+          const err = await r.text();
+          throw new Error(`${r.status} ${err.slice(0, 100)}`);
+        }
+        const result = await r.json();
+        currentEntry = result[0];
+        setStatus('morning-status', 'saved', 'Saved ✓');
+        setStatus('evening-status', 'saved', 'Saved ✓');
+      } catch (e) {
+        setStatus('morning-status', 'error', 'Save failed: ' + e.message);
+        setStatus('evening-status', 'error', 'Save failed: ' + e.message);
+      }
+    }
+
+    async function loadTodayEntry() {
+      try {
+        const r = await authedFetch(
+          `/rest/v1/journal_entries?user_id=eq.${userId}&entry_date=eq.${todayISO}&select=*`
+        );
+        if (!r.ok) return;
+        const rows = await r.json();
+        if (!rows.length) return;
+        currentEntry = rows[0];
+        // Populate fields
+        const mt = document.getElementById('morning-text');
+        const et = document.getElementById('evening-text');
+        if (mt) mt.value = currentEntry.morning_text || '';
+        if (et) et.value = currentEntry.evening_text || '';
+        const mp = currentEntry.morning_prompts || {};
+        document.querySelectorAll('#morning-prompts-list .j-prompt-input').forEach(b => {
+          if (mp[b.dataset.key]) b.value = mp[b.dataset.key];
+        });
+        const ep = currentEntry.evening_prompts || {};
+        document.querySelectorAll('#evening-prompts-list .j-prompt-input').forEach(b => {
+          if (ep[b.dataset.ekey]) b.value = ep[b.dataset.ekey];
+        });
+        if (currentEntry.mood_evening) {
+          const btn = document.querySelector(`.j-mood-btn[data-mood="${currentEntry.mood_evening}"]`);
+          if (btn) btn.classList.add('active');
+        }
+        // If any content exists, auto-expand the prompts so user sees them
+        const hasMorningPrompts = Object.values(mp).some(v => v && v.length);
+        const hasEveningPrompts = Object.values(ep).some(v => v && v.length);
+        if (hasMorningPrompts) {
+          document.getElementById('morning-prompts-toggle').classList.add('open');
+          document.getElementById('morning-prompts-list').classList.add('open');
+        }
+        if (hasEveningPrompts) {
+          document.getElementById('evening-prompts-toggle').classList.add('open');
+          document.getElementById('evening-prompts-list').classList.add('open');
+        }
+      } catch (e) { console.warn('loadTodayEntry:', e); }
+    }
+
+    // ---- Populate prompt contexts from today's brief content ----
+    function populatePromptContexts() {
+      // Devotion
+      const verseText = document.getElementById('verse-text')?.textContent || '';
+      const verseCite = document.getElementById('verse-cite')?.textContent || '';
+      const reflText = document.getElementById('reflection-text')?.textContent || '';
+      const devCtx = document.getElementById('prompt-devotion-ctx');
+      if (devCtx && verseText) {
+        devCtx.textContent = `"${verseText}" — ${verseCite}. ${reflText}`;
+      }
+      // Check-in (the actual prompt question)
+      const checkinPrompt = document.getElementById('checkin-prompt')?.textContent || '';
+      const checkinTheme = document.getElementById('checkin-theme')?.textContent || '';
+      const ciCtx = document.getElementById('prompt-checkin-ctx');
+      if (ciCtx && checkinPrompt) {
+        ciCtx.textContent = `${checkinPrompt}${checkinTheme ? ' (' + checkinTheme + ')' : ''}`;
+      }
+      // Sky report
+      const skyHeadline = document.getElementById('astro-headline')?.textContent || '';
+      const skyReading = document.querySelector('#astro-reading')?.textContent.replace("Today's Reading", '').trim() || '';
+      const skyCtx = document.getElementById('prompt-sky-ctx');
+      if (skyCtx) {
+        skyCtx.textContent = skyHeadline + (skyReading ? ' — ' + skyReading.slice(0, 200) + (skyReading.length > 200 ? '…' : '') : '');
+      }
+    }
+
+    // ---- Look back: on-this-day + search ----
+    function daysAgo(n) {
+      const d = new Date();
+      d.setDate(d.getDate() - n);
+      return d.toISOString().slice(0, 10);
+    }
+    function fmtDate(iso) {
+      const d = new Date(iso + 'T12:00:00');
+      return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    }
+    function snippet(entry) {
+      const parts = [entry.morning_text, entry.evening_text]
+        .filter(Boolean).join('\n\n').trim();
+      // Also include any prompt answers
+      const mp = entry.morning_prompts || {};
+      const ep = entry.evening_prompts || {};
+      const promptText = [...Object.values(mp), ...Object.values(ep)]
+        .filter(v => v && v.trim()).join('\n').trim();
+      const combined = (parts + (promptText ? '\n' + promptText : '')).trim();
+      return combined || '(empty)';
+    }
+
+    async function loadLookback() {
+      const otdEl = document.getElementById('lookback-otd');
+      if (!userId) return;
+      const dates = {
+        '1 week ago': daysAgo(7),
+        '1 month ago': daysAgo(30),
+        '3 months ago': daysAgo(90),
+        '6 months ago': daysAgo(180),
+        '1 year ago': daysAgo(365),
+      };
+      const datesList = Object.values(dates);
+      try {
+        const r = await authedFetch(
+          `/rest/v1/journal_entries?user_id=eq.${userId}&entry_date=in.(${datesList.join(',')})&select=*&order=entry_date.desc`
+        );
+        if (!r.ok) throw new Error(r.status);
+        const rows = await r.json();
+        if (!rows.length) {
+          otdEl.innerHTML = '<div class="j-empty">No past entries on these dates yet. Keep writing — they\'ll accumulate.</div>';
+          return;
+        }
+        const byDate = {};
+        rows.forEach(r => { byDate[r.entry_date] = r; });
+        const html = Object.entries(dates).map(([label, date]) => {
+          const e = byDate[date];
+          if (!e) return '';
+          const snip = snippet(e);
+          return `
+            <div class="j-entry-card">
+              <div class="j-entry-date">${label.toUpperCase()} · ${fmtDate(date)}</div>
+              <div class="j-entry-snippet">${escapeHTML(snip)}</div>
+              ${snip.length > 200 ? '<button class="j-expand" onclick="this.previousElementSibling.classList.toggle(\'expanded\'); this.textContent = this.previousElementSibling.classList.contains(\'expanded\') ? \'Show less\' : \'Show more\'">Show more</button>' : ''}
+            </div>`;
+        }).filter(Boolean).join('');
+        otdEl.innerHTML = html || '<div class="j-empty">No past entries on these dates yet.</div>';
+      } catch (e) {
+        otdEl.innerHTML = `<div class="j-empty">Couldn't load past entries: ${e.message}</div>`;
+      }
+    }
+
+    async function runSearch(q) {
+      const resultsEl = document.getElementById('search-results');
+      const section = document.getElementById('search-results-section');
+      if (!q || q.length < 2) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = 'block';
+      resultsEl.innerHTML = '<div class="j-empty">Searching…</div>';
+      try {
+        // PostgREST `or` with ilike across both fields
+        const pat = encodeURIComponent(`*${q}*`);
+        const r = await authedFetch(
+          `/rest/v1/journal_entries?user_id=eq.${userId}&or=(morning_text.ilike.${pat},evening_text.ilike.${pat})&select=*&order=entry_date.desc&limit=20`
+        );
+        if (!r.ok) throw new Error(r.status);
+        const rows = await r.json();
+        if (!rows.length) {
+          resultsEl.innerHTML = `<div class="j-empty">No entries found containing "${escapeHTML(q)}"</div>`;
+          return;
+        }
+        resultsEl.innerHTML = rows.map(e => {
+          const snip = snippet(e);
+          // Highlight the query in the snippet
+          const hl = escapeHTML(snip).replace(
+            new RegExp('(' + escapeRegex(q) + ')', 'gi'),
+            '<mark style="background:rgba(232,193,107,0.3);color:var(--bone);">$1</mark>'
+          );
+          return `
+            <div class="j-entry-card">
+              <div class="j-entry-date">${fmtDate(e.entry_date)}</div>
+              <div class="j-entry-snippet">${hl}</div>
+              ${snip.length > 200 ? '<button class="j-expand" onclick="this.previousElementSibling.classList.toggle(\'expanded\'); this.textContent = this.previousElementSibling.classList.contains(\'expanded\') ? \'Show less\' : \'Show more\'">Show more</button>' : ''}
+            </div>`;
+        }).join('');
+      } catch (e) {
+        resultsEl.innerHTML = `<div class="j-empty">Search failed: ${e.message}</div>`;
+      }
+    }
+
+    function escapeHTML(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+    function escapeRegex(s) {
+      return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // ---- Wire up UI ----
+    function wireApp() {
+      // Tabs
+      document.querySelectorAll('.j-tab').forEach(t => {
+        t.addEventListener('click', () => {
+          document.querySelectorAll('.j-tab').forEach(x => x.classList.remove('active'));
+          document.querySelectorAll('.j-panel').forEach(x => x.classList.remove('active'));
+          t.classList.add('active');
+          document.getElementById('panel-' + t.dataset.panel).classList.add('active');
+          if (t.dataset.panel === 'lookback') loadLookback();
+        });
+      });
+
+      // Morning prompts toggle
+      const mpt = document.getElementById('morning-prompts-toggle');
+      mpt.addEventListener('click', () => {
+        mpt.classList.toggle('open');
+        document.getElementById('morning-prompts-list').classList.toggle('open');
+      });
+
+      // Evening prompts toggle
+      const ept = document.getElementById('evening-prompts-toggle');
+      ept.addEventListener('click', () => {
+        ept.classList.toggle('open');
+        document.getElementById('evening-prompts-list').classList.toggle('open');
+      });
+
+      // Autosave on all writable fields
+      ['morning-text', 'evening-text'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', debouncedSave);
+      });
+      document.querySelectorAll('.j-prompt-input').forEach(el => {
+        el.addEventListener('input', debouncedSave);
+      });
+
+      // Mood buttons
+      document.querySelectorAll('.j-mood-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.j-mood-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          debouncedSave();
+        });
+      });
+
+      // Fullscreen toggle
+      const fsBtn = document.getElementById('journal-fullscreen-btn');
+      fsBtn.addEventListener('click', () => {
+        const root = document.getElementById('journal-root');
+        root.classList.toggle('fullscreen');
+        fsBtn.textContent = root.classList.contains('fullscreen') ? '⛶ Exit' : '⛶ Focus';
+        if (root.classList.contains('fullscreen')) {
+          window.scrollTo(0, 0);
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.overflow = '';
+        }
+      });
+
+      // Search
+      const searchInput = document.getElementById('journal-search');
+      const searchBtn = document.getElementById('journal-search-btn');
+      const doSearch = () => runSearch(searchInput.value.trim());
+      searchBtn.addEventListener('click', doSearch);
+      searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+    }
+
+    async function startJournalApp() {
+      userId = await getUserId();
+      if (!userId) {
+        // Token might be invalid; force re-auth
+        signOut();
+        return;
+      }
+      document.getElementById('journal-login').style.display = 'none';
+      document.getElementById('journal-app').style.display = 'block';
+      // Add a sign-out option in the meta area
+      const meta = document.getElementById('journal-meta');
+      if (meta && !document.getElementById('journal-signout')) {
+        meta.insertAdjacentHTML('beforeend',
+          ` · <a href="#" id="journal-signout" style="color:var(--muted);text-decoration:underline;">Sign out</a>`);
+        document.getElementById('journal-signout').addEventListener('click', e => {
+          e.preventDefault();
+          if (confirm('Sign out of journal?')) signOut();
+        });
+      }
+      wireApp();
+      populatePromptContexts();
+      // Re-populate after a beat so Sky Report has time to render
+      setTimeout(populatePromptContexts, 2000);
+      await loadTodayEntry();
+    }
+
+    function showLogin() {
+      document.getElementById('journal-login').style.display = 'block';
+      document.getElementById('journal-app').style.display = 'none';
+      const emailInput = document.getElementById('journal-email');
+      const sendBtn = document.getElementById('journal-send-link');
+      const msg = document.getElementById('journal-login-msg');
+      sendBtn.onclick = async () => {
+        const email = emailInput.value.trim();
+        if (!email || !email.includes('@')) {
+          msg.className = 'journal-msg error';
+          msg.textContent = 'Enter a valid email address.';
+          return;
+        }
+        sendBtn.disabled = true;
+        msg.className = 'journal-msg';
+        msg.textContent = 'Sending login link…';
+        try {
+          await sendMagicLink(email);
+          msg.className = 'journal-msg success';
+          msg.textContent = `Link sent to ${email}. Check your inbox (and spam) — click the link from this same device to sign in.`;
+        } catch (e) {
+          msg.className = 'journal-msg error';
+          msg.textContent = 'Could not send link: ' + e.message;
+        } finally {
+          sendBtn.disabled = false;
+        }
+      };
+    }
+
+    function render() {
+      const s = getSession();
+      if (s && !s.expired) {
+        startJournalApp();
+      } else if (s && s.expired) {
+        refreshSession().then(rs => {
+          if (rs) startJournalApp();
+          else showLogin();
+        });
+      } else {
+        showLogin();
+      }
+    }
+
+    // Bootstrap: handle auth callback if present, then render
+    if (handleAuthCallback()) {
+      // Small delay so the user sees a smooth transition rather than an instant page-swap
+      setTimeout(render, 50);
+    } else {
+      render();
+    }
+  })();
 
 </script>
 </body>
