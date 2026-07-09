@@ -73,7 +73,7 @@ window.__parseQuote=function(text,cb,setLoad,setErr){
   fetch("https://api.anthropic.com/v1/messages",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sys,messages:[{role:"user",content:"Parse this vendor quote:\n\n"+text}]})
+    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:sys,messages:[{role:"user",content:"Parse this vendor quote:\n\n"+text}]})
   }).then(function(r){return r.json();}).then(function(d){
     try{
       var t=(d.content&&d.content[0]&&d.content[0].text)||"{}";
@@ -9921,7 +9921,7 @@ Use realistic 2025-2026 DFW commercial contractor trade pricing. For RTUs use na
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 1000,
           messages: [{
             role: "user",
@@ -17548,7 +17548,7 @@ function PopsView({
           "anthropic-dangerous-direct-browser-access": "true"
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 1000,
           messages: [{
             role: "user",
@@ -18901,7 +18901,7 @@ function PopsView({
           "anthropic-dangerous-direct-browser-access": "true"
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 1000,
           system: sys,
           messages: [{
