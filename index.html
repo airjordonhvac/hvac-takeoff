@@ -18008,21 +18008,38 @@ function PopsView({
   const [npName, setNpName] = useState("");
   const [npOwner, setNpOwner] = useState("");
   const [npBudget, setNpBudget] = useState("");
-  function createProject() {
-    if (!npName.trim()) return;
-    const p = {
-      id: "pops-" + Date.now(),
-      name: npName.trim(),
-      owner: npOwner.trim() || "Air Jordon HVAC",
-      budget: parseFloat(npBudget) || 0,
-      source: "pops"
-    };
-    const next = [...popsProjects, p];
-    saveProjs(next);
+  const [editProjId, setEditProjId] = useState(null);
+  function openEditProject(p) {
+    setEditProjId(p.id);
+    setNpName(p.name || "");
+    setNpOwner(p.owner || "");
+    setNpBudget(p.budget ? String(p.budget) : "");
+    setShowNewProj(true);
+  }
+  function resetProjForm() {
+    setShowNewProj(false);
+    setEditProjId(null);
     setNpName("");
     setNpOwner("");
     setNpBudget("");
-    setShowNewProj(false);
+  }
+  function createProject() {
+    if (!npName.trim()) return;
+    const fields = {
+      name: npName.trim(),
+      owner: npOwner.trim() || "Air Jordon HVAC",
+      budget: parseFloat(npBudget) || 0
+    };
+    const next = editProjId ? popsProjects.map(p => p.id === editProjId ? {
+      ...p,
+      ...fields
+    } : p) : [...popsProjects, {
+      id: "pops-" + Date.now(),
+      source: "pops",
+      ...fields
+    }];
+    saveProjs(next);
+    resetProjForm();
   }
   const inputStyle = {
     width: "100%",
@@ -18181,8 +18198,8 @@ function PopsView({
     }
   }, "Save Key"))), /*#__PURE__*/React.createElement(Modal, {
     show: showNewProj,
-    onClose: () => setShowNewProj(false),
-    title: "\uD83D\uDCC1 New Project"
+    onClose: resetProjForm,
+    title: editProjId ? "\uD83D\uDCC1 Edit Project" : "\uD83D\uDCC1 New Project"
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
@@ -18219,7 +18236,7 @@ function PopsView({
       justifyContent: "flex-end"
     }
   }, /*#__PURE__*/React.createElement("button", {
-    onClick: () => setShowNewProj(false),
+    onClick: resetProjForm,
     style: {
       padding: "7px 16px",
       background: "transparent",
@@ -18243,7 +18260,7 @@ function PopsView({
       cursor: "pointer",
       fontFamily: "inherit"
     }
-  }, "Create Project"))), editingPO && /*#__PURE__*/React.createElement(EditPOModal, {
+  }, editProjId ? "Save Changes" : "Create Project"))), editingPO && /*#__PURE__*/React.createElement(EditPOModal, {
     po: editingPO,
     onClose: () => setEditingPO(null),
     onSave: updated => {
@@ -18360,7 +18377,7 @@ function PopsView({
       fontFamily: "inherit"
     }
   }, apiKey ? "🔑 Key ✓" : "🔑 API Key"), /*#__PURE__*/React.createElement("button", {
-    onClick: () => setShowNewProj(true),
+    onClick: () => { setEditProjId(null); setNpName(""); setNpOwner(""); setNpBudget(""); setShowNewProj(true); },
     style: {
       padding: "6px 12px",
       background: "#2ecc8718",
@@ -18674,7 +18691,7 @@ function PopsView({
         fontWeight: 700,
         flexShrink: 0
       }
-    }, pos.length, " POs")), /*#__PURE__*/React.createElement("div", {
+    }, pos.length, " POs"), p.source === "pops" && /*#__PURE__*/React.createElement("button", { onClick: e => { e.stopPropagation(); openEditProject(p); }, title: "Edit project info", style: { flexShrink: 0, marginLeft: 6, background: "transparent", border: "none", color: "#6b7694", cursor: "pointer", fontSize: 14, fontFamily: "inherit", padding: 0, lineHeight: 1 } }, "\u270E")), /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
         justifyContent: "space-between",
