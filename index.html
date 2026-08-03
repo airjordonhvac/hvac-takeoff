@@ -17433,7 +17433,8 @@ function PopsView({
             id: p.id,
             name: p.name,
             owner: p.owner || "Unassigned",
-            budget: parseFloat(p.budget) || 0
+            budget: parseFloat(p.budget) || 0,
+            source: "pops"
           }));
         })(), sbGet("pops_counter", 1000), sbGet("pops_apikey", "")]);
         if (pos && pos.length) setPoList(pos);
@@ -18051,7 +18052,7 @@ function PopsView({
   const totalCommitted = poList.filter(p => p.status !== "rejected").reduce((s, p) => s + p.total, 0);
   const pendingCount = poList.filter(p => p.status === "pending").length;
   const approvedTotal = poList.filter(p => p.status === "approved").reduce((s, p) => s + p.total, 0);
-  const Modal = ({
+  const Modal = React.useCallback(({
     show,
     onClose,
     title,
@@ -18088,7 +18089,7 @@ function PopsView({
       color: "#fff",
       marginBottom: 16
     }
-  }, title), children)) : null;
+  }, title), children)) : null, []);
   const projOptions = /*#__PURE__*/React.createElement(React.Fragment, null, mergedProjects.map(p => /*#__PURE__*/React.createElement("option", {
     key: p.id,
     value: p.id
