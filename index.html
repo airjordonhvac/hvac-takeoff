@@ -152,6 +152,16 @@ const CATS = [{
   icon: "📏",
   color: "#22d3ee"
 }, {
+  key: "Hydronic Equipment",
+  label: "Hydronic Equipment",
+  icon: "\u2744\ufe0f",
+  color: "#38bdf8"
+}, {
+  key: "Hydronic Piping",
+  label: "Hydronic Piping",
+  icon: "\ud83d\udd29",
+  color: "#34d399"
+}, {
   key: "estimate",
   label: "Bid Estimate",
   icon: "💰",
@@ -417,6 +427,27 @@ const UP = {
   // $/ea — controls wiring per zone/IDU
   vrf_cx_pct: 0.03 // commissioning % of total VRF labor (3%)
 };
+
+// -- HYDRONIC component unit prices (DFW 2026, first-pass budget) -----------
+const HYD = {
+  chiller_ton: 1000,   // air-cooled chiller $/ton (equipment)
+  boiler_mbh: 22,      // condensing boiler $/MBH input (equipment)
+  pump_base: 3000, pump_hp: 350,  // hydronic pump = base + $/HP (equipment)
+  ahu_cfm: 7,          // custom CHW/HW AHU $/CFM (equipment)
+  vav_reheat: 1250,    // VAV/CAV box w/ HW reheat coil (each)
+  pipe_xs: 28,  // <= 1"     hydronic pipe $/LF installed (mat+labor+insul+fittings)
+  pipe_sm: 38,  // 1.25"-2"
+  pipe_md: 55,  // 2.5"-4"
+  pipe_lg: 85,  // > 4"
+  lbr_chiller: 24, lbr_boiler: 16, lbr_pump: 8, lbr_ahu_h: 24, lbr_vav: 3 // install hrs
+};
+function hydPipeRate(size) {
+  const n = parseFloat((size || "").replace(/[^0-9.]/g, "")) || 1;
+  if (n <= 1) return HYD.pipe_xs;
+  if (n <= 2) return HYD.pipe_sm;
+  if (n <= 4) return HYD.pipe_md;
+  return HYD.pipe_lg;
+}
 
 // MK defaults now live as useState in App()
 
@@ -8891,6 +8922,31 @@ function buildEst(tk, dr, mk, overrides = {}, miscQty = {}, pipingQty = {}, catM
     });
   }
   // Apply category overrides: swap estimated total with vendor quote when enabled
+  // -- HYDRONIC component: chillers / boilers / pumps / hydronic AHUs / VAV-reheat / CHW-HW piping --
+  (tk.hydronic || []).forEach(h => {
+    const qty = h.qty || 1;
+    const tag = h.tag ? `${h.tag} \u2014 ` : "";
+    const label = `${tag}${h.description || h.type || ""}`.trim();
+    if (h.existing) {
+      const cat = h.type === "pipe" ? "Hydronic Piping" : "Hydronic Equipment";
+      items.push({ cat, desc: `${label} \u2014 $0 (existing)`, qty, unit: h.unit || "EA", up: 0, tot: 0 });
+      return;
+    }
+    if (h.type === "pipe") {
+      const up = hydPipeRate(h.size);
+      items.push({ cat: "Hydronic Piping", desc: `${h.system || "HW"} ${h.size || ""} \u2014 ${h.description || "hydronic pipe"}`.trim(), qty: h.qty || 0, unit: h.unit || "LF", up, tot: up * (h.qty || 0) });
+      return;
+    }
+    let up = 0, lab = 0;
+    if (h.type === "chiller") { up = (h.tons || 0) * HYD.chiller_ton; lab = HYD.lbr_chiller; }
+    else if (h.type === "boiler") { up = (h.mbh || 0) * HYD.boiler_mbh; lab = HYD.lbr_boiler; }
+    else if (h.type === "pump") { up = HYD.pump_base + (h.hp || 0) * HYD.pump_hp; lab = HYD.lbr_pump; }
+    else if (h.type === "ahu") { up = (h.cfm || 0) * HYD.ahu_cfm; lab = HYD.lbr_ahu_h; }
+    else if (h.type === "vav-reheat") { up = HYD.vav_reheat; lab = HYD.lbr_vav; }
+    else { up = 3000; lab = 4; }
+    items.push({ cat: "Hydronic Equipment", desc: label, qty, unit: "EA", up, tot: up * qty });
+    if (lab > 0) items.push({ cat: "Labor", desc: `Install: ${label} (${(lab * qty).toFixed(1)} hrs)`, qty: lab * qty, unit: "HR", up: U.lrate, tot: lab * qty * U.lrate });
+  });
   const allCats = [...new Set(items.map(i => i.cat))];
   const effectiveTotals = {};
   allCats.forEach(cat => {
@@ -8904,7 +8960,7 @@ function buildEst(tk, dr, mk, overrides = {}, miscQty = {}, pipingQty = {}, catM
   const markup = mk.overhead + mk.profit + mk.contingency + (mk.govProject ? mk.bond : 0);
   const preBid = direct * (1 + markup);
   // Texas sales tax: new construction = materials only; renovation = full contract
-  const MATERIAL_CATS = ["Equipment", "Exhaust Fans & Accessories", "Ductwork", "Grease Ductwork", "Duct - Low Pressure", "Diffusers/Grilles", "Piping", "Misc Materials"];
+  const MATERIAL_CATS = ["Equipment", "Exhaust Fans & Accessories", "Ductwork", "Grease Ductwork", "Duct - Low Pressure", "Diffusers/Grilles", "Piping", "Misc Materials", "Hydronic Equipment", "Hydronic Piping"];
   const matSubtotal = MATERIAL_CATS.reduce((s, cat) => s + (effectiveTotals[cat] || 0), 0);
   const taxBase = mk.newConstruction ? matSubtotal * (1 + markup) : preBid;
   const taxAmt = mk.taxEnabled ? taxBase * mk.taxRate : 0;
