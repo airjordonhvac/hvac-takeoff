@@ -18713,13 +18713,17 @@ function PopsView({
       gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))",
       gap: 10
     }
-  }, mergedProjects.map(p => {
+  }, mergedProjects.slice().sort((a, b) => a.name.localeCompare(b.name, undefined, {sensitivity: "base"})).map(p => {
     const spent = projSpent(p.id);
     const pos = poList.filter(x => x.projectId === p.id);
     const rev = parseFloat(allStatus && allStatus[p.id]?.contractValue) || 0;
-    const gm = rev - spent;
-    const gmPct = rev > 0 ? gm / rev * 100 : null;
+    const budget = parseFloat(p.budget) || 0;
+    const ref = rev || budget;
+    const gm = ref - spent;
+    const gmPct = ref > 0 ? gm / ref * 100 : null;
     const gmC = gmPct === null ? "#6b7694" : gmPct >= 25 ? "#2ecc87" : gmPct >= 15 ? "#f5a623" : gmPct >= 5 ? "#fb923c" : "#ff5c5c";
+    const budgetPct = budget > 0 ? Math.min(spent / budget * 100, 100) : null;
+    const barC = budgetPct === null ? "#6b7694" : budgetPct >= 100 ? "#ff5c5c" : budgetPct >= 80 ? "#fb923c" : budgetPct >= 60 ? "#f5a623" : "#2ecc87";
     return /*#__PURE__*/React.createElement("div", {
       key: p.id,
       onClick: () => {
@@ -18762,7 +18766,25 @@ function PopsView({
         fontWeight: 700,
         flexShrink: 0
       }
-    }, pos.length, " POs"), p.source === "pops" && /*#__PURE__*/React.createElement("button", { onClick: e => { e.stopPropagation(); openEditProject(p); }, title: "Edit project info", style: { flexShrink: 0, marginLeft: 6, background: "transparent", border: "none", color: "#6b7694", cursor: "pointer", fontSize: 14, fontFamily: "inherit", padding: 0, lineHeight: 1 } }, "\u270E")), /*#__PURE__*/React.createElement("div", {
+    }, pos.length, " POs"), p.source === "pops" && /*#__PURE__*/React.createElement("button", { onClick: e => { e.stopPropagation(); openEditProject(p); }, title: "Edit project info", style: { flexShrink: 0, marginLeft: 6, background: "transparent", border: "none", color: "#6b7694", cursor: "pointer", fontSize: 14, fontFamily: "inherit", padding: 0, lineHeight: 1 } }, "\u270E")), budget > 0 && /*#__PURE__*/React.createElement("div", {
+      style: { marginBottom: 6 }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: { fontSize: 9, color: "#6b7694", fontWeight: 700, letterSpacing: "0.3px", textTransform: "uppercase" }
+    }, "BUDGET"), /*#__PURE__*/React.createElement("span", {
+      style: { fontFamily: "monospace", fontSize: 11, color: "#dde3f0", fontWeight: 700 }
+    }, fmt(budget))), /*#__PURE__*/React.createElement("div", {
+      style: { height: 5, background: "#252d45", borderRadius: 3, overflow: "hidden" }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: { height: "100%", width: `${budgetPct || 0}%`, background: barC, borderRadius: 3, transition: "width 0.3s" }
+    })), /*#__PURE__*/React.createElement("div", {
+      style: { display: "flex", justifyContent: "space-between", marginTop: 2 }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: { fontSize: 8, color: "#6b7694" }
+    }, budgetPct !== null ? `${budgetPct.toFixed(0)}% used` : ""), /*#__PURE__*/React.createElement("span", {
+      style: { fontSize: 8, color: budget - spent >= 0 ? "#2ecc87" : "#ff5c5c" }
+    }, `${budget - spent >= 0 ? "" : "-"}${fmt(Math.abs(budget - spent))} remaining`))), /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
         justifyContent: "space-between",
@@ -18775,38 +18797,31 @@ function PopsView({
         fontWeight: 700,
         color: "#fb923c"
       }
-    }, `$${spent.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`, " costs"), rev > 0 && /*#__PURE__*/React.createElement("div", {
+    }, fmt(spent), " costs"), rev > 0 && /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: "monospace",
         fontSize: 11,
         color: "#3d8ef8",
         marginTop: 1
       }
-    }, `$${rev.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`, " revenue")), rev > 0 && /*#__PURE__*/React.createElement("div", {
+    }, fmt(rev), " revenue")), ref > 0 && /*#__PURE__*/React.createElement("div", {
       style: {
         textAlign: "right"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 9,
-        color: "#6b7694",
-        fontWeight: 700,
-        letterSpacing: "0.3px",
-        textTransform: "uppercase"
+        fontFamily: "monospace",
+        fontSize: 11,
+        color: gmC,
+        fontWeight: 700
       }
-    }, "GM"), /*#__PURE__*/React.createElement("div", {
+    }, `${gm >= 0 ? "+" : ""}${fmt(gm)}`), /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 13,
         fontWeight: 800,
         color: gmC
       }
-    }, gmPct !== null ? `${gmPct.toFixed(1)}%` : "—"))), p.source === "takeoff" && /*#__PURE__*/React.createElement("div", {
+    }, gmPct !== null ? `${gmPct.toFixed(1)}%` : "\u2014"))), p.source === "takeoff" && /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 9,
         color: "#5b8dee",
