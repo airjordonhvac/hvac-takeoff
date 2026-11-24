@@ -18331,7 +18331,26 @@ function PopsView({
       cursor: "pointer",
       fontFamily: "inherit"
     }
-  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+  }, "Cancel"), editProjId && /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      if (window.confirm("Delete this project? All POs will be unlinked.")) {
+        const next = popsProjects.filter(x => x.id !== editProjId);
+        saveProjs(next);
+        resetProjForm();
+      }
+    },
+    style: {
+      padding: "7px 16px",
+      background: "#ff5c5c18",
+      border: "1px solid #ff5c5c44",
+      borderRadius: 8,
+      color: "#ff5c5c",
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit"
+    }
+  }, "\u{1F5D1} Delete"), /*#__PURE__*/React.createElement("button", {
     onClick: createProject,
     style: {
       padding: "7px 18px",
@@ -18731,8 +18750,9 @@ function PopsView({
     const pos = poList.filter(x => x.projectId === p.id);
     const cv = parseFloat(p.contractValue) || parseFloat(allStatus && allStatus[p.id]?.contractValue) || 0;
     const budget = parseFloat(p.budget) || 0;
-    const gm = cv > 0 ? cv - spent : 0;
-    const gmPct = cv > 0 ? gm / cv * 100 : null;
+    const ref = cv || budget;
+    const gm = ref > 0 ? ref - spent : 0;
+    const gmPct = ref > 0 ? gm / ref * 100 : null;
     const gmC = gmPct === null ? "#6b7694" : gmPct >= 25 ? "#2ecc87" : gmPct >= 15 ? "#f5a623" : gmPct >= 5 ? "#fb923c" : "#ff5c5c";
     const budgetPct = budget > 0 ? Math.min(spent / budget * 100, 100) : null;
     const barC = budgetPct === null ? "#6b7694" : budgetPct >= 100 ? "#ff5c5c" : budgetPct >= 80 ? "#fb923c" : budgetPct >= 60 ? "#f5a623" : "#2ecc87";
@@ -18809,14 +18829,14 @@ function PopsView({
         fontWeight: 700,
         color: "#fb923c"
       }
-    }, fmt(spent), " costs"), cv > 0 && /*#__PURE__*/React.createElement("div", {
+    }, fmt(spent), " costs"), ref > 0 && /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: "monospace",
         fontSize: 11,
         color: "#3d8ef8",
         marginTop: 1
       }
-    }, fmt(cv), " contract")), cv > 0 && /*#__PURE__*/React.createElement("div", {
+    }, fmt(ref), cv > 0 ? " contract" : " budget")), ref > 0 && /*#__PURE__*/React.createElement("div", {
       style: {
         textAlign: "right"
       }
