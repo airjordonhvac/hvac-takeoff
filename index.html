@@ -15059,7 +15059,7 @@ function App() {
     dbSave("takeoff_manual_projects", next);
   };
   const [archivedProjects, setArchivedProjects] = useState({});
-  const projectKeys = [...new Set([...baseProjectKeys, ...Object.keys(allManualProjects)])].filter(k => !archivedProjects[k]);
+  const projectKeys = [...new Set([...baseProjectKeys, ...Object.keys(allManualProjects)])].filter(k => !archivedProjects[k]).sort((a, b) => a.localeCompare(b, undefined, {sensitivity: "base"}));
   const takeoffKeys = projectKeys.filter(k => {
     const s = (allStatus[k] || {}).status || "Bidding";
     return s === "Bidding" || s === "On Hold";
