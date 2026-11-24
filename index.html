@@ -13434,7 +13434,8 @@ function ProjectDashboard({
   allManualProjects,
   addManualProject,
   deleteManualProject,
-  onOpen
+  onOpen,
+  popsPos
 }) {
   const [editKey, setEditKey] = useState(null);
   const [lienFilter, setLienFilter] = useState(false);
@@ -13703,6 +13704,12 @@ function ProjectDashboard({
     const bidAgeDays = getBidAgeDays(k);
     const followUp = isBidFollowUp(k);
     const expired = isBidExpired(k);
+    const projectPOs = (popsPos || []).filter(po => po.project_id === k);
+    const poSpend = projectPOs.reduce((s, po) => s + (parseFloat(po.total) || 0), 0);
+    const margin = contractVal - poSpend;
+    const marginPct = contractVal > 0 ? (margin / contractVal) * 100 : 0;
+    const spendPct = contractVal > 0 ? Math.round(poSpend / contractVal * 100) : 0;
+    const marginColor = pct => pct >= 25 ? "#2ecc87" : pct >= 15 ? "#f5a623" : pct >= 5 ? "#fb923c" : "#ff5c5c";
     return /*#__PURE__*/React.createElement("div", {
       key: k,
       style: {
@@ -13815,7 +13822,13 @@ function ProjectDashboard({
         fontWeight: 700,
         color: color
       }
-    }, fmtDollar(contractVal))), isAwarded && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    }, fmtDollar(contractVal))), poSpend > 0 && /*#__PURE__*/React.createElement("div", {
+      style: {textAlign:"right",whiteSpace:"nowrap"}
+    }, /*#__PURE__*/React.createElement("div", {style:{fontSize:10,color:"#6b7694"}}, "PO Costs"), /*#__PURE__*/React.createElement("div", {style:{fontSize:12,fontWeight:700,color:"#fb923c"}}, fmtDollar(poSpend))), contractVal > 0 && poSpend > 0 && /*#__PURE__*/React.createElement("div", {
+      style: {textAlign:"right",whiteSpace:"nowrap"}
+    }, /*#__PURE__*/React.createElement("div", {style:{fontSize:10,color:"#6b7694"}}, "Margin"), /*#__PURE__*/React.createElement("div", {style:{fontSize:12,fontWeight:700,color:marginColor(marginPct)}}, fmtDollar(margin), " ", /*#__PURE__*/React.createElement("span", {style:{fontSize:10,color:marginColor(marginPct)}}, "(", Math.round(marginPct), "%)"))), contractVal > 0 && poSpend > 0 && /*#__PURE__*/React.createElement("div", {
+      style: {width:90,flexShrink:0}
+    }, /*#__PURE__*/React.createElement("div", {style:{position:"relative",height:6,background:"#252d45",borderRadius:3,overflow:"hidden"}}, /*#__PURE__*/React.createElement("div", {style:{position:"absolute",left:0,top:0,height:"100%",width:Math.min(spendPct,100)+"%",background:spendPct>100?"#ff5c5c":spendPct>80?"#fb923c":"#2ecc87",borderRadius:3}})), /*#__PURE__*/React.createElement("div", {style:{fontSize:9,color:"#6b7694",marginTop:2,textAlign:"right"}}, Math.round(spendPct), "% of budget")), isAwarded && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
       style: {
         textAlign: "right",
         whiteSpace: "nowrap"
@@ -14443,6 +14456,7 @@ function ProjectDashboard({
   }, "\u25A0 Slow Pay"), " (>30d over net terms)")))), statusGroups.map(group => {
     let groupKeys = projectKeys.filter(k => group.statuses.includes(getStatus(k).status));
     if (lienFilter) groupKeys = groupKeys.filter(k => getLienStatus(k).count60 > 0);
+    groupKeys.sort((a, b) => getProjectName(a).localeCompare(getProjectName(b), undefined, {sensitivity: "base"}));
 
     // For Bidding group: split into active bids vs expired (60d+), show follow-up alerts
     if (group.label === "Bidding") {
@@ -15746,6 +15760,7 @@ function App() {
     allManualProjects: allManualProjects,
     addManualProject: addManualProject,
     deleteManualProject: deleteManualProject,
+    popsPos: popsPos,
     onOpen: k => {
       if (allManualProjects[k]) return; // manual projects have no takeoff view
       setSelected(k);
